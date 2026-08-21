@@ -1,0 +1,170 @@
+name: LockTodoNote
+
+options:
+  bundleIdPrefix: com.namslab
+  createIntermediateGroups: true
+  groupSortPosition: top
+  developmentLanguage: en
+  deploymentTarget:
+    iOS: "16.1"
+
+# All nine languages the Flutter build shipped. Every key in
+# Localizable.xcstrings is translated for each of these; adding a region here
+# without translations would make the App Store advertise a language that
+# silently falls back to English.
+knownRegions:
+  - en
+  - ko
+  - ja
+  - es
+  - hi
+  - de
+  - fr
+  - zh-Hans
+  - zh-Hant
+  - Base
+
+# Identity values below are in production use. Bundle identifiers, the App
+# Group, and the URL scheme must match the shipped Flutter build exactly or
+# existing installs lose their data, their widgets, and their purchases.
+settings:
+  base:
+    DEVELOPMENT_TEAM: 2CZQR7Q423
+    MARKETING_VERSION: "1.2.0"
+    CURRENT_PROJECT_VERSION: "14"
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    # Crashlytics' dSYM upload script reads the build's dSYM and Info.plist,
+    # which the script sandbox blocks.
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+    CODE_SIGN_STYLE: Automatic
+    GENERATE_INFOPLIST_FILE: NO
+    ALWAYS_SEARCH_USER_PATHS: NO
+    CLANG_ENABLE_MODULES: YES
+
+packages:
+  LockTodoNoteShared:
+    path: Packages/LockTodoNoteShared
+  Firebase:
+    url: https://github.com/firebase/firebase-ios-sdk
+    from: "12.0.0"
+
+targets:
+  LockTodoNote:
+    type: application
+    platform: iOS
+    sources:
+      - path: LockTodoNote
+        excludes:
+          - "Resources/GoogleService-Info.plist"
+      - path: LockTodoNote/Resources/GoogleService-Info.plist
+        buildPhase: resources
+    dependencies:
+      - package: LockTodoNoteShared
+      # Firebase stays on the app target only — extensions report through the
+      # App Group event queue instead.
+      - package: Firebase
+        product: FirebaseAnalytics
+      - package: Firebase
+        product: FirebaseCrashlytics
+      - target: LockTodoNoteWidgetExtension
+      - target: LockTodoNoteShareExtension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.namslab.glancecard
+        PRODUCT_NAME: LockTodoNote
+        INFOPLIST_FILE: LockTodoNote/Info.plist
+        CODE_SIGN_ENTITLEMENTS: LockTodoNote/LockTodoNote.entitlements
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_PREVIEWS: YES
+    postBuildScripts:
+      # Uploads symbols so Crashlytics reports arrive readable instead of as
+      # raw addresses.
+      - name: Upload Crashlytics dSYMs
+        script: |
+          RUN_SCRIPT="${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run"
+          if [ -f "$RUN_SCRIPT" ]; then
+            "$RUN_SCRIPT"
+          else
+            echo "warning: Crashlytics run script not found; skipping dSYM upload"
+          fi
+        inputFiles:
+          - $(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist
+          - $(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)
+          - ${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}
+          - ${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist
+          - ${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}
+        basedOnDependencyAnalysis: false
+
+  LockTodoNoteWidgetExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - Extensions/WidgetExtension
+    dependencies:
+      - package: LockTodoNoteShared
+    settings:
+      base:
+        # Renamed target, unchanged bundle id: installed widgets keep working.
+        PRODUCT_BUNDLE_IDENTIFIER: com.namslab.glancecard.widget
+        PRODUCT_NAME: LockTodoNoteWidgetExtension
+        INFOPLIST_FILE: Extensions/WidgetExtension/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Extensions/WidgetExtension/WidgetExtension.entitlements
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SKIP_INSTALL: YES
+
+  LockTodoNoteShareExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - Extensions/ShareExtension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.namslab.glancecard.ShareExtension
+        PRODUCT_NAME: LockTodoNoteShareExtension
+        INFOPLIST_FILE: Extensions/ShareExtension/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Extensions/ShareExtension/ShareExtension.entitlements
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SKIP_INSTALL: YES
+
+  LockTodoNoteTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - Tests/LockTodoNoteTests
+    dependencies:
+      - target: LockTodoNote
+      - package: LockTodoNoteShared
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/LockTodoNote.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LockTodoNote"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+
+  LockTodoNoteUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - Tests/LockTodoNoteUITests
+    dependencies:
+      - target: LockTodoNote
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  LockTodoNote:
+    build:
+      targets:
+        LockTodoNote: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - LockTodoNoteTests
+        - LockTodoNoteUITests
+    archive:
+      config: Release

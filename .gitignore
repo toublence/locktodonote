@@ -1,0 +1,19 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+
+# The project file is generated from project.yml by XcodeGen.
+# Run `xcodegen generate` after adding or moving source files.
+LockTodoNote.xcodeproj/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/*/.build/
+
+# macOS
+.DS_Store

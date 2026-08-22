@@ -16,6 +16,7 @@ final class AnalyticsService: ObservableObject {
     private let backend: AnalyticsBackend
     private let store: AppGroupStore
     private let defaults: UserDefaults?
+    weak var reviewCoordinator: ReviewRequestCoordinator?
 
     init(store: AppGroupStore = AppGroupStore(), backend: AnalyticsBackend? = nil) {
         self.store = store
@@ -51,6 +52,7 @@ final class AnalyticsService: ObservableObject {
             merged[key] = (value as? Bool).map { $0 ? 1 : 0 } ?? value
         }
         backend.log(name: name, parameters: merged)
+        reviewCoordinator?.record(event: name, parameters: merged)
     }
 
     private var daysSinceInstall: Int {
@@ -79,6 +81,7 @@ final class AnalyticsService: ObservableObject {
     /// The Flutter build's name is the one the dashboards already hold.
     func onboardingStart() {
         log("onboarding_start", ["source": "app", "result": "success"])
+        log("onboarding_started", ["source": "app", "result": "success"])
     }
 
     func onboardingStepViewed(step: String, index: Int) {
@@ -115,7 +118,14 @@ final class AnalyticsService: ObservableObject {
 
     // MARK: - Activation
 
-    func todoCreated(taskCount: Int, remainingCount: Int, hasMemo: Bool, templateId: String, source: String = "app") {
+    func todoCreated(
+        taskCount: Int,
+        remainingCount: Int,
+        hasMemo: Bool,
+        templateId: String,
+        source: String = "app",
+        createdCount: Int = 1
+    ) {
         let isFirst = !(defaults?.bool(forKey: FlutterPreferenceKeys.firstTodoCreated) ?? false)
         log("todo_created", [
             "source": source,
@@ -127,6 +137,7 @@ final class AnalyticsService: ObservableObject {
             "has_memo": hasMemo,
             "template_id": templateId,
             "is_first_todo": isFirst,
+            "created_count": createdCount,
             "result": "success",
         ])
         guard isFirst else { return }
@@ -234,12 +245,12 @@ final class AnalyticsService: ObservableObject {
         log("display_mode_selected", ["source": "display", "mode": mode, "result": "success"])
     }
 
-    func quickCaptureFocused(type: String) {
-        log("quick_capture_focused", ["source": "inline", "type": type, "result": "success"])
+    func quickCaptureFocused(type: String, source: String = "inline") {
+        log("quick_capture_focused", ["source": source, "type": type, "result": "success"])
     }
 
-    func multilineTodoImported(count: Int) {
-        log("multiline_todo_imported", ["source": "inline", "count": count, "result": "success"])
+    func multilineTodoImported(count: Int, source: String = "inline") {
+        log("multiline_todo_imported", ["source": source, "count": count, "result": "success"])
     }
 
     func memoCreated(source: String) {
@@ -248,6 +259,10 @@ final class AnalyticsService: ObservableObject {
 
     func liveActivityRestarted() {
         log("live_activity_restarted", ["source": "app", "result": "success"])
+    }
+
+    func liveActivityBecameStale() {
+        log("live_activity_became_stale", ["source": "app", "result": "success"])
     }
 
     func widgetSetupStarted() {
@@ -278,6 +293,10 @@ final class AnalyticsService: ObservableObject {
 
     func proPreviewViewed(_ templateId: String) {
         log("pro_preview_viewed", ["source": "app", "template_id": templateId, "result": "success"])
+    }
+
+    func proPreviewInteracted(_ templateId: String) {
+        log("pro_preview_interacted", ["source": "app", "template_id": templateId, "result": "success"])
     }
 
     func purchaseStarted(productId: String, source: String, price: Decimal?, currency: String?) {
@@ -325,7 +344,25 @@ final class AnalyticsService: ObservableObject {
         log("temporary_pro_trial_started", ["source": source, "duration_hours": 24, "result": "success"])
     }
 
-    func reviewRequested() { log("review_requested", ["source": "app", "result": "success"]) }
+    func reviewEligibilityReached(_ parameters: [String: Any]) {
+        log("review_eligibility_reached", parameters)
+    }
+
+    func reviewPromptRequested(_ parameters: [String: Any]) {
+        log("review_prompt_requested", parameters)
+    }
+
+    func reviewPromptDeferred(reason: String, parameters: [String: Any]) {
+        log("review_prompt_deferred", parameters.merging(["reason": reason]) { _, new in new })
+    }
+
+    func reviewStoreLinkOpened() {
+        log("review_store_link_opened", ["source": "settings", "result": "success"])
+    }
+
+    func reviewRequestSkipped(reason: String, parameters: [String: Any]) {
+        log("review_request_skipped", parameters.merging(["reason": reason]) { _, new in new })
+    }
 
     // MARK: - Migration
 

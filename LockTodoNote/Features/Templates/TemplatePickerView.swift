@@ -38,7 +38,10 @@ struct TemplatePickerView: View {
         .sheet(item: $infoTemplate) { template in
             ProTemplateInfoSheet(template: template) {
                 infoTemplate = nil
-                environment.requestPaywall(source: "lock_screen_template")
+                environment.requestPaywall(
+                    source: "lock_screen_template",
+                    pendingTemplate: template
+                )
             }
             .environment(\.palette, palette)
         }
@@ -128,8 +131,13 @@ struct ProTemplateInfoSheet: View {
 
     @EnvironmentObject private var dashboard: DashboardCoordinator
     @EnvironmentObject private var analytics: AnalyticsService
+    @EnvironmentObject private var environment: AppEnvironment
     @Environment(\.dismiss) private var dismiss
     @Environment(\.palette) private var palette
+
+    @State private var previewTitle = ""
+    @State private var previewMemo = ""
+    @State private var previewDate = Date()
 
     var body: some View {
         NavigationStack {
@@ -141,6 +149,30 @@ struct ProTemplateInfoSheet: View {
 
                 DashboardPreviewCard(snapshot: previewSnapshot)
 
+                if needsTemporaryPreviewInput {
+                    VStack(spacing: 12) {
+                        TextField(
+                            appString(localized: "proPreview.title", defaultValue: "Preview title"),
+                            text: $previewTitle
+                        )
+                        DatePicker(
+                            appString(localized: "proPreview.date", defaultValue: "Preview date"),
+                            selection: $previewDate,
+                            displayedComponents: .date
+                        )
+                        TextField(
+                            appString(localized: "proPreview.memo", defaultValue: "Preview memo"),
+                            text: $previewMemo,
+                            axis: .vertical
+                        )
+                        .lineLimit(2...4)
+                    }
+                    .textFieldStyle(.roundedBorder)
+                    .onChange(of: previewTitle) { _ in analytics.proPreviewInteracted(template.rawValue) }
+                    .onChange(of: previewMemo) { _ in analytics.proPreviewInteracted(template.rawValue) }
+                    .onChange(of: previewDate) { _ in analytics.proPreviewInteracted(template.rawValue) }
+                }
+
                 Text(template.proDescription)
                     .font(.subheadline)
                     .multilineTextAlignment(.center)
@@ -150,10 +182,14 @@ struct ProTemplateInfoSheet: View {
                 Spacer()
 
                 Button(action: onUpgrade) {
-                    Text(appString(localized: "template.usePro", defaultValue: "Use with Pro"))
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 52)
+                    VStack(spacing: 2) {
+                        Text(template.proCTA)
+                            .font(.headline)
+                        Text(appString(localized: "template.includedInPro", defaultValue: "Included with LockTodoNote Pro"))
+                            .font(.caption)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 56)
                 }
                 .background(palette.accent, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                 .foregroundStyle(palette.onPrimary)
@@ -178,13 +214,50 @@ struct ProTemplateInfoSheet: View {
             }
         }
         .presentationDetents([.large])
-        .onAppear { analytics.proPreviewViewed(template.rawValue) }
+        .onAppear {
+            environment.isProInfoPresented = true
+            analytics.proPreviewViewed(template.rawValue)
+        }
+        .onDisappear { environment.isProInfoPresented = false }
     }
 
     private var previewSnapshot: DashboardSnapshot {
         var snapshot = dashboard.currentSnapshot()
         snapshot.lockScreenLayout = template.rawValue
+        guard needsTemporaryPreviewInput else { return snapshot }
+
+        snapshot.selectedDate = previewDate
+        snapshot.selectedDateText = appDateString(previewDate)
+        if template == .ddayMemo {
+            snapshot.ddayTargetDate = previewDate
+            snapshot.ddayTitle = previewTitle.isEmpty ? nil : previewTitle
+            snapshot.ddayText = appDateString(previewDate)
+            snapshot.ddayMemo = previewMemo.isEmpty ? nil : previewMemo
+        }
+        if !previewTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            snapshot.todoItems = [
+                DashboardTodoItem(id: "preview-only", text: previewTitle, isDone: false)
+            ]
+            snapshot.totalCount = 1
+            snapshot.doneCount = 0
+        }
+        if !previewMemo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            snapshot.memoItems = [
+                DashboardMemoItem(
+                    id: "preview-only",
+                    title: previewTitle.isEmpty ? previewMemo : previewTitle,
+                    bodyPreview: previewMemo
+                )
+            ]
+            snapshot.memoTitle = previewTitle.isEmpty ? previewMemo : previewTitle
+            snapshot.memoText = previewMemo
+        }
         return snapshot
+    }
+
+    private var needsTemporaryPreviewInput: Bool {
+        let snapshot = dashboard.currentSnapshot()
+        return snapshot.todoItems.isEmpty && snapshot.memoItems.isEmpty
     }
 }
 
@@ -211,6 +284,19 @@ extension LockScreenTemplate: @retroactive Identifiable {
             )
         case .calendarItems, .dateMemo, .dateTodo:
             ""
+        }
+    }
+
+    var proCTA: String {
+        switch self {
+        case .ddayMemo:
+            appString(localized: "template.useDday", defaultValue: "Use D-Day card")
+        case .imageMemo, .imageTodo:
+            appString(localized: "template.useImage", defaultValue: "Use image card")
+        case .memoTodo:
+            appString(localized: "template.useMemoTodo", defaultValue: "Use Memo + Todo card")
+        case .calendarItems, .dateMemo, .dateTodo:
+            appString(localized: "template.usePro", defaultValue: "Use this card")
         }
     }
 }

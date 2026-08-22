@@ -1,15 +1,18 @@
 import StoreKit
 import SwiftUI
+import UIKit
 import LockTodoNoteShared
 
 struct RootView: View {
     @EnvironmentObject private var environment: AppEnvironment
     @EnvironmentObject private var themeStore: ThemeStore
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.scenePhase) private var scenePhase
 
     @Environment(\.requestReview) private var requestReview
     @State private var selectedDestination: PrimaryDestination = .today
-    @State private var isSettingsPresented = false
+    @State private var hasLeftForeground = false
+    @State private var leftForegroundAt: Date?
 
     var body: some View {
         let palette = themeStore.palette(for: colorScheme)
@@ -30,19 +33,35 @@ struct RootView: View {
                 PaywallView(source: request.source)
                     .environment(\.palette, palette)
             }
-            .sheet(isPresented: $isSettingsPresented) {
-                SettingsTabView()
-                    .environment(\.palette, palette)
-            }
             .onChange(of: environment.pendingDeepLink) { link in
                 guard let link else { return }
                 route(link)
                 environment.pendingDeepLink = nil
             }
-            .onChange(of: environment.shouldRequestReview) { shouldRequest in
-                guard shouldRequest else { return }
-                requestReview()
-                environment.shouldRequestReview = false
+            .onChange(of: scenePhase) { phase in
+                guard phase == .active else {
+                    hasLeftForeground = true
+                    leftForegroundAt = Date()
+                    return
+                }
+                guard hasLeftForeground else { return }
+                guard let leftForegroundAt,
+                      Date().timeIntervalSince(leftForegroundAt) >= 5
+                else { return }
+                Task { @MainActor in
+                    try? await Task.sleep(for: .seconds(1.75))
+                    guard scenePhase == .active else { return }
+                    let blocked = environment.needsOnboarding
+                        || environment.quickAddRequest != nil
+                        || environment.paywallRequest != nil
+                        || environment.isProInfoPresented
+                        || environment.purchases.isPurchasing
+                        || selectedDestination == .settings
+                        || UIApplication.shared.hasActiveTextInput
+                    if environment.reviewCoordinator.claimForegroundRequest(isBlocked: blocked) {
+                        requestReview()
+                    }
+                }
             }
             .fullScreenCover(isPresented: $environment.needsOnboarding) {
                 OnboardingView { environment.completeOnboarding() }
@@ -51,10 +70,7 @@ struct RootView: View {
     }
 
     private func content(palette: AppPalette) -> some View {
-        AppShellView(
-            selection: $selectedDestination,
-            isSettingsPresented: $isSettingsPresented
-        )
+        AppShellView(selection: $selectedDestination)
     }
 
     private func route(_ link: DeepLink) {
@@ -79,4 +95,25 @@ enum QuickAddMode: String, Identifiable {
     case memo
 
     var id: String { rawValue }
+}
+
+private extension UIApplication {
+    var hasActiveTextInput: Bool {
+        connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap(\.windows)
+            .contains { window in
+                window.findFirstResponder() != nil
+            }
+    }
+}
+
+private extension UIView {
+    func findFirstResponder() -> UIView? {
+        if isFirstResponder { return self }
+        for child in subviews {
+            if let responder = child.findFirstResponder() { return responder }
+        }
+        return nil
+    }
 }

@@ -7,23 +7,22 @@ struct CalendarTabView: View {
     @EnvironmentObject private var cardStore: CardStore
     @EnvironmentObject private var environment: AppEnvironment
     @EnvironmentObject private var dashboard: DashboardCoordinator
+    @EnvironmentObject private var settingsStore: LockScreenSettingsStore
+    @EnvironmentObject private var analytics: AnalyticsService
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.palette) private var palette
 
     @State private var selectedDate = Date()
     @State private var visibleMonth = Date()
+    @State private var selectionConfirmation: String?
 
     private let calendar = Calendar.current
 
     var body: some View {
         ScrollView {
-            VStack(spacing: horizontalSizeClass == .regular ? 24 : 20) {
-                MonthGrid(
-                    visibleMonth: $visibleMonth,
-                    selectedDate: $selectedDate,
-                    markedDayKeys: cardStore.daysWithContent()
-                )
-
+            VStack(spacing: 20) {
+                monthGrid
                 selectedDayList
             }
             .padding(.horizontal, horizontalSizeClass == .regular ? 36 : 20)
@@ -33,9 +32,36 @@ struct CalendarTabView: View {
         }
         .background(palette.background)
         .onChange(of: selectedDate) { date in
+            guard settingsStore.settings.syncCalendarSelectionToLockScreen else { return }
             dashboard.selectedDate = date
             dashboard.publish()
+            selectionConfirmation = String(
+                format: appString(
+                    localized: "calendar.lockScreenDateChanged",
+                    defaultValue: "Lock Screen date changed to %@."
+                ),
+                appDateString(date)
+            )
+            Task { @MainActor in
+                try? await Task.sleep(for: .seconds(2))
+                selectionConfirmation = nil
+            }
         }
+        .overlay(alignment: .bottom) {
+            if let selectionConfirmation {
+                Text(selectionConfirmation)
+                    .font(.footnote.weight(.semibold))
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(.regularMaterial, in: Capsule())
+                    .padding(.bottom, 12)
+                    .transition(.opacity)
+            }
+        }
+    }
+
+    private var monthGrid: some View {
+        MonthGrid(visibleMonth: $visibleMonth, selectedDate: $selectedDate)
     }
 
     private var selectedDayList: some View {
@@ -49,10 +75,18 @@ struct CalendarTabView: View {
                     itemId: entry.item.id,
                     isDone: isDone
                 )
+                if isDone {
+                    let items = cardStore.todoCards(on: selectedDate).flatMap(\.checklistItems)
+                    analytics.todoCompleted(
+                        taskCount: items.count,
+                        remainingCount: items.filter { !$0.isDone }.count,
+                        templateId: settingsStore.settings.template.rawValue,
+                        source: "calendar"
+                    )
+                }
+                dashboard.publish()
             },
-            onDelete: { cardStore.delete(id: $0) },
-            onAddTodo: { environment.requestQuickAdd(.todo, date: selectedDate, source: "calendar") },
-            onAddMemo: { environment.requestQuickAdd(.memo, date: selectedDate, source: "calendar") }
+            onDelete: { cardStore.delete(id: $0) }
         )
     }
 
@@ -66,9 +100,10 @@ struct CalendarTabView: View {
 private struct MonthGrid: View {
     @Binding var visibleMonth: Date
     @Binding var selectedDate: Date
-    let markedDayKeys: Set<String>
 
+    @EnvironmentObject private var cardStore: CardStore
     @Environment(\.palette) private var palette
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     private let calendar = Calendar.current
 
     var body: some View {
@@ -81,13 +116,17 @@ private struct MonthGrid: View {
                         .font(.caption2)
                         .foregroundStyle(palette.textTertiary)
                 }
-                ForEach(days, id: \.self) { date in
+                ForEach(Array(days.enumerated()), id: \.offset) { _, date in
                     if let date {
+                        let todoItems = cardStore.todoCards(on: date).flatMap(\.checklistItems)
+                        let memoCount = cardStore.memoCards(on: date).count
                         DayCell(
                             date: date,
                             isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
                             isToday: calendar.isDateInToday(date),
-                            hasItems: markedDayKeys.contains(FlutterDate.dateKey(date, calendar: calendar))
+                            pendingTodoCount: todoItems.filter { !$0.isDone }.count,
+                            completedTodoCount: todoItems.filter(\.isDone).count,
+                            memoCount: memoCount
                         ) {
                             selectedDate = date
                         }
@@ -103,6 +142,14 @@ private struct MonthGrid: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .stroke(palette.border, lineWidth: 1)
         )
+        .contentShape(Rectangle())
+        .gesture(
+            DragGesture(minimumDistance: 40)
+                .onEnded { value in
+                    guard abs(value.translation.width) > abs(value.translation.height) else { return }
+                    shiftMonth(by: value.translation.width < 0 ? 1 : -1)
+                }
+        )
     }
 
     private var header: some View {
@@ -115,9 +162,21 @@ private struct MonthGrid: View {
             .accessibilityLabel(appString(localized: "calendar.previousMonth", defaultValue: "Previous month"))
 
             Spacer()
-            Text(monthTitle)
-                .font(.headline)
+            Button {
+                let today = Date()
+                selectedDate = today
+                withMonthAnimation { visibleMonth = today }
+            } label: {
+                VStack(spacing: 1) {
+                    Text(monthTitle)
+                        .font(.headline)
+                    Text(appString(localized: "calendar.today", defaultValue: "Today"))
+                        .font(.caption2)
+                }
                 .foregroundStyle(palette.textPrimary)
+                .frame(minHeight: 44)
+            }
+            .buttonStyle(.plain)
             Spacer()
 
             Button {
@@ -132,14 +191,14 @@ private struct MonthGrid: View {
 
     private var monthTitle: String {
         let formatter = DateFormatter()
-        formatter.locale = .current
+        formatter.locale = appLocale()
         formatter.setLocalizedDateFormatFromTemplate("yMMMM")
         return formatter.string(from: visibleMonth)
     }
 
     private var weekdaySymbols: [String] {
         let formatter = DateFormatter()
-        formatter.locale = .current
+        formatter.locale = appLocale()
         let symbols = formatter.veryShortStandaloneWeekdaySymbols ?? []
         guard symbols.count == 7 else { return [] }
         return symbols
@@ -162,7 +221,11 @@ private struct MonthGrid: View {
 
     private func shiftMonth(by value: Int) {
         guard let shifted = calendar.date(byAdding: .month, value: value, to: visibleMonth) else { return }
-        visibleMonth = shifted
+        withMonthAnimation { visibleMonth = shifted }
+    }
+
+    private func withMonthAnimation(_ changes: () -> Void) {
+        if reduceMotion { changes() } else { withAnimation(.snappy(duration: 0.28), changes) }
     }
 }
 
@@ -170,7 +233,9 @@ private struct DayCell: View {
     let date: Date
     let isSelected: Bool
     let isToday: Bool
-    let hasItems: Bool
+    let pendingTodoCount: Int
+    let completedTodoCount: Int
+    let memoCount: Int
     let onTap: () -> Void
 
     @Environment(\.palette) private var palette
@@ -183,9 +248,19 @@ private struct DayCell: View {
                 Text("\(calendar.component(.day, from: date))")
                     .font(.subheadline.weight(isSelected ? .bold : .regular))
                     .foregroundStyle(foreground)
-                Circle()
-                    .fill(hasItems ? palette.accent : .clear)
-                    .frame(width: 4, height: 4)
+                HStack(spacing: 3) {
+                    if pendingTodoCount + completedTodoCount > 0 {
+                        Circle()
+                            .fill(pendingTodoCount > 0 ? palette.accent : palette.success)
+                            .frame(width: 5, height: 5)
+                    }
+                    if memoCount > 0 {
+                        Circle()
+                            .fill(palette.textTertiary)
+                            .frame(width: 5, height: 5)
+                    }
+                }
+                .frame(height: 5)
             }
             .frame(maxWidth: .infinity)
             .frame(height: horizontalSizeClass == .regular ? 58 : 40)
@@ -211,11 +286,20 @@ private struct DayCell: View {
 
     private var accessibilityLabel: String {
         let formatter = DateFormatter()
-        formatter.locale = .current
+        formatter.locale = appLocale()
         formatter.setLocalizedDateFormatFromTemplate("MMMMd")
         let base = formatter.string(from: date)
-        guard hasItems else { return base }
-        return "\(base), \(appString(localized: "calendar.hasItems", defaultValue: "has items"))"
+        guard pendingTodoCount + completedTodoCount + memoCount > 0 else { return base }
+        return String(
+            format: appString(
+                localized: "calendar.accessibilitySummary",
+                defaultValue: "%@, %d todos, %d completed, %d memos"
+            ),
+            base,
+            pendingTodoCount,
+            completedTodoCount,
+            memoCount
+        )
     }
 }
 
@@ -225,8 +309,6 @@ private struct SelectedDayList: View {
     let memos: [Card]
     let onToggle: (TodoEntry, Bool) -> Void
     let onDelete: (String) -> Void
-    let onAddTodo: () -> Void
-    let onAddMemo: () -> Void
 
     @Environment(\.palette) private var palette
 
@@ -241,28 +323,9 @@ private struct SelectedDayList: View {
                         .font(.caption)
                         .foregroundStyle(palette.textSecondary)
                 }
-                Spacer(minLength: 8)
-                Menu {
-                    Button(action: onAddTodo) {
-                        Label(
-                            appString(localized: "home.addTodo", defaultValue: "Add todo"),
-                            systemImage: "checklist"
-                        )
-                    }
-                    Button(action: onAddMemo) {
-                        Label(
-                            appString(localized: "home.addMemo", defaultValue: "Add memo"),
-                            systemImage: "square.and.pencil"
-                        )
-                    }
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.system(size: 15, weight: .semibold))
-                        .frame(width: 34, height: 34)
-                        .background(palette.accentSoft, in: Circle())
-                }
-                .accessibilityLabel(appString(localized: "calendar.addItem", defaultValue: "Add item"))
             }
+
+            QuickCaptureView(date: date, source: "calendar")
 
             if todos.isEmpty && memos.isEmpty {
                 Text(appString(localized: "calendar.emptyDay", defaultValue: "Nothing on this day"))
@@ -311,7 +374,7 @@ private struct SelectedDayList: View {
 
     private var title: String {
         let formatter = DateFormatter()
-        formatter.locale = .current
+        formatter.locale = appLocale()
         formatter.setLocalizedDateFormatFromTemplate("MMMMdEEEE")
         return formatter.string(from: date)
     }

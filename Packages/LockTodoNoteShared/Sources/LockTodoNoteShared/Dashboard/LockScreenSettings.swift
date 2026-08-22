@@ -28,11 +28,12 @@ public struct LockScreenSettings: Hashable, Sendable {
     public var textScale: Double
     public var shortcutInsertPriority: ShortcutInsertPriority
     public var selectedContentSection: ShortcutInsertPriority
+    public var syncCalendarSelectionToLockScreen: Bool
 
     public init(
         showTodos: Bool = true,
         showMemos: Bool = true,
-        showCompletedTodos: Bool = true,
+        showCompletedTodos: Bool = false,
         template: LockScreenTemplate = .default,
         imageFileName: String? = nil,
         imageMemoFileName: String? = nil,
@@ -43,7 +44,8 @@ public struct LockScreenSettings: Hashable, Sendable {
         textFontWeight: String = LockScreenSettings.defaultTextFontWeight,
         textScale: Double = LockScreenSettings.defaultTextScale,
         shortcutInsertPriority: ShortcutInsertPriority = .todo,
-        selectedContentSection: ShortcutInsertPriority = .todo
+        selectedContentSection: ShortcutInsertPriority = .todo,
+        syncCalendarSelectionToLockScreen: Bool = true
     ) {
         self.showTodos = showTodos
         self.showMemos = showMemos
@@ -59,6 +61,7 @@ public struct LockScreenSettings: Hashable, Sendable {
         self.textScale = Self.clampTextScale(textScale)
         self.shortcutInsertPriority = shortcutInsertPriority
         self.selectedContentSection = selectedContentSection
+        self.syncCalendarSelectionToLockScreen = syncCalendarSelectionToLockScreen
     }
 
     public static func clampTextScale(_ value: Double) -> Double {
@@ -93,7 +96,7 @@ public struct LockScreenSettings: Hashable, Sendable {
         return LockScreenSettings(
             showTodos: defaults.object(forKey: FlutterPreferenceKeys.showTodos) as? Bool ?? true,
             showMemos: defaults.object(forKey: FlutterPreferenceKeys.showMemos) as? Bool ?? true,
-            showCompletedTodos: defaults.object(forKey: FlutterPreferenceKeys.showCompletedTodos) as? Bool ?? true,
+            showCompletedTodos: defaults.object(forKey: FlutterPreferenceKeys.showCompletedTodos) as? Bool ?? false,
             template: LockScreenTemplate(fromStored: defaults.string(forKey: FlutterPreferenceKeys.layout)),
             imageFileName: legacyImage,
             imageMemoFileName: defaults.string(forKey: FlutterPreferenceKeys.imageMemoFileName) ?? legacyImage,
@@ -108,7 +111,10 @@ public struct LockScreenSettings: Hashable, Sendable {
             ),
             selectedContentSection: ShortcutInsertPriority(
                 fromStored: defaults.string(forKey: FlutterPreferenceKeys.selectedContentSection)
-            )
+            ),
+            syncCalendarSelectionToLockScreen: defaults.object(
+                forKey: FlutterPreferenceKeys.syncCalendarSelectionToLockScreen
+            ) as? Bool ?? true
         )
     }
 
@@ -130,6 +136,10 @@ public struct LockScreenSettings: Hashable, Sendable {
         defaults.set(Self.clampTextScale(textScale), forKey: FlutterPreferenceKeys.textScale)
         defaults.set(shortcutInsertPriority.rawValue, forKey: FlutterPreferenceKeys.shortcutInsertPriority)
         defaults.set(selectedContentSection.rawValue, forKey: FlutterPreferenceKeys.selectedContentSection)
+        defaults.set(
+            syncCalendarSelectionToLockScreen,
+            forKey: FlutterPreferenceKeys.syncCalendarSelectionToLockScreen
+        )
     }
 }
 

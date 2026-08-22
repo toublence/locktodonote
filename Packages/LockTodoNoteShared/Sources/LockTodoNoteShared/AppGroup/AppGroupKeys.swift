@@ -60,6 +60,9 @@ public enum AppGroupKeys {
     public static let migrationCompletedAt = "locktodonote.migration.completed_at"
     public static let migrationFailureReason = "locktodonote.migration.failure_reason"
     public static let liveActivityStartedAt = "locktodonote.live_activity.started_at.v1"
+    public static let liveActivityStaleLogged = "locktodonote.live_activity.stale_logged.v1"
+    public static let widgetConfirmationPending = "locktodonote.widget.confirmation_pending.v1"
+    public static let widgetInstallationConfirmed = "locktodonote.widget.installation_confirmed.v1"
 }
 
 /// Keys the Flutter build wrote into *standard* UserDefaults through
@@ -103,6 +106,7 @@ public enum FlutterPreferenceKeys {
     public static let textScale = "lockScreen.textScale"
     public static let shortcutInsertPriority = "lockScreen.shortcutInsertPriority"
     public static let selectedContentSection = "lockScreen.selectedContentSection"
+    public static let syncCalendarSelectionToLockScreen = "lockScreen.syncCalendarSelectionToLockScreen"
 
     // Onboarding and activation funnel
     public static let hasCompletedOnboarding = "hasCompletedOnboarding"

@@ -14,15 +14,13 @@ final class AppEnvironment: ObservableObject {
     let liveActivity: LiveActivityService
     let purchases: PurchaseService
     let analytics: AnalyticsService
+    let reviewCoordinator: ReviewRequestCoordinator
     let dashboard: DashboardCoordinator
     let links: LinkStore
     let appGroup: AppGroupStore
 
     @Published private(set) var migrationOutcome: FlutterDataMigrator.Outcome?
     @Published var pendingDeepLink: DeepLink?
-    /// Set when a review prompt has been earned; the view layer owns the
-    /// actual request because `requestReview` is an environment action.
-    @Published var shouldRequestReview = false
     /// Migrated users carry their completed flag across, so onboarding shows
     /// only to genuinely new installs.
     @Published var needsOnboarding: Bool = false
@@ -30,6 +28,8 @@ final class AppEnvironment: ObservableObject {
     /// while `TabView` also owns one means the inner sheet never appears.
     @Published var quickAddRequest: QuickAddRequest?
     @Published var paywallRequest: PaywallRequest?
+    @Published var isProInfoPresented = false
+    private var pendingProTemplate: LockScreenTemplate?
 
     /// UI tests need a predictable starting point. Guarded by a launch
     /// argument so it can never fire in a shipped build.
@@ -47,6 +47,7 @@ final class AppEnvironment: ObservableObject {
         let liveActivity = LiveActivityService(store: appGroup)
         let purchases = PurchaseService(store: appGroup)
         let analytics = AnalyticsService(store: appGroup)
+        let reviewCoordinator = ReviewRequestCoordinator(store: appGroup)
 
         self.cardStore = cardStore
         self.themeStore = ThemeStore(store: appGroup)
@@ -54,6 +55,7 @@ final class AppEnvironment: ObservableObject {
         self.liveActivity = liveActivity
         self.purchases = purchases
         self.analytics = analytics
+        self.reviewCoordinator = reviewCoordinator
         self.links = LinkStore(store: appGroup)
         self.dashboard = DashboardCoordinator(
             cardStore: cardStore,
@@ -62,6 +64,8 @@ final class AppEnvironment: ObservableObject {
             entitlements: purchases,
             store: appGroup
         )
+        reviewCoordinator.attachAnalytics(analytics)
+        analytics.reviewCoordinator = reviewCoordinator
 
         cardStore.load()
         // Any edit anywhere republishes the Lock Screen.
@@ -103,11 +107,13 @@ final class AppEnvironment: ObservableObject {
 
     func bootstrap() async {
         analytics.ensureInstallDate()
+        reviewCoordinator.recordUsageDay()
         await purchases.refreshEntitlement()
         analytics.isPremium = purchases.isPro
         await purchases.loadProducts()
         dashboard.publish()
         analytics.flushQueuedEvents()
+        recordStaleActivityIfNeeded()
         checkLapsedTrialPaywall()
         checkDayTwoPaywall()
     }
@@ -151,9 +157,7 @@ final class AppEnvironment: ObservableObject {
     }
 
     func requestReviewIfEarned() {
-        guard triggers.claimReviewRequest() else { return }
-        analytics.reviewRequested()
-        shouldRequestReview = true
+        reviewCoordinator.evaluate(trigger: "live_activity_success")
     }
 
     /// Installing the widget earns a fresh 24-hour Pro window, and re-arms the
@@ -169,10 +173,12 @@ final class AppEnvironment: ObservableObject {
     /// Re-reads the card file and drains extension queues. Called on every
     /// foreground because intents mutate shared state while the app is away.
     func refreshFromBackgroundWork() {
+        reviewCoordinator.recordUsageDay()
         let result = cardStore.load()
         settingsStore.refreshFromSharedDefaults()
         purchases.refreshTrialState()
         liveActivity.refreshState()
+        recordStaleActivityIfNeeded()
         analytics.flushQueuedEvents()
         // Drains the share extension's queue so it cannot grow unbounded.
         links.load()
@@ -189,6 +195,13 @@ final class AppEnvironment: ObservableObject {
         Task { await purchases.refreshEntitlement() }
     }
 
+    private func recordStaleActivityIfNeeded() {
+        guard case .possiblyExpired = liveActivity.state else { return }
+        guard !(appGroup.defaults?.bool(forKey: AppGroupKeys.liveActivityStaleLogged) ?? false) else { return }
+        appGroup.defaults?.set(true, forKey: AppGroupKeys.liveActivityStaleLogged)
+        analytics.liveActivityBecameStale()
+    }
+
     func handle(_ url: URL) {
         guard let link = DeepLink(url: url) else { return }
         pendingDeepLink = link
@@ -203,9 +216,25 @@ final class AppEnvironment: ObservableObject {
 
     /// Shows the paywall. `source` becomes the `paywall_trigger` parameter, so
     /// the values must stay stable for the existing funnel.
-    func requestPaywall(source: String) {
+    func requestPaywall(source: String, pendingTemplate: LockScreenTemplate? = nil) {
+        pendingProTemplate = pendingTemplate
         analytics.paywallSeen(source: source)
         paywallRequest = PaywallRequest(source: source)
+    }
+
+    func applyPendingProTemplate() {
+        guard let pendingProTemplate else { return }
+        let resolved = pendingProTemplate.resolvedTemplate(
+            for: settingsStore.settings.selectedContentSection
+        )
+        settingsStore.settings.template = resolved
+        analytics.templateChanged(resolved.rawValue)
+        self.pendingProTemplate = nil
+        dashboard.publish()
+    }
+
+    func clearPendingProTemplate() {
+        pendingProTemplate = nil
     }
 }
 

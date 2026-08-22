@@ -86,9 +86,10 @@ struct QuickAddSheet: View {
                 remainingCount: todos.filter { !$0.isDone }.count,
                 hasMemo: !cardStore.memoCards(on: date).isEmpty,
                 templateId: settingsStore.settings.template.rawValue,
-                source: source
+                source: source,
+                createdCount: lines.count
             )
-            if lines.count > 1 { analytics.multilineTodoImported(count: lines.count) }
+            if lines.count > 1 { analytics.multilineTodoImported(count: lines.count, source: source) }
         case .memo:
             cardStore.addMemo(text: trimmed, to: date)
             analytics.memoCreated(source: source)

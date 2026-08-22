@@ -93,6 +93,7 @@ final class LiveActivityService: ObservableObject {
                 Date().timeIntervalSince1970,
                 forKey: AppGroupKeys.liveActivityStartedAt
             )
+            store.defaults?.removeObject(forKey: AppGroupKeys.liveActivityStaleLogged)
             refreshState()
         } catch {
             refreshState()

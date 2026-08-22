@@ -8,7 +8,7 @@ options:
   deploymentTarget:
     iOS: "16.1"
 
-# All nine languages the Flutter build shipped. Every key in
+# Preserve every language already shipped and add the required Arabic locale. Every key in
 # Localizable.xcstrings is translated for each of these; adding a region here
 # without translations would make the App Store advertise a language that
 # silently falls back to English.
@@ -22,6 +22,7 @@ knownRegions:
   - fr
   - zh-Hans
   - zh-Hant
+  - ar
   - Base
 
 # Identity values below are in production use. Bundle identifiers, the App
@@ -30,7 +31,7 @@ knownRegions:
 settings:
   base:
     DEVELOPMENT_TEAM: 2CZQR7Q423
-    MARKETING_VERSION: "1.2.0"
+    MARKETING_VERSION: "1.1.4"
     CURRENT_PROJECT_VERSION: "14"
     SWIFT_VERSION: "6.0"
     SWIFT_STRICT_CONCURRENCY: complete

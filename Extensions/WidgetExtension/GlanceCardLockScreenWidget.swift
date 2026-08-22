@@ -6,6 +6,8 @@ private let appGroupId = "group.com.namslab.glancecard"
 private let representativeCardKey = "representativeCard"
 private let dashboardStateKey = "dashboard_state"
 private let queuedAnalyticsEventsKey = "queued_analytics_events"
+private let widgetConfirmationPendingKey = "locktodonote.widget.confirmation_pending.v1"
+private let widgetInstallationConfirmedKey = "locktodonote.widget.installation_confirmed.v1"
 
 struct GlanceCardWidgetEntry: TimelineEntry {
   let date: Date
@@ -54,6 +56,7 @@ struct GlanceCardTimelineProvider: TimelineProvider {
 
   func getTimeline(in context: Context, completion: @escaping (Timeline<GlanceCardWidgetEntry>) -> Void) {
     let now = Date()
+    let defaults = UserDefaults(suiteName: appGroupId)
     let startOfTomorrow = Calendar.current.date(
       byAdding: .day,
       value: 1,
@@ -64,6 +67,15 @@ struct GlanceCardTimelineProvider: TimelineProvider {
       name: "widget_timeline_requested",
       parameters: analyticsParameters(from: dashboard, source: "widget", result: "success")
     )
+    if defaults?.bool(forKey: widgetConfirmationPendingKey) == true,
+       defaults?.bool(forKey: widgetInstallationConfirmedKey) != true {
+      enqueueAnalyticsEvent(
+        name: "widget_installed_confirmed",
+        parameters: analyticsParameters(from: dashboard, source: "widget", result: "success")
+      )
+      defaults?.set(true, forKey: widgetInstallationConfirmedKey)
+      defaults?.removeObject(forKey: widgetConfirmationPendingKey)
+    }
     let entries = [
       GlanceCardWidgetEntry(date: now, dashboard: dashboard),
       GlanceCardWidgetEntry(
@@ -165,7 +177,7 @@ struct GlanceCardTimelineProvider: TimelineProvider {
 
   private func localizedDateTitle(_ date: Date) -> String {
     let formatter = DateFormatter()
-    formatter.locale = Locale.current
+    formatter.locale = widgetLocale()
     formatter.setLocalizedDateFormatFromTemplate("MMM d")
     return formatter.string(from: date)
   }
@@ -178,7 +190,7 @@ struct GlanceCardLockScreenWidget: Widget {
         .widgetURL(URL(string: "glancecard://dashboard?source=widget"))
     }
     .configurationDisplayName("LockTodoNote")
-    .description("오늘의 할 일과 메모를 잠금화면과 홈 화면에서 이어서 봅니다.")
+    .description("widget.description")
     .supportedFamilies([.systemMedium, .accessoryRectangular, .accessoryInline])
   }
 }

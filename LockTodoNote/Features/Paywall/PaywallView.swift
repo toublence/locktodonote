@@ -12,6 +12,7 @@ struct PaywallView: View {
 
     @EnvironmentObject private var purchases: PurchaseService
     @EnvironmentObject private var analytics: AnalyticsService
+    @EnvironmentObject private var environment: AppEnvironment
     @Environment(\.dismiss) private var dismiss
     @Environment(\.palette) private var palette
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -66,6 +67,7 @@ struct PaywallView: View {
         ) {
             Button(appString(localized: "common.ok", defaultValue: "OK")) { message = nil }
         }
+        .onDisappear { environment.clearPendingProTemplate() }
     }
 
     // MARK: - Sections
@@ -185,6 +187,7 @@ struct PaywallView: View {
                 Button {
                     purchases.startTemporaryTrial()
                     analytics.temporaryTrialStarted(source: source)
+                    environment.applyPendingProTemplate()
                     dismiss()
                 } label: {
                     Text(
@@ -293,6 +296,7 @@ struct PaywallView: View {
                 price: product.price,
                 currency: product.priceFormatStyle.currencyCode
             )
+            environment.applyPendingProTemplate()
             dismiss()
         case .cancelled:
             analytics.purchaseCancelled(productId: product.id, source: source)
@@ -312,6 +316,7 @@ struct PaywallView: View {
         isRestoring = false
         analytics.restoreCompleted(restored: restored)
         if restored {
+            environment.applyPendingProTemplate()
             dismiss()
         } else {
             message = appString(localized: "restore.empty",

@@ -72,6 +72,10 @@ struct AddToLockTodoNoteIntent: AppIntent {
                 "result": "success",
             ]
         )
+        ReviewEligibilityRecorder(store: store).record(
+            target == .memo ? .memoCreated(1) : .todoCreated(1),
+            trigger: "shortcut_quick_add"
+        )
         return Self.reply(target == .memo ? .addedToMemo : .addedToTodo)
     }
 
@@ -113,7 +117,14 @@ struct RefreshLockScreenIntent: AppIntent {
     static let openAppWhenRun = false
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        let refreshed = try await ShortcutSupport.restartActivity(store: AppGroupStore())
+        let store = AppGroupStore()
+        let refreshed = try await ShortcutSupport.restartActivity(store: store)
+        if refreshed {
+            ReviewEligibilityRecorder(store: store).record(
+                .liveActivitySuccess,
+                trigger: "live_activity_restarted"
+            )
+        }
         let message = refreshed
             ? localized("intent.refreshed", defaultValue: "Refreshed the Lock Screen")
             : localized(
@@ -131,7 +142,6 @@ struct LockTodoNoteShortcuts: AppShortcutsProvider {
             intent: AddToLockTodoNoteIntent(),
             phrases: [
                 "Add to \(.applicationName)",
-                "\(.applicationName)에 추가",
             ],
             shortTitle: "Add to LockTodoNote",
             systemImageName: "plus.circle"
@@ -140,7 +150,6 @@ struct LockTodoNoteShortcuts: AppShortcutsProvider {
             intent: RefreshLockScreenIntent(),
             phrases: [
                 "Refresh \(.applicationName)",
-                "\(.applicationName) 잠금화면 새로고침",
             ],
             shortTitle: "Refresh Lock Screen",
             systemImageName: "arrow.clockwise"
@@ -176,19 +185,29 @@ struct ToggleTodoIntent: LiveActivityIntent {
         store.saveDashboardState(payload)
         await ShortcutSupport.updateActivities(with: payload)
 
+        ReviewEligibilityRecorder(store: store).record(
+            .todoCompleted(lockScreenInteraction: true),
+            trigger: completionSource == "widget" ? "widget_todo_completed" : "todo_completed"
+        )
+        var analyticsParameters = ShortcutSupport.analyticsParameters(
+            from: payload,
+            source: completionSource
+        )
+        analyticsParameters["review_signal_recorded"] = true
+
         store.enqueueAnalyticsEvent(
             name: "todo_completed",
-            parameters: ShortcutSupport.analyticsParameters(from: payload, source: completionSource)
+            parameters: analyticsParameters
         )
         if completionSource == "widget" {
             store.enqueueAnalyticsEvent(
                 name: "widget_todo_completed",
-                parameters: ShortcutSupport.analyticsParameters(from: payload, source: completionSource)
+                parameters: analyticsParameters
             )
         } else if completionSource == "dynamic_island" {
             store.enqueueAnalyticsEvent(
                 name: "dynamic_island_interacted",
-                parameters: ShortcutSupport.analyticsParameters(from: payload, source: completionSource)
+                parameters: analyticsParameters
             )
         }
         return .result()
@@ -420,6 +439,12 @@ enum ShortcutSupport {
         store.enqueueAnalyticsEvent(
             name: "lockscreen_activity_updated",
             parameters: analyticsParameters(from: payload, source: "shortcut")
+        )
+        var restartedParameters = analyticsParameters(from: payload, source: "shortcut")
+        restartedParameters["review_signal_recorded"] = true
+        store.enqueueAnalyticsEvent(
+            name: "live_activity_restarted",
+            parameters: restartedParameters
         )
         return true
     }

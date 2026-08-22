@@ -11,7 +11,7 @@ struct SettingsTabView: View {
     @EnvironmentObject private var dashboard: DashboardCoordinator
     @EnvironmentObject private var analytics: AnalyticsService
     @EnvironmentObject private var languageStore: AppLanguageStore
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
     @Environment(\.palette) private var palette
 
     @StateObject private var notifications = NotificationService()
@@ -26,16 +26,6 @@ struct SettingsTabView: View {
                 migrationSection
             }
             .navigationTitle(appString(localized: "tab.settings", defaultValue: "Settings"))
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
-                    .accessibilityLabel(appString(localized: "common.close", defaultValue: "Close"))
-                }
-            }
             .task { await notifications.refreshAuthorizationStatus() }
             .alert(
                 restoreMessage ?? "",
@@ -54,12 +44,20 @@ struct SettingsTabView: View {
     private var settingsDestinations: some View {
         Section {
             NavigationLink {
-                Form {
-                    lockScreenSection
-                    textStyleSection
-                    privacySection
-                    appearanceSection
+                VStack(spacing: 0) {
+                    DashboardPreviewCard(snapshot: dashboard.currentSnapshot())
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 12)
+                        .background(palette.background)
+
+                    Form {
+                        lockScreenSection
+                        textStyleSection
+                        privacySection
+                        appearanceSection
+                    }
                 }
+                .background(palette.background)
                 .navigationTitle(
                     appString(localized: "settings.templateAppearance", defaultValue: "Templates & Appearance")
                 )
@@ -152,7 +150,7 @@ struct SettingsTabView: View {
                 if let expiry = purchases.entitlement.expirationDate {
                     LabeledContent(
                         appString(localized: "settings.renewsOn", defaultValue: "Renews"),
-                        value: expiry.formatted(date: .abbreviated, time: .omitted)
+                        value: appDateString(expiry)
                     )
                 }
             } else {
@@ -221,17 +219,26 @@ struct SettingsTabView: View {
                     value: settingsStore.settings.template.displayName
                 )
             }
-            Toggle(
-                appString(localized: "settings.showTodos", defaultValue: "Show todos"),
-                isOn: binding(\.showTodos)
-            )
+            if settingsStore.settings.template != .ddayMemo {
+                Toggle(
+                    appString(localized: "settings.showTodos", defaultValue: "Show todos"),
+                    isOn: binding(\.showTodos)
+                )
+                Toggle(
+                    appString(localized: "settings.showCompleted", defaultValue: "Show completed todos"),
+                    isOn: binding(\.showCompletedTodos)
+                )
+            }
             Toggle(
                 appString(localized: "settings.showMemos", defaultValue: "Show memos"),
                 isOn: binding(\.showMemos)
             )
             Toggle(
-                appString(localized: "settings.showCompleted", defaultValue: "Show completed todos"),
-                isOn: binding(\.showCompletedTodos)
+                appString(
+                    localized: "settings.syncCalendarSelection",
+                    defaultValue: "Show the selected Calendar date on the Lock Screen"
+                ),
+                isOn: binding(\.syncCalendarSelectionToLockScreen)
             )
         }
     }
@@ -289,13 +296,10 @@ struct SettingsTabView: View {
             Text(appString(localized: "settings.shortcuts", defaultValue: "Shortcuts"))
         } footer: {
             Text(
-                purchases.isPro
-                    ? appString(localized: "settings.shortcutsUnlimited",
-                        defaultValue: "Pro includes unlimited Shortcut captures."
-                    )
-                    : appString(localized: "settings.shortcutsLimited",
-                        defaultValue: "Free includes 5 Shortcut captures a day. Mixed templates use this setting to decide where text lands."
-                    )
+                appString(
+                    localized: "settings.shortcutTargetDetail",
+                    defaultValue: "Where should content added with Shortcuts be saved? Mixed templates use this choice; single-content templates choose automatically."
+                )
             )
         }
     }
@@ -394,8 +398,14 @@ struct SettingsTabView: View {
                 appString(localized: "settings.terms", defaultValue: "Terms of Use"),
                 destination: LegalLinks.termsOfUse
             )
-            Button(appString(localized: "settings.rate", defaultValue: "Rate LockTodoNote")) {
-                environment.shouldRequestReview = true
+            Button {
+                openReviewPage()
+            } label: {
+                Label(
+                    appString(localized: "settings.rateReview", defaultValue: "Rate & Review"),
+                    systemImage: "star.bubble"
+                )
+                .foregroundStyle(palette.textPrimary)
             }
             LabeledContent(
                 appString(localized: "settings.version", defaultValue: "Version"),
@@ -446,6 +456,19 @@ struct SettingsTabView: View {
             notifications.settings.morningEnabled = enabled
         } else {
             notifications.settings.eveningEnabled = enabled
+        }
+    }
+
+    private func openReviewPage() {
+        openURL(AppInfo.reviewURL) { accepted in
+            if accepted {
+                analytics.reviewStoreLinkOpened()
+            } else {
+                restoreMessage = appString(
+                    localized: "review.storeUnavailable",
+                    defaultValue: "The App Store review page could not be opened."
+                )
+            }
         }
     }
 }
@@ -604,6 +627,10 @@ enum LegalLinks {
 }
 
 enum AppInfo {
+    static let reviewURL = URL(
+        string: "https://apps.apple.com/app/id6783183501?action=write-review"
+    )!
+
     static var versionDisplay: String {
         let info = Bundle.main.infoDictionary
         let version = info?["CFBundleShortVersionString"] as? String ?? "-"

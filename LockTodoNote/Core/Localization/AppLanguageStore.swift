@@ -16,6 +16,23 @@ func appString(localized key: String, defaultValue: String) -> String {
     return bundle.localizedString(forKey: key, value: defaultValue, table: nil)
 }
 
+func appLocale() -> Locale {
+    let defaults = UserDefaults(suiteName: "group.com.namslab.glancecard")
+    return Locale(identifier: AppLanguagePreference.resolvedLocaleIdentifier(from: defaults))
+}
+
+func appDateString(
+    _ date: Date,
+    dateStyle: DateFormatter.Style = .medium,
+    timeStyle: DateFormatter.Style = .none
+) -> String {
+    let formatter = DateFormatter()
+    formatter.locale = appLocale()
+    formatter.dateStyle = dateStyle
+    formatter.timeStyle = timeStyle
+    return formatter.string(from: date)
+}
+
 enum AppLanguage: String, CaseIterable, Identifiable {
     case system
     case english = "en"
@@ -27,6 +44,7 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     case french = "fr"
     case simplifiedChinese = "zh-Hans"
     case traditionalChinese = "zh-Hant"
+    case arabic = "ar"
 
     var id: String { rawValue }
 
@@ -47,6 +65,7 @@ enum AppLanguage: String, CaseIterable, Identifiable {
         case .french: "Français"
         case .simplifiedChinese: "简体中文"
         case .traditionalChinese: "繁體中文"
+        case .arabic: "العربية"
         }
     }
 }

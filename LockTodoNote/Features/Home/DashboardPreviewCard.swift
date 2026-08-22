@@ -135,12 +135,12 @@ private struct PreviewCalendar: View {
 
     private var monthTitle: String {
         guard let date = snapshot.selectedDate else { return snapshot.calendarTitle ?? "" }
-        return date.formatted(.dateTime.month(.wide))
+        return date.formatted(.dateTime.month(.wide).locale(appLocale()))
     }
 
     private var weekdaySymbols: [String] {
         let formatter = DateFormatter()
-        formatter.locale = .current
+        formatter.locale = appLocale()
         let symbols = formatter.veryShortStandaloneWeekdaySymbols ?? []
         guard symbols.count == 7 else { return [] }
         return symbols
@@ -207,12 +207,20 @@ private struct PreviewDate: View {
 
     var body: some View {
         VStack(spacing: 2) {
-            Text(snapshot.selectedDate?.formatted(.dateTime.month(.abbreviated)) ?? "")
+            Text(
+                snapshot.selectedDate?.formatted(
+                    .dateTime.month(.abbreviated).locale(appLocale())
+                ) ?? ""
+            )
                 .font(.caption.bold())
                 .foregroundStyle(.secondary)
             Text(dayText)
                 .font(.system(size: 38, weight: .heavy, design: .rounded))
-            Text(snapshot.selectedDate?.formatted(.dateTime.weekday(.abbreviated)) ?? "")
+            Text(
+                snapshot.selectedDate?.formatted(
+                    .dateTime.weekday(.abbreviated).locale(appLocale())
+                ) ?? ""
+            )
                 .font(.caption.bold())
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

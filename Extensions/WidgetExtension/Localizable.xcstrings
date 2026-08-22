@@ -1,2310 +1,2664 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "intent.emptyText" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Text is empty"
+  "sourceLanguage": "en",
+  "strings": {
+    "widget.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See today's todos and memos on your Lock Screen and Home Screen."
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Text ist leer"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sieh deine heutigen Aufgaben und Notizen auf dem Sperr- und Home-Bildschirm."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El texto está vacío"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consulta las tareas y notas de hoy en la pantalla bloqueada y de inicio."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le texte est vide"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consultez les tâches et notes du jour sur l’écran verrouillé et l’écran d’accueil."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "टेक्स्ट खाली है"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आज के कार्य और नोट लॉक स्क्रीन और होम स्क्रीन पर देखें।"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "テキストが空です"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日のToDoとメモをロック画面とホーム画面で確認できます。"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "텍스트가 비어 있어요"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘의 할 일과 메모를 잠금 화면과 홈 화면에서 확인하세요."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文本为空"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在锁定屏幕和主屏幕上查看今天的待办事项和备忘。"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文字是空的"
-          }
-        }
-      }
-    },
-    "intent.limitReached" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You've used all free Shortcut adds today. Upgrade to Pro for unlimited adds."
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在鎖定畫面和主畫面上查看今天的待辦事項和備忘。"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du hast heute alle kostenlosen Kurzbefehle verbraucht. Mit Pro kannst du unbegrenzt hinzufügen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Has usado todas las adiciones gratuitas de Atajos de hoy. Actualiza a Pro para añadir sin límites."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vous avez utilisé tous les ajouts gratuits par raccourci aujourd’hui. Passez à Pro pour des ajouts illimités."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आज के सभी मुफ़्त शॉर्टकट जोड़ने की सीमा पूरी हो गई है। असीमित जोड़ने के लिए Pro लें।"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "本日の無料ショートカット追加回数を使い切りました。Proなら無制限に追加できます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "오늘의 무료 단축어 추가 횟수를 모두 사용했어요. Pro에서는 무제한으로 추가할 수 있어요."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "今天的免费快捷指令添加次数已用完。升级到 Pro 即可无限添加。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "今天的免費捷徑新增次數已用完。升級至 Pro 即可無限新增。"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعرض مهام اليوم وملاحظاته على شاشة القفل والشاشة الرئيسية."
           }
         }
       }
     },
-    "intent.addedToTodo" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Added to Todo"
+    "intent.emptyText": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text is empty"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zur Aufgabenliste hinzugefügt"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text ist leer"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Añadido a Tareas"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El texto está vacío"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouté aux tâches"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le texte est vide"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कार्य में जोड़ा गया"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "टेक्स्ट खाली है"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ToDoに追加しました"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "テキストが空です"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "할 일에 추가했어요"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "텍스트가 비어 있어요"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已添加到待办"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文本为空"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已新增至待辦"
-          }
-        }
-      }
-    },
-    "intent.addedToMemo" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Added to Memo"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字是空的"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zu Notizen hinzugefügt"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Añadido a Notas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouté aux notes"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "मेमो में जोड़ा गया"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "メモに追加しました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "메모에 추가했어요"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已添加到备忘"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已新增至備忘"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "النص فارغ"
           }
         }
       }
     },
-    "intent.failed" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Could not save that."
+    "intent.limitReached": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You've used all free Shortcut adds today. Upgrade to Pro for unlimited adds."
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Das konnte nicht gespeichert werden."
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du hast heute alle kostenlosen Kurzbefehle verbraucht. Mit Pro kannst du unbegrenzt hinzufügen."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se ha podido guardar."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Has usado todas las adiciones gratuitas de Atajos de hoy. Actualiza a Pro para añadir sin límites."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible d’enregistrer."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous avez utilisé tous les ajouts gratuits par raccourci aujourd’hui. Passez à Pro pour des ajouts illimités."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "इसे सेव नहीं किया जा सका।"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आज के सभी मुफ़्त शॉर्टकट जोड़ने की सीमा पूरी हो गई है। असीमित जोड़ने के लिए Pro लें।"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存できませんでした。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本日の無料ショートカット追加回数を使い切りました。Proなら無制限に追加できます。"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "저장하지 못했어요."
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘의 무료 단축어 추가 횟수를 모두 사용했어요. Pro에서는 무제한으로 추가할 수 있어요."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无法保存。"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天的免费快捷指令添加次数已用完。升级到 Pro 即可无限添加。"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無法儲存。"
-          }
-        }
-      }
-    },
-    "intent.refreshed" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Refreshed the Lock Screen"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天的免費捷徑新增次數已用完。升級至 Pro 即可無限新增。"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sperrbildschirm aktualisiert"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pantalla bloqueada actualizada"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Écran verrouillé actualisé"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "लॉक स्क्रीन रीफ़्रेश हो गई"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ロック画面を更新しました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "잠금화면을 새로고침했어요"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已刷新锁定屏幕"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已重新整理鎖定畫面"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لقد استخدمت جميع إضافات الاختصارات المجانية اليوم. الترقية إلى Pro للحصول على عدد غير محدود من الإضافات."
           }
         }
       }
     },
-    "intent.setupFirst" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Set up the Lock Screen in the app first"
+    "intent.addedToTodo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added to Todo"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Richte zuerst den Sperrbildschirm in der App ein"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zur Aufgabenliste hinzugefügt"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configura primero la pantalla bloqueada en la app"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadido a Tareas"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configurez d’abord l’écran verrouillé dans l’app"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouté aux tâches"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "पहले ऐप में लॉक स्क्रीन सेट करें"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कार्य में जोड़ा गया"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "先にアプリでロック画面を設定してください"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ToDoに追加しました"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "먼저 앱에서 잠금화면을 설정해주세요"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할 일에 추가했어요"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "请先在 App 中设置锁定屏幕"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已添加到待办"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請先在 App 中設定鎖定畫面"
-          }
-        }
-      }
-    },
-    "Add to LockTodoNote" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add to LockTodoNote"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已新增至待辦"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zu LockTodoNote hinzufügen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Añadir a LockTodoNote"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter à LockTodoNote"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LockTodoNote में जोड़ें"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LockTodoNoteに追加"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LockTodoNote에 추가"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "添加到 LockTodoNote"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "新增至 LockTodoNote"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمت الإضافة إلى المهام"
           }
         }
       }
     },
-    "Refresh Lock Screen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Refresh Lock Screen"
+    "intent.addedToMemo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added to Memo"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sperrbildschirm aktualisieren"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zu Notizen hinzugefügt"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actualizar pantalla bloqueada"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadido a Notas"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actualiser l’écran verrouillé"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouté aux notes"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "लॉक स्क्रीन रीफ़्रेश करें"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मेमो में जोड़ा गया"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ロック画面を更新"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メモに追加しました"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "잠금화면 새로고침"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모에 추가했어요"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刷新锁定屏幕"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已添加到备忘"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重新整理鎖定畫面"
-          }
-        }
-      }
-    },
-    "Complete todo" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Complete todo"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已新增至備忘"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aufgabe erledigen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completar tarea"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminer la tâche"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कार्य पूरा करें"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ToDoを完了"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "할 일 완료"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完成待办"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完成待辦"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمت الإضافة إلى المذكرة"
           }
         }
       }
     },
-    "Select date" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Select date"
+    "intent.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not save that."
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Datum auswählen"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das konnte nicht gespeichert werden."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleccionar fecha"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se ha podido guardar."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sélectionner la date"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible d’enregistrer."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "तारीख चुनें"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इसे सेव नहीं किया जा सका।"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日付を選択"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存できませんでした。"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "날짜 선택"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장하지 못했어요."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择日期"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法保存。"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇日期"
-          }
-        }
-      }
-    },
-    "Select content section" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Select content section"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法儲存。"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inhaltsbereich auswählen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleccionar sección de contenido"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sélectionner la section de contenu"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कंटेंट सेक्शन चुनें"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "コンテンツ欄を選択"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "콘텐츠 영역 선택"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择内容区域"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇內容區域"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا يمكن حفظ ذلك."
           }
         }
       }
     },
-    "Add a memo or todo to LockTodoNote." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add a memo or todo to LockTodoNote."
+    "intent.refreshed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refreshed the Lock Screen"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Füge LockTodoNote eine Notiz oder Aufgabe hinzu."
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sperrbildschirm aktualisiert"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Añade una nota o tarea a LockTodoNote."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pantalla bloqueada actualizada"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajoutez une note ou une tâche à LockTodoNote."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Écran verrouillé actualisé"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LockTodoNote में मेमो या कार्य जोड़ें।"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "लॉक स्क्रीन रीफ़्रेश हो गई"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LockTodoNoteにメモまたはToDoを追加します。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ロック画面を更新しました"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LockTodoNote에 메모 또는 할 일을 추가합니다."
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "잠금화면을 새로고침했어요"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "向 LockTodoNote 添加备忘或待办。"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已刷新锁定屏幕"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "向 LockTodoNote 新增備忘或待辦。"
-          }
-        }
-      }
-    },
-    "Restart the LockTodoNote Live Activity." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restart the LockTodoNote Live Activity."
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已重新整理鎖定畫面"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starte die LockTodoNote Live-Aktivität neu."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reinicia la Actividad en directo de LockTodoNote."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Redémarrez l’activité en direct LockTodoNote."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LockTodoNote लाइव एक्टिविटी फिर शुरू करें।"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LockTodoNoteのライブアクティビティを再起動します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LockTodoNote Live Activity를 다시 시작합니다."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重新启动 LockTodoNote 实时活动。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重新啟動 LockTodoNote 即時動態。"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تحديث شاشة القفل"
           }
         }
       }
     },
-    "Text" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Text"
+    "intent.setupFirst": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set up the Lock Screen in the app first"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Text"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Richte zuerst den Sperrbildschirm in der App ein"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Texto"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configura primero la pantalla bloqueada en la app"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Texte"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configurez d’abord l’écran verrouillé dans l’app"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "टेक्स्ट"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पहले ऐप में लॉक स्क्रीन सेट करें"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "テキスト"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "先にアプリでロック画面を設定してください"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "텍스트"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "먼저 앱에서 잠금화면을 설정해주세요"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文本"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请先在 App 中设置锁定屏幕"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文字"
-          }
-        }
-      }
-    },
-    "What do you want to add?" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "What do you want to add?"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請先在 App 中設定鎖定畫面"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Was möchtest du hinzufügen?"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Qué quieres añadir?"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Que voulez-vous ajouter ?"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आप क्या जोड़ना चाहते हैं?"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "何を追加しますか？"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "무엇을 추가할까요?"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你想添加什么？"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你想新增什麼？"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قم بإعداد شاشة القفل في التطبيق أولاً"
           }
         }
       }
     },
-    "Todo ID" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Todo ID"
+    "Add to LockTodoNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to LockTodoNote"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aufgaben-ID"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zu LockTodoNote hinzufügen"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ID de tarea"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir a LockTodoNote"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ID de tâche"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter à LockTodoNote"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कार्य ID"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote में जोड़ें"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ToDo ID"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNoteに追加"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "할 일 ID"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote에 추가"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "待办 ID"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加到 LockTodoNote"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "待辦 ID"
-          }
-        }
-      }
-    },
-    "Completion Source" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completion Source"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新增至 LockTodoNote"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quelle der Erledigung"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Origen de finalización"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Source de validation"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "पूर्ण करने का स्रोत"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完了元"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "완료 경로"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完成来源"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完成來源"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أضف إلى LockTodoNote"
           }
         }
       }
     },
-    "Date" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Date"
+    "Refresh Lock Screen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh Lock Screen"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Datum"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sperrbildschirm aktualisieren"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fecha"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualizar pantalla bloqueada"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Date"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualiser l’écran verrouillé"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "तारीख"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "लॉक स्क्रीन रीफ़्रेश करें"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日付"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ロック画面を更新"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "날짜"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "잠금화면 새로고침"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日期"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刷新锁定屏幕"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日期"
-          }
-        }
-      }
-    },
-    "Section" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Section"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新整理鎖定畫面"
           }
         },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bereich"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sección"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Section"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "सेक्शन"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "セクション"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "영역"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "区域"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "區域"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تحديث شاشة القفل"
           }
         }
       }
     },
-    "%@" : {
-
-    },
-    "addImage" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Bild"
+    "Complete todo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Complete todo"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Image"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aufgabe erledigen"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Imagen"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completar tarea"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Image"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminer la tâche"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ इमेज"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कार्य पूरा करें"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 画像"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ToDoを完了"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 이미지"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할 일 완료"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 图片"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成待办"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 圖片"
-          }
-        }
-      }
-    },
-    "addMemo" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Notiz"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成待辦"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Memo"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Nota"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Note"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ मेमो"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ メモ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 메모"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 备忘"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 備忘"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أكمل ما يجب عمله"
           }
         }
       }
     },
-    "addTodo" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Aufgabe"
+    "Select date": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select date"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Todo"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datum auswählen"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Tarea"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seleccionar fecha"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Tâche"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sélectionner la date"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ कार्य"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "तारीख चुनें"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ ToDo"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日付を選択"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 할 일"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "날짜 선택"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 待办"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择日期"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 待辦"
-          }
-        }
-      }
-    },
-    "allItemsHidden" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anzeige ist deaktiviert"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選擇日期"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lock Screen items are off"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elementos desactivados"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Affichage désactivé"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आइटम दिखाना बंद है"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "表示する項目がオフです"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "표시할 항목이 꺼져 있어요"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示项已关闭"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顯示項已關閉"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اختر التاريخ"
           }
         }
       }
     },
-    "calendar" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kalender"
+    "Select content section": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select content section"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calendar"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inhaltsbereich auswählen"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calendario"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seleccionar sección de contenido"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calendrier"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sélectionner la section de contenu"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कैलेंडर"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कंटेंट सेक्शन चुनें"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カレンダー"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コンテンツ欄を選択"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "캘린더"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "콘텐츠 영역 선택"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日历"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择内容区域"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日曆"
-          }
-        }
-      }
-    },
-    "dday" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "D-Day"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選擇內容區域"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "D-Day"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Día D"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jour J"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "D-Day"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "D-Day"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "디데이"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "D-Day"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "D-Day"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حدد قسم المحتوى"
           }
         }
       }
     },
-    "dDayToday" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "D-Day"
+    "Add a memo or todo to LockTodoNote.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a memo or todo to LockTodoNote."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "D-Day"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Füge LockTodoNote eine Notiz oder Aufgabe hinzu."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Día D"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añade una nota o tarea a LockTodoNote."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jour J"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajoutez une note ou une tâche à LockTodoNote."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "D-Day"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote में मेमो या कार्य जोड़ें।"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "D-Day"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNoteにメモまたはToDoを追加します。"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "D-Day"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote에 메모 또는 할 일을 추가합니다."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "D-Day"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "向 LockTodoNote 添加备忘或待办。"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "D-Day"
-          }
-        }
-      }
-    },
-    "hiddenContent" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verborgen"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "向 LockTodoNote 新增備忘或待辦。"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hidden"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oculto"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Masqué"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "छिपा हुआ"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "非表示"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "가려짐"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已隐藏"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已隱藏"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أضف مذكرة أو مهمة إلى LockTodoNote."
           }
         }
       }
     },
-    "memo" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notiz"
+    "Restart the LockTodoNote Live Activity.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restart the LockTodoNote Live Activity."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memo"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starte die LockTodoNote Live-Aktivität neu."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nota"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reinicia la Actividad en directo de LockTodoNote."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Note"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redémarrez l’activité en direct LockTodoNote."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "मेमो"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote लाइव एक्टिविटी फिर शुरू करें।"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "メモ"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNoteのライブアクティビティを再起動します。"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "메모"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote Live Activity를 다시 시작합니다."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "备忘"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新启动 LockTodoNote 实时活动。"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "備忘"
-          }
-        }
-      }
-    },
-    "noEvents" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine Termine"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新啟動 LockTodoNote 即時動態。"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No events"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin eventos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun événement"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कोई इवेंट नहीं"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "予定なし"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "일정 없음"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暂无日程"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暫無行程"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أعد تشغيل نشاط LockTodoNote Live."
           }
         }
       }
     },
-    "noMemo" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine Notiz"
+    "Text": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No memo"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin notas"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Texto"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune note"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Texte"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कोई मेमो नहीं"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "टेक्स्ट"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "メモなし"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "テキスト"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "메모 없음"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "텍스트"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暂无备忘"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文本"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暫無備忘"
-          }
-        }
-      }
-    },
-    "noTasks" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine Aufgaben"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No tasks"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin tareas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune tâche"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कोई कार्य नहीं"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ToDoなし"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "할 일 없음"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暂无待办"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暫無待辦"
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نص"
           }
         }
       }
     },
-    "openApp" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Öffnen"
+    "What do you want to add?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What do you want to add?"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Was möchtest du hinzufügen?"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Qué quieres añadir?"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrir"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Que voulez-vous ajouter ?"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "खोलें"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आप क्या जोड़ना चाहते हैं?"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開く"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "何を追加しますか？"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "열기"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "무엇을 추가할까요?"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你想添加什么？"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打開"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你想新增什麼？"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ماذا تريد أن تضيف؟"
           }
         }
       }
     },
-    "openAppToRefresh" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App öffnen, um heute zu aktualisieren"
+    "Todo ID": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todo ID"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open the app to refresh today"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aufgaben-ID"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre la app para actualizar hoy"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ID de tarea"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrez l’app pour actualiser"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ID de tâche"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आज अपडेट करने के लिए ऐप खोलें"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कार्य ID"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アプリを開いて今日を更新"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ToDo ID"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "앱을 열어 오늘 목록 갱신"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할 일 ID"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开应用以更新今天"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待办 ID"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打開 App 以更新今天"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待辦 ID"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معرف تودو"
           }
         }
       }
     },
-    "refreshRequired" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App öffnen zum Aktualisieren"
+    "Completion Source": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completion Source"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open app to refresh"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quelle der Erledigung"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre la app para actualizar"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Origen de finalización"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrir l’app pour actualiser"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source de validation"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "रिफ़्रेश के लिए ऐप खोलें"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पूर्ण करने का स्रोत"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アプリを開いて更新"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完了元"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "앱을 열어 새로고침"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "완료 경로"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开应用以更新"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成来源"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打開 App 以更新"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成來源"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مصدر الإكمال"
           }
         }
       }
     },
-    "refreshToday" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Heutige Liste aktualisieren"
+    "Date": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Refresh today's list"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datum"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actualiza la lista de hoy"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fecha"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actualiser la liste du jour"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आज की सूची रिफ़्रेश करें"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "तारीख"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "今日のリストを更新"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日付"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "오늘 목록 갱신 필요"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "날짜"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更新今日清单"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日期"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更新今日清單"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日期"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التاريخ"
           }
         }
       }
     },
-    "today" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Heute"
+    "Section": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Section"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Today"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bereich"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hoy"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sección"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aujourd’hui"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Section"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आज"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सेक्शन"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "今日"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "セクション"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "오늘"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "영역"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "今天"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "区域"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "今天"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "區域"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "القسم"
           }
         }
       }
     },
-    "todo" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aufgabe"
+    "%@": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Todo"
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tarea"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tâche"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कार्य"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ToDo"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "할 일"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "待办"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "待辦"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
           }
         }
       }
     },
-    "whatAreYouWaitingFor" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Worauf wartest du?"
+    "addImage": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Bild"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "What are you waiting for?"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Image"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Qué esperas?"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Imagen"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Qu’attendez-vous ?"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Image"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आप किसका इंतज़ार कर रहे हैं?"
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ इमेज"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "何を待っていますか？"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ 画像"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "무엇을 기다리고 있나요?"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ 이미지"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你在期待什么？"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ 图片"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你在期待什麼？"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ 圖片"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ صورة"
+          }
+        }
+      }
+    },
+    "addMemo": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Notiz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Memo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Nota"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Note"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ मेमो"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ メモ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ 메모"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ 备忘"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ 備忘"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ مذكرة"
+          }
+        }
+      }
+    },
+    "addTodo": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Aufgabe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Todo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Tarea"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ Tâche"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ कार्य"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ ToDo"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ 할 일"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ 待办"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ 待辦"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ ما يجب القيام به"
+          }
+        }
+      }
+    },
+    "allItemsHidden": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anzeige ist deaktiviert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lock Screen items are off"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elementos desactivados"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Affichage désactivé"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आइटम दिखाना बंद है"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "表示する項目がオフです"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "표시할 항목이 꺼져 있어요"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示项已关闭"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "顯示項已關閉"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عناصر شاشة القفل معطلة"
+          }
+        }
+      }
+    },
+    "calendar": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalender"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendar"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendario"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendrier"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कैलेंडर"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カレンダー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "캘린더"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日历"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日曆"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التقويم"
+          }
+        }
+      }
+    },
+    "dday": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D-Day"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D-Day"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Día D"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jour J"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D-Day"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D-Day"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "디데이"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D-Day"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D-Day"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يوم النصر"
+          }
+        }
+      }
+    },
+    "dDayToday": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D-Day"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D-Day"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Día D"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jour J"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D-Day"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D-Day"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D-Day"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D-Day"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D-Day"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يوم النصر"
+          }
+        }
+      }
+    },
+    "hiddenContent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verborgen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hidden"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oculto"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masqué"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "छिपा हुआ"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "非表示"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가려짐"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已隐藏"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已隱藏"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخفي"
+          }
+        }
+      }
+    },
+    "memo": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notiz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nota"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Note"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मेमो"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メモ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "备忘"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "備忘"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مذكرة"
+          }
+        }
+      }
+    },
+    "noEvents": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Termine"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No events"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin eventos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun événement"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोई इवेंट नहीं"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "予定なし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "일정 없음"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂无日程"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暫無行程"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا توجد أحداث"
+          }
+        }
+      }
+    },
+    "noMemo": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Notiz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No memo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin notas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune note"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोई मेमो नहीं"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メモなし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모 없음"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂无备忘"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暫無備忘"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا مذكرة"
+          }
+        }
+      }
+    },
+    "noTasks": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Aufgaben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No tasks"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin tareas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune tâche"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोई कार्य नहीं"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ToDoなし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할 일 없음"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂无待办"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暫無待辦"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا توجد مهام"
+          }
+        }
+      }
+    },
+    "openApp": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "खोलें"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開く"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打開"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مفتوح"
+          }
+        }
+      }
+    },
+    "openAppToRefresh": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App öffnen, um heute zu aktualisieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the app to refresh today"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre la app para actualizar hoy"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrez l’app pour actualiser"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आज अपडेट करने के लिए ऐप खोलें"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アプリを開いて今日を更新"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앱을 열어 오늘 목록 갱신"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开应用以更新今天"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打開 App 以更新今天"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افتح التطبيق للتحديث اليوم"
+          }
+        }
+      }
+    },
+    "refreshRequired": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App öffnen zum Aktualisieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open app to refresh"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre la app para actualizar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir l’app pour actualiser"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "रिफ़्रेश के लिए ऐप खोलें"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アプリを開いて更新"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앱을 열어 새로고침"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开应用以更新"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打開 App 以更新"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افتح التطبيق للتحديث"
+          }
+        }
+      }
+    },
+    "refreshToday": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heutige Liste aktualisieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh today's list"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualiza la lista de hoy"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualiser la liste du jour"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आज की सूची रिफ़्रेश करें"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日のリストを更新"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘 목록 갱신 필요"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新今日清单"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新今日清單"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تحديث قائمة اليوم"
+          }
+        }
+      }
+    },
+    "today": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aujourd’hui"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आज"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اليوم"
+          }
+        }
+      }
+    },
+    "todo": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aufgabe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tarea"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tâche"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कार्य"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ToDo"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할 일"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待办"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待辦"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ما يجب القيام به"
+          }
+        }
+      }
+    },
+    "whatAreYouWaitingFor": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Worauf wartest du?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What are you waiting for?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Qué esperas?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qu’attendez-vous ?"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आप किसका इंतज़ार कर रहे हैं?"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "何を待っていますか？"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "무엇을 기다리고 있나요?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你在期待什么？"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你在期待什麼？"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ماذا تنتظر؟"
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

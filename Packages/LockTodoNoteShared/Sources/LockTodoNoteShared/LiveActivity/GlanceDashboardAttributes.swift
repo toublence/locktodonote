@@ -44,6 +44,7 @@ public struct DashboardActivityState: Codable, Hashable, Sendable {
         public var memoText: String?
         public var memoId: String?
         public var memoItems: [GlanceMemoState]
+        public var memoCount: Int?
         public var todoItems: [GlanceTodoState]
         public var doneCount: Int
         public var totalCount: Int
@@ -79,6 +80,7 @@ public struct DashboardActivityState: Codable, Hashable, Sendable {
             memoText: String? = nil,
             memoId: String? = nil,
             memoItems: [GlanceMemoState] = [],
+            memoCount: Int? = nil,
             todoItems: [GlanceTodoState] = [],
             doneCount: Int = 0,
             totalCount: Int = 0,
@@ -113,6 +115,7 @@ public struct DashboardActivityState: Codable, Hashable, Sendable {
             self.memoText = memoText
             self.memoId = memoId
             self.memoItems = memoItems
+            self.memoCount = memoCount
             self.todoItems = todoItems
             self.doneCount = doneCount
             self.totalCount = totalCount
@@ -226,6 +229,7 @@ extension DashboardActivityState {
             memoItems: snapshot.memoItems.map {
                 GlanceMemoState(id: $0.id, title: $0.title, bodyPreview: $0.bodyPreview)
             },
+            memoCount: snapshot.memoCount,
             todoItems: snapshot.todoItems.map {
                 GlanceTodoState(id: $0.id, text: $0.text, isDone: $0.isDone)
             },

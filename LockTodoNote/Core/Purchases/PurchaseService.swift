@@ -166,6 +166,13 @@ final class PurchaseService: ObservableObject, EntitlementProviding {
                 }
                 await transaction.finish()
                 await refreshEntitlement()
+                // Match the Flutter build: StoreKit's entitlement sequence can
+                // lag just behind a verified purchase update. Keep the verified
+                // transaction as the immediate fallback so a paid customer is
+                // never dismissed back into a locked app.
+                if !entitlement.isPro {
+                    apply(transaction)
+                }
                 return .success
             case .userCancelled:
                 return .cancelled
@@ -179,15 +186,23 @@ final class PurchaseService: ObservableObject, EntitlementProviding {
         }
     }
 
+    enum RestoreOutcome: Equatable {
+        case restored
+        case noPurchases
+        case failed
+    }
+
     /// Restores by syncing with the App Store, then re-reading entitlements.
-    func restore() async -> Bool {
+    /// A sync failure stays distinct from an account with no purchases, as it
+    /// did in the Flutter build.
+    func restore() async -> RestoreOutcome {
         do {
             try await AppStore.sync()
         } catch {
-            // A failed sync still leaves local entitlements worth re-checking.
+            return .failed
         }
         await refreshEntitlement()
-        return entitlement.isPro
+        return entitlement.isPro ? .restored : .noPurchases
     }
 
     // MARK: - Temporary trial

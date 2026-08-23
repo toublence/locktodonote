@@ -39,6 +39,8 @@
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>LockTodoNote needs photo access to show your selected image on the Lock Screen card.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Allow tracking to help us measure advertising performance and improve LockTodoNote.</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

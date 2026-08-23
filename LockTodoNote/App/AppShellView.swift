@@ -57,6 +57,7 @@ struct AppShellView: View {
 
 private struct TopControlLayer: View {
     @Binding var selection: PrimaryDestination
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         Picker(
@@ -71,7 +72,7 @@ private struct TopControlLayer: View {
         }
         .pickerStyle(.segmented)
         .controlSize(.large)
-        .frame(maxWidth: 420)
+        .frame(maxWidth: horizontalSizeClass == .regular ? 420 : 340)
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
         .frame(maxWidth: .infinity)

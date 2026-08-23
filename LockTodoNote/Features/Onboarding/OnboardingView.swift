@@ -11,6 +11,7 @@ struct OnboardingView: View {
     @EnvironmentObject private var analytics: AnalyticsService
     @EnvironmentObject private var liveActivity: LiveActivityService
     @Environment(\.palette) private var palette
+    @Environment(\.openURL) private var openURL
 
     let onFinish: () -> Void
 
@@ -25,12 +26,14 @@ struct OnboardingView: View {
         case intro
         case firstTodo
         case activate
+        case automation
 
         var analyticsName: String {
             switch self {
             case .intro: "intro"
             case .firstTodo: "first_todo"
             case .activate: "activate"
+            case .automation: "automation"
             }
         }
     }
@@ -147,6 +150,25 @@ struct OnboardingView: View {
                 DashboardPreviewCard(snapshot: dashboard.currentSnapshot())
                     .padding(.horizontal, 24)
             }
+
+        case .automation:
+            StepShell(
+                symbol: "clock.arrow.2.circlepath",
+                title: appString(
+                    localized: "onboarding.automation.title",
+                    defaultValue: "Keep it visible all day"
+                ),
+                message: appString(
+                    localized: "onboarding.automation.message",
+                    defaultValue: "iOS can end a Live Activity over time. Three daily automations refresh your Lock Screen card before it disappears."
+                )
+            ) {
+                AutomationGuide {
+                    guard let url = URL(string: "shortcuts://") else { return }
+                    openURL(url)
+                }
+                .padding(.horizontal, 24)
+            }
         }
     }
 
@@ -171,8 +193,7 @@ struct OnboardingView: View {
 
             if step == .activate && !activationSucceeded {
                 Button(appString(localized: "onboarding.later", defaultValue: "Maybe later")) {
-                    analytics.onboardingComplete(skipped: false)
-                    onFinish()
+                    step = .automation
                 }
                 .font(.subheadline)
                 .foregroundStyle(palette.textSecondary)
@@ -188,8 +209,10 @@ struct OnboardingView: View {
         case .firstTodo: appString(localized: "common.next", defaultValue: "Next")
         case .activate:
             activationSucceeded
-                ? appString(localized: "onboarding.finish", defaultValue: "Done")
+                ? appString(localized: "common.next", defaultValue: "Next")
                 : appString(localized: "liveActivity.start", defaultValue: "Show on Lock Screen")
+        case .automation:
+            appString(localized: "onboarding.finish", defaultValue: "Done")
         }
     }
 
@@ -212,11 +235,13 @@ struct OnboardingView: View {
             step = .activate
         case .activate:
             if activationSucceeded {
-                analytics.onboardingComplete(skipped: false)
-                onFinish()
+                step = .automation
             } else {
                 Task { await activate() }
             }
+        case .automation:
+            analytics.onboardingComplete(skipped: false)
+            onFinish()
         }
     }
 
@@ -258,6 +283,91 @@ struct OnboardingView: View {
         } catch {
             startError = error.localizedDescription
         }
+    }
+}
+
+private struct AutomationGuide: View {
+    let openShortcuts: () -> Void
+
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        VStack(spacing: 12) {
+            HStack(spacing: 8) {
+                AutomationTimeCard(number: 1, hour: 0)
+                AutomationTimeCard(number: 2, hour: 8)
+                AutomationTimeCard(number: 3, hour: 16)
+            }
+
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "arrow.triangle.2.circlepath")
+                    .foregroundStyle(palette.accent)
+                Text(
+                    appString(
+                        localized: "onboarding.automation.instruction",
+                        defaultValue: "For each time: Shortcuts → Automation → + → Time of Day. Choose Daily, add “Refresh Lock Screen”, and turn off Ask Before Running."
+                    )
+                )
+                .font(.footnote)
+                .foregroundStyle(palette.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(palette.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(palette.border, lineWidth: 1)
+            )
+
+            Button(action: openShortcuts) {
+                Label(
+                    appString(
+                        localized: "onboarding.automation.openShortcuts",
+                        defaultValue: "Open Shortcuts"
+                    ),
+                    systemImage: "arrow.up.forward.app"
+                )
+                .font(.subheadline.weight(.semibold))
+                .frame(maxWidth: .infinity, minHeight: 44)
+            }
+            .buttonStyle(.bordered)
+            .tint(palette.accent)
+        }
+    }
+}
+
+private struct AutomationTimeCard: View {
+    let number: Int
+    let hour: Int
+
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        VStack(spacing: 7) {
+            Text("\(number)")
+                .font(.caption2.bold())
+                .foregroundStyle(palette.onPrimary)
+                .frame(width: 22, height: 22)
+                .background(palette.accent, in: Circle())
+            Image(systemName: "clock.fill")
+                .foregroundStyle(palette.accent)
+            Text(timeText)
+                .font(.caption.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .foregroundStyle(palette.textPrimary)
+        }
+        .frame(maxWidth: .infinity, minHeight: 92)
+        .background(palette.accentSoft, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    private var timeText: String {
+        var components = DateComponents()
+        components.hour = hour
+        components.minute = 0
+        let date = Calendar.current.date(from: components) ?? Date()
+        return date.formatted(.dateTime.hour().minute().locale(appLocale()))
     }
 }
 

@@ -18,6 +18,7 @@ struct LockScreenTabView: View {
     @State private var editingCard: Card?
     @State private var isEditingDday = false
     @State private var photoItem: PhotosPickerItem?
+    @State private var photoSelectionTemplate: LockScreenTemplate?
     @State private var errorMessage: String?
     @State private var captureMode: QuickAddMode = .todo
     @State private var captureText = ""
@@ -154,42 +155,49 @@ struct LockScreenTabView: View {
         .accessibilityIdentifier("home.templatePicker")
     }
 
+    @ViewBuilder
     private func compactTemplateButton(_ option: LockScreenTemplate) -> some View {
         let isSelected = template.matchesUserFacingTemplate(option)
         let isLocked = isTemplateLocked(option)
 
-        return Button {
-            selectTemplate(option)
-        } label: {
-            VStack(spacing: 5) {
-                Image(systemName: isLocked ? "lock.fill" : option.symbolName)
-                    .font(.system(size: 15, weight: .semibold))
-                Text(option.compactDisplayName)
-                    .font(.caption2.weight(.semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.55)
+        if option == .imageTodo, !isLocked {
+            PhotosPicker(selection: $photoItem, matching: .images) {
+                CompactTemplateLabel(
+                    option: option,
+                    isSelected: isSelected,
+                    isLocked: false
+                )
             }
-            .foregroundStyle(isSelected ? palette.onPrimary : palette.textPrimary)
-            .frame(maxWidth: .infinity, minHeight: 58)
-            .background(
-                isSelected ? palette.accent : palette.surface,
-                in: RoundedRectangle(cornerRadius: 12, style: .continuous)
+            .buttonStyle(.plain)
+            .simultaneousGesture(TapGesture().onEnded {
+                photoSelectionTemplate = option.resolvedTemplate(
+                    for: settingsStore.settings.selectedContentSection
+                )
+                selectTemplate(option)
+            })
+            .accessibilityLabel(option.displayName)
+            .accessibilityIdentifier("template.\(option.rawValue)")
+            .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
+        } else {
+            Button {
+                selectTemplate(option)
+            } label: {
+                CompactTemplateLabel(
+                    option: option,
+                    isSelected: isSelected,
+                    isLocked: isLocked
+                )
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(option.displayName)
+            .accessibilityHint(
+                isLocked
+                    ? appString(localized: "template.lockedHint", defaultValue: "Requires Pro")
+                    : ""
             )
-            .overlay(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(isSelected ? palette.accent : palette.border, lineWidth: 1)
-            )
-            .contentShape(Rectangle())
+            .accessibilityIdentifier("template.\(option.rawValue)")
+            .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(option.displayName)
-        .accessibilityHint(
-            isLocked
-                ? appString(localized: "template.lockedHint", defaultValue: "Requires Pro")
-                : ""
-        )
-        .accessibilityIdentifier("template.\(option.rawValue)")
-        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
     }
 
     private func isTemplateLocked(_ template: LockScreenTemplate) -> Bool {
@@ -213,6 +221,9 @@ struct LockScreenTabView: View {
         }
         analytics.templateChanged(resolved.rawValue)
         dashboard.publish()
+        if resolved.usesDday {
+            isEditingDday = true
+        }
     }
 
     private var quickCapture: some View {
@@ -229,9 +240,13 @@ struct LockScreenTabView: View {
             .pickerStyle(.segmented)
 
             VStack(alignment: .leading, spacing: 0) {
-                captureItems
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 0) {
+                        captureItems
+                    }
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
+                }
 
                 Spacer(minLength: 20)
 
@@ -275,7 +290,7 @@ struct LockScreenTabView: View {
                 .padding(12)
             }
             .frame(
-                minHeight: horizontalSizeClass == .regular ? 360 : 240,
+                height: horizontalSizeClass == .regular ? 360 : 300,
                 alignment: .topLeading
             )
             .background(palette.surfaceSoft, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
@@ -511,7 +526,11 @@ struct LockScreenTabView: View {
     }
 
     private func loadPhoto(_ item: PhotosPickerItem) async {
-        defer { photoItem = nil }
+        let targetTemplate = photoSelectionTemplate ?? template
+        defer {
+            photoItem = nil
+            photoSelectionTemplate = nil
+        }
         guard let data = try? await item.loadTransferable(type: Data.self) else {
             errorMessage = appString(localized: "image.loadFailed",
                 defaultValue: "That photo could not be loaded."
@@ -524,7 +543,7 @@ struct LockScreenTabView: View {
                 imageData: data,
                 replacing: settingsStore.settings.activeImageFileName
             )
-            switch template {
+            switch targetTemplate {
             case .imageTodo: settingsStore.settings.imageTodoFileName = fileName
             default: settingsStore.settings.imageMemoFileName = fileName
             }
@@ -542,6 +561,36 @@ struct TodoEntry {
 
     /// The id the Lock Screen and its intents use.
     var compositeId: String { "\(card.id):\(item.id)" }
+}
+
+private struct CompactTemplateLabel: View {
+    let option: LockScreenTemplate
+    let isSelected: Bool
+    let isLocked: Bool
+
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        VStack(spacing: 5) {
+            Image(systemName: isLocked ? "lock.fill" : option.symbolName)
+                .font(.system(size: 15, weight: .semibold))
+            Text(option.compactDisplayName)
+                .font(.caption2.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.55)
+        }
+        .foregroundStyle(isSelected ? palette.onPrimary : palette.textPrimary)
+        .frame(maxWidth: .infinity, minHeight: 58)
+        .background(
+            isSelected ? palette.accent : palette.surface,
+            in: RoundedRectangle(cornerRadius: 12, style: .continuous)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(isSelected ? palette.accent : palette.border, lineWidth: 1)
+        )
+        .contentShape(Rectangle())
+    }
 }
 
 // MARK: - Cards

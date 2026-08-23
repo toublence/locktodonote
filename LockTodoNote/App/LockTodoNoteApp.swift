@@ -25,7 +25,6 @@ struct LockTodoNoteApp: App {
                 .environmentObject(environment.links)
                 .environmentObject(languageStore)
                 .environment(\.locale, languageStore.locale)
-                .preferredColorScheme(environment.themeStore.mode.colorScheme)
                 .onOpenURL { environment.handle($0) }
                 .task { await environment.bootstrap() }
                 .onChange(of: scenePhase) { phase in

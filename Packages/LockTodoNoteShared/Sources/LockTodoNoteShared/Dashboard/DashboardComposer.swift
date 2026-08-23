@@ -84,8 +84,33 @@ public struct DashboardComposer: Sendable {
         let todoItems = settings.showTodos ? (selected?.todoItems ?? []) : []
         let memoItems = settings.showMemos ? (selected?.memoItems ?? []) : []
 
-        let visibleTodos = privacyMode == .hidden ? redact(todoItems) : todoItems
-        let visibleMemos = privacyMode == .hidden ? redact(memoItems) : memoItems
+        let visibleTodos: [DashboardTodoItem]
+        let visibleMemos: [DashboardMemoItem]
+        switch privacyMode {
+        case .full:
+            visibleTodos = todoItems
+            visibleMemos = memoItems
+        case .titleOnly:
+            // Checklist row text is content, not a card title. Memo titles may remain.
+            visibleTodos = []
+            visibleMemos = memoItems.map {
+                DashboardMemoItem(id: $0.id, title: $0.title)
+            }
+        case .hidden, .countOnly:
+            // Do not merely hide text in the view: keep private content out of
+            // the ActivityKit and App Group payloads altogether.
+            visibleTodos = []
+            visibleMemos = []
+        }
+
+        let visibleCalendarDays = calendarDays.map { day in
+            var day = day
+            if privacyMode != .full {
+                day.todoItems = []
+                day.memoItems = []
+            }
+            return day
+        }
 
         // Counts describe the selected day's real state, not the filtered view.
         let selectedItems = cards
@@ -106,6 +131,11 @@ public struct DashboardComposer: Sendable {
             settings: settings,
             now: now
         )
+        var visiblePreparedNextDay = preparedNextDay
+        if privacyMode != .full {
+            visiblePreparedNextDay.todoItems = []
+            visiblePreparedNextDay.memoItems = []
+        }
 
         return DashboardSnapshot(
             calendarTitle: shortDateText(now),
@@ -115,16 +145,23 @@ public struct DashboardComposer: Sendable {
             selectedDateText: shortDateText(selectedDay),
             monthText: nil,
             localeCode: localeIdentifier,
-            calendarDays: calendarDays,
-            preparedNextDay: preparedNextDay,
-            memoTitle: settings.showMemos ? shortText(memoCard?.title) : nil,
-            memoText: memoText(memoCard, privacyMode: privacyMode, settings: settings),
-            memoId: settings.showMemos ? memoCard?.id : nil,
+            calendarDays: visibleCalendarDays,
+            preparedNextDay: visiblePreparedNextDay,
+            memoTitle: settings.showMemos && (privacyMode == .full || privacyMode == .titleOnly)
+                ? shortText(memoCard?.title)
+                : nil,
+            memoText: privacyMode == .full
+                ? memoText(memoCard, privacyMode: privacyMode, settings: settings)
+                : nil,
+            memoId: privacyMode == .full && settings.showMemos ? memoCard?.id : nil,
             memoItems: Array(visibleMemos.prefix(5)),
-            todayTitle: shortText(memoCard?.title),
-            todayText: privacyMode == .hidden
-                ? strings.hiddenContent
-                : shortText(memoCard?.displayText(strings: strings.privacyStrings), maxLength: 54),
+            memoCount: memoItems.count,
+            todayTitle: privacyMode == .hidden || privacyMode == .countOnly
+                ? nil
+                : shortText(memoCard?.title),
+            todayText: privacyMode == .full
+                ? shortText(memoCard?.displayText(strings: strings.privacyStrings), maxLength: 54)
+                : nil,
             todoItems: Array(visibleTodos.prefix(5)),
             doneCount: doneCount,
             totalCount: selectedItems.count,
@@ -135,14 +172,20 @@ public struct DashboardComposer: Sendable {
             showCompletedTodosOnLockScreen: settings.showCompletedTodos,
             textFontWeight: settings.textFontWeight,
             textScale: settings.textScale,
-            countdownTitle: shortText(countdownCard?.title),
-            countdownText: countdownText(countdownCard?.targetDateTime, now: now),
-            ddayTitle: shortText(settings.ddayTitle),
+            countdownTitle: privacyMode == .full || privacyMode == .titleOnly
+                ? shortText(countdownCard?.title)
+                : nil,
+            countdownText: privacyMode == .hidden
+                ? nil
+                : countdownText(countdownCard?.targetDateTime, now: now),
+            ddayTitle: privacyMode == .full || privacyMode == .titleOnly
+                ? shortText(settings.ddayTitle)
+                : nil,
             ddayTargetDate: settings.ddayTargetDate,
             ddayText: ddayText(settings.ddayTargetDate, now: now),
-            ddayMemo: privacyMode == .hidden
-                ? strings.hiddenContent
-                : shortText(settings.ddayMemo, maxLength: 54),
+            ddayMemo: privacyMode == .full
+                ? shortText(settings.ddayMemo, maxLength: 54)
+                : nil,
             shortcutInsertPriority: settings.shortcutInsertPriority.rawValue,
             selectedContentSection: settings.selectedContentSection.rawValue,
             privacyMode: privacyMode.rawValue,

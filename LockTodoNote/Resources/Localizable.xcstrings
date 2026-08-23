@@ -7374,6 +7374,62 @@
         }
       }
     },
+    "onboarding.automation.instruction": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Für jede Uhrzeit: Kurzbefehle → Automation → + → Tageszeit. Wähle Täglich, füge „Sperrbildschirm aktualisieren“ hinzu und deaktiviere „Vor Ausführen bestätigen“." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Para cada hora: Atajos → Automatización → + → Momento del día. Elige Diariamente, añade «Actualizar pantalla bloqueada» y desactiva «Preguntar antes de ejecutar»." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Pour chaque heure : Raccourcis → Automatisation → + → Heure de la journée. Choisissez Tous les jours, ajoutez « Actualiser l’écran verrouillé » et désactivez « Demander avant d’exécuter »." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "हर समय के लिए: Shortcuts → Automation → + → Time of Day। Daily चुनें, “लॉक स्क्रीन रीफ़्रेश करें” जोड़ें और “चलाने से पहले पूछें” बंद करें।" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "各時刻で「ショートカット → オートメーション → ＋ → 時刻」の順に進みます。「毎日」を選び、「ロック画面を更新」を追加して「実行の前に尋ねる」をオフにします。" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "각 시간마다 단축어 → 자동화 → + → 특정 시간으로 이동하세요. ‘매일’을 선택하고 ‘잠금화면 새로고침’을 추가한 뒤 ‘실행 전에 묻기’를 꺼주세요." } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "每个时间均依次打开“快捷指令 → 自动化 → + → 特定时间”。选择“每天”，添加“刷新锁定屏幕”，并关闭“运行前询问”。" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "每個時間均依序開啟「捷徑 → 自動化 → + → 特定時間」。選擇「每天」，加入「重新整理鎖定畫面」，並關閉「執行前詢問」。" } },
+        "ar": { "stringUnit": { "state": "translated", "value": "لكل وقت: الاختصارات ← الأتمتة ← + ← وقت من اليوم. اختر يوميًا، وأضف «تحديث شاشة القفل»، ثم أوقف «السؤال قبل التشغيل»." } }
+      }
+    },
+    "onboarding.automation.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "iOS kann eine Live-Aktivität nach einiger Zeit beenden. Drei tägliche Automationen aktualisieren deine Sperrbildschirmkarte, bevor sie verschwindet." } },
+        "es": { "stringUnit": { "state": "translated", "value": "iOS puede finalizar una Actividad en directo con el tiempo. Tres automatizaciones diarias actualizan la tarjeta antes de que desaparezca." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "iOS peut mettre fin à une Activité en direct au fil du temps. Trois automatisations quotidiennes actualisent la carte avant qu’elle ne disparaisse." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "iOS कुछ समय बाद Live Activity को बंद कर सकता है। तीन दैनिक ऑटोमेशन कार्ड के गायब होने से पहले उसे रीफ़्रेश करते हैं।" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "iOSでは時間の経過とともにライブアクティビティが終了することがあります。3つの毎日実行するオートメーションで、消える前にロック画面カードを更新できます。" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "iOS에서는 시간이 지나면 Live Activity가 종료될 수 있어요. 매일 실행되는 자동화 3개가 사라지기 전에 잠금화면 카드를 새로고침해요." } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "iOS 可能会在一段时间后结束实时活动。三个每日自动化会在锁屏卡片消失前将其刷新。" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "iOS 可能會在一段時間後結束即時動態。三個每日自動化會在鎖定畫面卡片消失前將其重新整理。" } },
+        "ar": { "stringUnit": { "state": "translated", "value": "قد ينهي iOS النشاط المباشر بمرور الوقت. تعمل ثلاث عمليات أتمتة يومية على تحديث بطاقة شاشة القفل قبل اختفائها." } }
+      }
+    },
+    "onboarding.automation.openShortcuts": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Kurzbefehle öffnen" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Abrir Atajos" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Ouvrir Raccourcis" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "Shortcuts खोलें" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "ショートカットを開く" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "단축어 앱 열기" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "打开快捷指令" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "打開捷徑" } },
+        "ar": { "stringUnit": { "state": "translated", "value": "فتح الاختصارات" } }
+      }
+    },
+    "onboarding.automation.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Den ganzen Tag sichtbar" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Visible durante todo el día" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Visible toute la journée" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "पूरे दिन दिखाई देता रहे" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "一日中表示を保つ" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "하루 종일 잠금화면에 유지" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "全天保持显示" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "全天保持顯示" } },
+        "ar": { "stringUnit": { "state": "translated", "value": "أبقها ظاهرة طوال اليوم" } }
+      }
+    },
     "onboarding.done.message": {
       "extractionState": "manual",
       "localizations": {
@@ -11264,6 +11320,65 @@
           "stringUnit": {
             "state": "translated",
             "value": "لم يتم العثور على عملية شراء سابقة لحساب Apple هذا."
+          }
+        }
+      }
+    },
+    "restore.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Käufe konnten nicht wiederhergestellt werden. Bitte versuche es erneut."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudieron restaurar las compras. Inténtalo de nuevo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de restaurer les achats. Veuillez réessayer."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "खरीदारियां बहाल नहीं की जा सकीं। कृपया फिर से कोशिश करें।"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "購入を復元できませんでした。もう一度お試しください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "구매를 복원하지 못했어요. 다시 시도해 주세요."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法恢复购买，请重试。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法恢復購買，請再試一次。"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعذرت استعادة المشتريات. يرجى المحاولة مرة أخرى."
           }
         }
       }

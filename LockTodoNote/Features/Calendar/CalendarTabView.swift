@@ -21,11 +21,11 @@ struct CalendarTabView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
+            VStack(spacing: 12) {
                 monthGrid
                 selectedDayList
             }
-            .padding(.horizontal, horizontalSizeClass == .regular ? 36 : 20)
+            .padding(.horizontal, horizontalSizeClass == .regular ? 36 : 16)
             .padding(.bottom, horizontalSizeClass == .regular ? 36 : 20)
             .frame(maxWidth: horizontalSizeClass == .regular ? 1040 : 720)
             .frame(maxWidth: .infinity)
@@ -104,13 +104,14 @@ private struct MonthGrid: View {
     @EnvironmentObject private var cardStore: CardStore
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private let calendar = Calendar.current
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 8) {
             header
 
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 6) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 2) {
                 ForEach(weekdaySymbols, id: \.self) { symbol in
                     Text(symbol)
                         .font(.caption2)
@@ -131,12 +132,12 @@ private struct MonthGrid: View {
                             selectedDate = date
                         }
                     } else {
-                        Color.clear.frame(height: 40)
+                        Color.clear.frame(height: horizontalSizeClass == .regular ? 46 : 34)
                     }
                 }
             }
         }
-        .padding(16)
+        .padding(12)
         .background(palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
@@ -263,7 +264,7 @@ private struct DayCell: View {
                 .frame(height: 5)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: horizontalSizeClass == .regular ? 58 : 40)
+            .frame(height: horizontalSizeClass == .regular ? 46 : 34)
             .background(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(isSelected ? palette.accent : .clear)
@@ -311,6 +312,7 @@ private struct SelectedDayList: View {
     let onDelete: (String) -> Void
 
     @Environment(\.palette) private var palette
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -325,43 +327,53 @@ private struct SelectedDayList: View {
                 }
             }
 
-            QuickCaptureView(date: date, source: "calendar")
-
-            if todos.isEmpty && memos.isEmpty {
-                Text(appString(localized: "calendar.emptyDay", defaultValue: "Nothing on this day"))
-                    .font(.subheadline)
-                    .foregroundStyle(palette.textTertiary)
-                    .padding(.vertical, 18)
-            } else {
-                ForEach(todos, id: \.compositeId) { entry in
-                    Button {
-                        onToggle(entry, !entry.item.isDone)
-                    } label: {
-                        HStack(spacing: 12) {
-                            Image(systemName: entry.item.isDone ? "checkmark.circle.fill" : "circle")
-                                .foregroundStyle(entry.item.isDone ? palette.success : palette.textTertiary)
-                            Text(entry.item.text)
-                                .foregroundStyle(entry.item.isDone ? palette.textTertiary : palette.textPrimary)
-                                .strikethrough(entry.item.isDone)
-                            Spacer(minLength: 0)
-                        }
-                        .padding(.vertical, 8)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                }
-
-                ForEach(memos) { memo in
-                    HStack(spacing: 12) {
-                        Image(systemName: "note.text")
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    if todos.isEmpty && memos.isEmpty {
+                        Text(appString(localized: "calendar.emptyDay", defaultValue: "Nothing on this day"))
+                            .font(.subheadline)
                             .foregroundStyle(palette.textTertiary)
-                        Text(memo.title)
-                            .foregroundStyle(palette.textPrimary)
-                        Spacer(minLength: 0)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.vertical, 16)
+                    } else {
+                        ForEach(todos, id: \.compositeId) { entry in
+                            Button {
+                                onToggle(entry, !entry.item.isDone)
+                            } label: {
+                                HStack(spacing: 12) {
+                                    Image(systemName: entry.item.isDone ? "checkmark.circle.fill" : "circle")
+                                        .foregroundStyle(
+                                            entry.item.isDone ? palette.success : palette.textTertiary
+                                        )
+                                    Text(entry.item.text)
+                                        .foregroundStyle(
+                                            entry.item.isDone ? palette.textTertiary : palette.textPrimary
+                                        )
+                                        .strikethrough(entry.item.isDone)
+                                    Spacer(minLength: 0)
+                                }
+                                .padding(.vertical, 8)
+                                .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                        }
+
+                        ForEach(memos) { memo in
+                            HStack(spacing: 12) {
+                                Image(systemName: "note.text")
+                                    .foregroundStyle(palette.textTertiary)
+                                Text(memo.title)
+                                    .foregroundStyle(palette.textPrimary)
+                                Spacer(minLength: 0)
+                            }
+                            .padding(.vertical, 8)
+                        }
                     }
-                    .padding(.vertical, 8)
                 }
             }
+            .frame(height: itemListHeight)
+
+            QuickCaptureView(date: date, source: "calendar")
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -385,5 +397,12 @@ private struct SelectedDayList: View {
             todos.count,
             memos.count
         )
+    }
+
+    private var itemListHeight: CGFloat {
+        guard !todos.isEmpty || !memos.isEmpty else { return 52 }
+        let contentHeight = CGFloat(todos.count + memos.count) * 48
+        let maximum = horizontalSizeClass == .regular ? 220.0 : 150.0
+        return min(contentHeight, maximum)
     }
 }

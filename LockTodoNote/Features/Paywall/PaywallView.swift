@@ -312,15 +312,20 @@ struct PaywallView: View {
 
     private func restore() async {
         isRestoring = true
-        let restored = await purchases.restore()
+        let outcome = await purchases.restore()
         isRestoring = false
-        analytics.restoreCompleted(restored: restored)
-        if restored {
+        analytics.restoreCompleted(restored: outcome == .restored)
+        switch outcome {
+        case .restored:
             environment.applyPendingProTemplate()
             dismiss()
-        } else {
+        case .noPurchases:
             message = appString(localized: "restore.empty",
                 defaultValue: "No previous purchase was found for this Apple Account."
+            )
+        case .failed:
+            message = appString(localized: "restore.failed",
+                defaultValue: "Purchases could not be restored. Please try again."
             )
         }
     }

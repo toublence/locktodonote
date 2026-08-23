@@ -101,6 +101,7 @@ final class AppEnvironment: ObservableObject {
         appGroup.defaults?.set(true, forKey: FlutterPreferenceKeys.hasCompletedOnboarding)
         needsOnboarding = false
         dashboard.publish()
+        Task { await ensureLiveActivityStarted() }
     }
 
     private let triggers = MonetizationTriggers()
@@ -112,6 +113,9 @@ final class AppEnvironment: ObservableObject {
         analytics.isPremium = purchases.isPro
         await purchases.loadProducts()
         dashboard.publish()
+        if !needsOnboarding {
+            await ensureLiveActivityStarted()
+        }
         analytics.flushQueuedEvents()
         recordStaleActivityIfNeeded()
         checkLapsedTrialPaywall()
@@ -158,6 +162,35 @@ final class AppEnvironment: ObservableObject {
 
     func requestReviewIfEarned() {
         reviewCoordinator.evaluate(trigger: "live_activity_success")
+    }
+
+    /// Today should already be on the Lock Screen when the user opens the app.
+    /// Failures remain non-blocking; the Today status card still explains how
+    /// to enable Live Activities if iOS has disabled them.
+    func ensureLiveActivityStarted() async {
+        liveActivity.refreshState()
+        guard !liveActivity.state.isRunning else { return }
+        do {
+            try await dashboard.startLiveActivity()
+            let todos = cardStore.todoCards(on: Date()).flatMap(\.checklistItems)
+            analytics.liveActivityStarted(
+                taskCount: todos.count,
+                remainingCount: todos.filter { !$0.isDone }.count,
+                hasMemo: cardStore.pinnedMemo != nil,
+                templateId: settingsStore.settings.template.rawValue,
+                source: "automatic"
+            )
+        } catch let error as LiveActivityService.LiveActivityError {
+            analytics.liveActivityStartFailed(
+                reason: error.analyticsReason,
+                templateId: settingsStore.settings.template.rawValue
+            )
+        } catch {
+            analytics.liveActivityStartFailed(
+                reason: "automatic_start_failed",
+                templateId: settingsStore.settings.template.rawValue
+            )
+        }
     }
 
     /// Installing the widget earns a fresh 24-hour Pro window, and re-arms the
@@ -276,16 +309,32 @@ final class LockScreenSettingsStore: ObservableObject {
     init(store: AppGroupStore = AppGroupStore()) {
         let defaults = store.defaults
         self.defaults = defaults
-        self.settings = defaults.map(LockScreenSettings.load(from:)) ?? LockScreenSettings()
+        self.settings = Self.normalized(
+            defaults.map(LockScreenSettings.load(from:)) ?? LockScreenSettings()
+        )
         self.defaultPrivacyMode = PrivacyMode(
             fromStored: defaults?.string(forKey: FlutterPreferenceKeys.defaultPrivacyMode)
         )
+        if let defaults {
+            self.settings.save(to: defaults)
+        }
     }
 
     func refreshFromSharedDefaults() {
         guard let defaults else { return }
-        let refreshed = LockScreenSettings.load(from: defaults)
+        let refreshed = Self.normalized(LockScreenSettings.load(from: defaults))
         guard refreshed != settings else { return }
         settings = refreshed
+    }
+
+    /// Content and date selection are controlled from Today/Calendar. Keeping
+    /// hidden legacy switches would let old values make the chosen content disappear.
+    private static func normalized(_ stored: LockScreenSettings) -> LockScreenSettings {
+        var settings = stored
+        settings.showTodos = true
+        settings.showMemos = true
+        settings.showCompletedTodos = false
+        settings.syncCalendarSelectionToLockScreen = true
+        return settings
     }
 }

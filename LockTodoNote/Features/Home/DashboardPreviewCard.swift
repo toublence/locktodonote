@@ -51,6 +51,7 @@ struct DashboardPreviewCard: View {
         .frame(maxWidth: .infinity)
         .frame(height: height, alignment: .topLeading)
         .background(Color.black.opacity(0.8), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .stroke(Color.white.opacity(0.12), lineWidth: 1)
@@ -157,7 +158,26 @@ private struct PreviewItems: View {
                 .font(.caption.bold())
                 .foregroundStyle(.secondary)
 
-            if mode == .todo {
+            if snapshot.privacyMode == PrivacyMode.hidden.rawValue {
+                privacySummary(
+                    appString(localized: "privacy.hidden", defaultValue: "Hidden"),
+                    systemImage: "lock.fill"
+                )
+            } else if snapshot.privacyMode == PrivacyMode.countOnly.rawValue {
+                privacySummary(
+                    mode == .todo
+                        ? "\(max(snapshot.totalCount - snapshot.doneCount, 0))"
+                        : "\(snapshot.memoCount)",
+                    systemImage: "number"
+                )
+            } else if snapshot.privacyMode == PrivacyMode.titleOnly.rawValue {
+                privacySummary(
+                    mode == .memo && snapshot.memoTitle?.isEmpty == false
+                        ? snapshot.memoTitle!
+                        : title,
+                    systemImage: mode == .todo ? "checklist" : "note.text"
+                )
+            } else if mode == .todo {
                 if snapshot.todoItems.isEmpty {
                     emptyText(appString(localized: "home.noTodos", defaultValue: "No todos yet"))
                 } else {
@@ -200,6 +220,14 @@ private struct PreviewItems: View {
             .foregroundStyle(.secondary)
             .lineLimit(2)
     }
+
+    private func privacySummary(_ value: String, systemImage: String) -> some View {
+        Label(value, systemImage: systemImage)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.secondary)
+            .lineLimit(2)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+    }
 }
 
 private struct PreviewDate: View {
@@ -238,21 +266,25 @@ private struct PreviewImage: View {
     @EnvironmentObject private var environment: AppEnvironment
 
     var body: some View {
-        Group {
-            if let image = LockScreenImageStore(store: environment.appGroup).image(fileName: fileName) {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            } else {
-                Image(systemName: "photo")
-                    .font(.title2)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.white.opacity(0.1))
+        GeometryReader { proxy in
+            Group {
+                if let image = LockScreenImageStore(store: environment.appGroup).image(fileName: fileName) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: proxy.size.width, height: proxy.size.height)
+                        .clipped()
+                } else {
+                    Image(systemName: "photo")
+                        .font(.title2)
+                        .foregroundStyle(.secondary)
+                        .frame(width: proxy.size.width, height: proxy.size.height)
+                        .background(Color.white.opacity(0.1))
+                }
             }
+            .frame(width: proxy.size.width, height: proxy.size.height)
+            .clipped()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .clipped()
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }

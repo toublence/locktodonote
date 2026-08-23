@@ -12,12 +12,15 @@ func localized(_ key: String) -> String {
 
 func localized(_ key: String, defaultValue: String) -> String {
     let defaults = UserDefaults(suiteName: "group.com.namslab.glancecard")
+    let resolved: String
     if let language = defaults?.string(forKey: "app.languageOverride"),
        let resourcePath = Bundle.main.path(forResource: language, ofType: "lproj"),
        let languageBundle = Bundle(path: resourcePath) {
-        return languageBundle.localizedString(forKey: key, value: defaultValue, table: nil)
+        resolved = languageBundle.localizedString(forKey: key, value: defaultValue, table: nil)
+    } else {
+        resolved = Bundle.main.localizedString(forKey: key, value: defaultValue, table: nil)
     }
-    return Bundle.main.localizedString(forKey: key, value: defaultValue, table: nil)
+    return resolved.isEmpty || resolved == key ? defaultValue : resolved
 }
 
 func widgetLocale() -> Locale {

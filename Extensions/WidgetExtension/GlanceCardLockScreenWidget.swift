@@ -18,6 +18,7 @@ struct SharedDashboardSnapshot {
   let calendarTitle: String
   let calendarText: String
   let memoTitle: String
+  let memoCount: Int
   let todoItems: [GlanceTodoState]
   let doneCount: Int
   let totalCount: Int
@@ -32,6 +33,7 @@ struct SharedDashboardSnapshot {
     calendarTitle: localized("today"),
     calendarText: localized("noEvents"),
     memoTitle: localized("noMemo"),
+    memoCount: 0,
     todoItems: [],
     doneCount: 0,
     totalCount: 0,
@@ -117,6 +119,9 @@ struct GlanceCardTimelineProvider: TimelineProvider {
               ?? payload["todayTitle"] as? String
               ?? localized("noMemo"))
           : firstMemoTitle ?? localized("noMemo"),
+        memoCount: day == nil
+          ? (payload["memoCount"] as? Int ?? 0)
+          : dayMemos.count,
         todoItems: needsRefresh
           ? []
           : day == nil ? todoItems(from: payload["todoItems"]) : dayTodos,
@@ -143,6 +148,7 @@ struct GlanceCardTimelineProvider: TimelineProvider {
       calendarTitle: localized("today"),
       calendarText: localized("noEvents"),
       memoTitle: title,
+      memoCount: 0,
       todoItems: [],
       doneCount: 0,
       totalCount: 0,
@@ -238,8 +244,14 @@ struct GlanceCardWidgetView: View {
     if dashboard.needsRefresh {
       return localized("refreshToday")
     }
-    if dashboard.privacyMode == "hidden", !dashboard.todoItems.isEmpty {
+    if dashboard.privacyMode == "hidden" {
       return "○ \(localized("hiddenContent"))"
+    }
+    if dashboard.privacyMode == "countOnly" {
+      return "# \(max(dashboard.totalCount - dashboard.doneCount, 0))"
+    }
+    if dashboard.privacyMode == "titleOnly" {
+      return localized("todo")
     }
     if let first = dashboard.todoItems.first {
       return "\(first.isDone ? "●" : "○") \(first.text)"
@@ -251,8 +263,11 @@ struct GlanceCardWidgetView: View {
     if dashboard.needsRefresh {
       return localized("openApp")
     }
-    if dashboard.privacyMode == "hidden", dashboard.memoTitle != localized("noMemo") {
+    if dashboard.privacyMode == "hidden" {
       return localized("hiddenContent")
+    }
+    if dashboard.privacyMode == "countOnly" {
+      return "# \(dashboard.memoCount)"
     }
     return dashboard.memoTitle
   }
@@ -308,7 +323,17 @@ private struct MediumDashboardWidget: View {
           .accessibilityLabel(localized("addTodo"))
         }
 
-        if dashboard.todoItems.filter({ !$0.isDone }).isEmpty {
+        if dashboard.privacyMode == "hidden" {
+          Label(localized("hiddenContent"), systemImage: "lock.fill")
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+        } else if dashboard.privacyMode == "countOnly" {
+          Label("\(max(dashboard.totalCount - dashboard.doneCount, 0))", systemImage: "number")
+            .font(.title3.bold())
+        } else if dashboard.privacyMode == "titleOnly" {
+          Label(localized("todo"), systemImage: "checklist")
+            .font(.subheadline.bold())
+        } else if dashboard.todoItems.filter({ !$0.isDone }).isEmpty {
           Text(dashboard.needsRefresh ? localized("openAppToRefresh") : localized("noTasks"))
             .font(.subheadline)
             .foregroundStyle(.secondary)
@@ -319,7 +344,7 @@ private struct MediumDashboardWidget: View {
           }
         }
 
-        if dashboard.hasMemo {
+        if dashboard.hasMemo, dashboard.privacyMode == "full" {
           Spacer(minLength: 0)
           Label(dashboard.memoTitle, systemImage: "note.text")
             .font(.caption)

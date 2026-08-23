@@ -1,3 +1,4 @@
+import AppTrackingTransparency
 import StoreKit
 import SwiftUI
 import UIKit
@@ -13,11 +14,15 @@ struct RootView: View {
     @State private var selectedDestination: PrimaryDestination = .today
     @State private var hasLeftForeground = false
     @State private var leftForegroundAt: Date?
+    @State private var isRequestingTrackingAuthorization = false
 
     var body: some View {
         let palette = themeStore.palette(for: colorScheme)
 
         content(palette: palette)
+            // RootView observes ThemeStore directly, so changing the picker
+            // updates the whole app immediately instead of only after relaunch.
+            .preferredColorScheme(themeStore.mode.colorScheme)
             .tint(palette.accent)
             .environment(\.palette, palette)
             .background(palette.background)
@@ -44,6 +49,7 @@ struct RootView: View {
                     leftForegroundAt = Date()
                     return
                 }
+                Task { await requestTrackingAuthorizationIfNeeded() }
                 guard hasLeftForeground else { return }
                 guard let leftForegroundAt,
                       Date().timeIntervalSince(leftForegroundAt) >= 5
@@ -64,8 +70,14 @@ struct RootView: View {
                 }
             }
             .fullScreenCover(isPresented: $environment.needsOnboarding) {
-                OnboardingView { environment.completeOnboarding() }
+                OnboardingView {
+                    Task { await finishOnboardingAfterTrackingAuthorization() }
+                }
                     .environment(\.palette, palette)
+            }
+            .task {
+                guard !environment.needsOnboarding else { return }
+                await requestTrackingAuthorizationIfNeeded()
             }
     }
 
@@ -87,6 +99,29 @@ struct RootView: View {
             // Opening a specific card lands on the day it belongs to.
             selectedDestination = .calendar
         }
+    }
+
+    @MainActor
+    private func finishOnboardingAfterTrackingAuthorization() async {
+        guard await requestTrackingAuthorizationIfNeeded() else { return }
+        environment.completeOnboarding()
+    }
+
+    @MainActor
+    @discardableResult
+    private func requestTrackingAuthorizationIfNeeded() async -> Bool {
+        guard scenePhase == .active,
+              !isRequestingTrackingAuthorization
+        else { return false }
+
+        let currentStatus = ATTrackingManager.trackingAuthorizationStatus
+        guard currentStatus == .notDetermined else { return true }
+
+        isRequestingTrackingAuthorization = true
+        defer { isRequestingTrackingAuthorization = false }
+
+        _ = await ATTrackingManager.requestTrackingAuthorization()
+        return true
     }
 }
 

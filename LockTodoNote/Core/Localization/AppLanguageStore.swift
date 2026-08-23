@@ -6,14 +6,23 @@ import SwiftUI
 /// of Foundation's process-wide language, which is fixed at launch.
 func appString(localized key: String, defaultValue: String) -> String {
     let defaults = UserDefaults(suiteName: "group.com.namslab.glancecard")
-    guard
+    let localizationBundle: Bundle
+    if
         let language = defaults?.string(forKey: AppLanguagePreference.selectionKey),
         let path = Bundle.main.path(forResource: language, ofType: "lproj"),
-        let bundle = Bundle(path: path)
-    else {
-        return Bundle.main.localizedString(forKey: key, value: defaultValue, table: nil)
+        let selectedBundle = Bundle(path: path)
+    {
+        localizationBundle = selectedBundle
+    } else {
+        localizationBundle = .main
     }
-    return bundle.localizedString(forKey: key, value: defaultValue, table: nil)
+
+    let resolved = localizationBundle.localizedString(forKey: key, value: defaultValue, table: nil)
+    // The catalog uses developer keys as its English source strings. Xcode can
+    // therefore return the key as a successful lookup instead of using `value`.
+    // Never expose that internal key; English and any missing translation use
+    // the readable fallback declared at the call site.
+    return resolved.isEmpty || resolved == key ? defaultValue : resolved
 }
 
 func appLocale() -> Locale {

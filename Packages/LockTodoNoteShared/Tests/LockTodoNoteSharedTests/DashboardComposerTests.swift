@@ -148,9 +148,10 @@ struct DashboardComposerTests {
             privacyMode: .hidden,
             now: day("2026-08-21")
         )
-        #expect(snapshot.todoItems.allSatisfy { $0.text == "Hidden" })
-        #expect(snapshot.memoItems.allSatisfy { $0.title == "Hidden" })
-        #expect(snapshot.todoItems.count == 1, "redaction hides content, not the fact that items exist")
+        #expect(snapshot.todoItems.isEmpty)
+        #expect(snapshot.memoItems.isEmpty)
+        #expect(snapshot.totalCount == 1, "counts remain available without sending private text")
+        #expect(snapshot.memoCount == 1)
     }
 
     // MARK: - D-Day

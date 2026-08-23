@@ -220,7 +220,23 @@ private struct MemoTodoSectionView: View {
     VStack(alignment: .leading, spacing: 5) {
       sectionHeader
 
-      if !state.showTodosOnLockScreen && !state.showMemosOnLockScreen {
+      if state.privacyMode == "hidden" {
+        PrivacySummaryView(systemImage: "lock.fill", text: localized("hiddenContent"))
+      } else if state.privacyMode == "countOnly" {
+        PrivacySummaryView(
+          systemImage: "number",
+          text: selectedSection == "memo"
+            ? "\(state.memoCount ?? state.memoItems.count)"
+            : "\(max(state.totalCount - state.doneCount, 0))"
+        )
+      } else if state.privacyMode == "titleOnly" {
+        PrivacySummaryView(
+          systemImage: selectedSection == "memo" ? "note.text" : "checklist",
+          text: selectedSection == "memo"
+            ? (state.memoTitle?.isEmpty == false ? state.memoTitle! : localized("memo"))
+            : localized("todo")
+        )
+      } else if !state.showTodosOnLockScreen && !state.showMemosOnLockScreen {
         Text(localized("allItemsHidden"))
           .font(.caption.bold())
           .lineLimit(2)
@@ -281,6 +297,21 @@ private struct MemoTodoSectionView: View {
         url: "glancecard://quick-todo?source=live_activity"
       )
     }
+  }
+}
+
+@available(iOSApplicationExtension 16.1, *)
+private struct PrivacySummaryView: View {
+  let systemImage: String
+  let text: String
+
+  var body: some View {
+    Label(text, systemImage: systemImage)
+      .font(.system(size: 16, weight: .semibold))
+      .foregroundStyle(.secondary)
+      .lineLimit(2)
+      .minimumScaleFactor(0.75)
+      .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
   }
 }
 
@@ -1194,6 +1225,19 @@ private func activitySizedImage(_ image: UIImage) -> UIImage {
 }
 
 private func compactText(for state: GlanceDashboardAttributes.ContentState) -> String {
+  if state.privacyMode == "hidden" {
+    return localized("hiddenContent")
+  }
+  if state.privacyMode == "countOnly" {
+    return selectedContentSection(for: state) == "memo"
+      ? "\(state.memoCount ?? state.memoItems.count)"
+      : "\(max(state.totalCount - state.doneCount, 0))"
+  }
+  if state.privacyMode == "titleOnly" {
+    return selectedContentSection(for: state) == "memo"
+      ? (state.memoTitle?.isEmpty == false ? state.memoTitle! : localized("memo"))
+      : localized("todo")
+  }
   if isDdayLayout(state), let text = state.ddayText, !text.isEmpty {
     return text
   }
@@ -1242,12 +1286,20 @@ private func minimalText(for state: GlanceDashboardAttributes.ContentState) -> S
 }
 
 private func dynamicIslandSymbol(for state: GlanceDashboardAttributes.ContentState) -> String {
+  if state.privacyMode == "hidden" { return "lock.fill" }
   if isDdayLayout(state) { return "calendar.badge.clock" }
   if state.showTodosOnLockScreen { return "checkmark.circle" }
   return "note.text"
 }
 
 private func dynamicIslandCountText(for state: GlanceDashboardAttributes.ContentState) -> String {
+  if state.privacyMode == "hidden" { return "–" }
+  if state.privacyMode == "countOnly" {
+    return selectedContentSection(for: state) == "memo"
+      ? "\(state.memoCount ?? 0)"
+      : "\(max(state.totalCount - state.doneCount, 0))"
+  }
+  if state.privacyMode == "titleOnly" { return "•" }
   if isDdayLayout(state), let text = state.ddayText, !text.isEmpty { return text }
   let remaining = state.todoItems.filter { !$0.isDone }.count
   if state.showTodosOnLockScreen, remaining > 0 { return "\(remaining)" }
@@ -1256,6 +1308,13 @@ private func dynamicIslandCountText(for state: GlanceDashboardAttributes.Content
 }
 
 private func dynamicIslandMinimalText(for state: GlanceDashboardAttributes.ContentState) -> String {
+  if state.privacyMode == "hidden" { return "–" }
+  if state.privacyMode == "countOnly" {
+    return selectedContentSection(for: state) == "memo"
+      ? "\(state.memoCount ?? 0)"
+      : "\(max(state.totalCount - state.doneCount, 0))"
+  }
+  if state.privacyMode == "titleOnly" { return "•" }
   if isDdayLayout(state), let text = state.ddayText, !text.isEmpty { return text }
   let remaining = state.todoItems.filter { !$0.isDone }.count
   if state.showTodosOnLockScreen { return "\(remaining)" }
@@ -1263,6 +1322,15 @@ private func dynamicIslandMinimalText(for state: GlanceDashboardAttributes.Conte
 }
 
 private func todoSummary(for state: GlanceDashboardAttributes.ContentState) -> String {
+  if state.privacyMode == "hidden" {
+    return localized("hiddenContent")
+  }
+  if state.privacyMode == "countOnly" {
+    return "\(max(state.totalCount - state.doneCount, 0))"
+  }
+  if state.privacyMode == "titleOnly" {
+    return localized("todo")
+  }
   if isDdayLayout(state), let text = state.ddayText, !text.isEmpty {
     let title = state.ddayTitle?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
     return title.isEmpty ? text : "\(text) · \(title)"

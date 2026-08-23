@@ -25,7 +25,9 @@ struct SettingsTabView: View {
                 aboutSection
                 migrationSection
             }
-            .navigationTitle(appString(localized: "tab.settings", defaultValue: "Settings"))
+            .environment(\.defaultMinListRowHeight, 40)
+            .modifier(CompactSettingsFormModifier())
+            .toolbar(.hidden, for: .navigationBar)
             .task { await notifications.refreshAuthorizationStatus() }
             .alert(
                 restoreMessage ?? "",
@@ -51,7 +53,6 @@ struct SettingsTabView: View {
                         .background(palette.background)
 
                     Form {
-                        lockScreenSection
                         textStyleSection
                         privacySection
                         appearanceSection
@@ -59,11 +60,11 @@ struct SettingsTabView: View {
                 }
                 .background(palette.background)
                 .navigationTitle(
-                    appString(localized: "settings.templateAppearance", defaultValue: "Templates & Appearance")
+                    appString(localized: "settings.appearance", defaultValue: "Appearance")
                 )
             } label: {
                 Label(
-                    appString(localized: "settings.templateAppearance", defaultValue: "Templates & Appearance"),
+                    appString(localized: "settings.appearance", defaultValue: "Appearance"),
                     systemImage: "rectangle.on.rectangle.angled"
                 )
             }
@@ -188,13 +189,22 @@ struct SettingsTabView: View {
 
             Button(appString(localized: "paywall.restore", defaultValue: "Restore purchases")) {
                 Task {
-                    let restored = await purchases.restore()
-                    analytics.restoreCompleted(restored: restored)
-                    restoreMessage = restored
-                        ? appString(localized: "restore.success", defaultValue: "Your purchase was restored.")
-                        : appString(localized: "restore.empty",
+                    let outcome = await purchases.restore()
+                    analytics.restoreCompleted(restored: outcome == .restored)
+                    switch outcome {
+                    case .restored:
+                        restoreMessage = appString(localized: "restore.success",
+                            defaultValue: "Your purchase was restored."
+                        )
+                    case .noPurchases:
+                        restoreMessage = appString(localized: "restore.empty",
                             defaultValue: "No previous purchase was found for this Apple Account."
                         )
+                    case .failed:
+                        restoreMessage = appString(localized: "restore.failed",
+                            defaultValue: "Purchases could not be restored. Please try again."
+                        )
+                    }
                 }
             }
         }
@@ -206,40 +216,6 @@ struct SettingsTabView: View {
         case .yearly: appString(localized: "product.yearly", defaultValue: "Yearly")
         case .lifetime: appString(localized: "product.lifetime", defaultValue: "Lifetime")
         case nil: ""
-        }
-    }
-
-    private var lockScreenSection: some View {
-        Section(appString(localized: "settings.lockScreen", defaultValue: "Lock Screen")) {
-            NavigationLink {
-                TemplatePickerView()
-            } label: {
-                LabeledContent(
-                    appString(localized: "template.title", defaultValue: "Template"),
-                    value: settingsStore.settings.template.displayName
-                )
-            }
-            if settingsStore.settings.template != .ddayMemo {
-                Toggle(
-                    appString(localized: "settings.showTodos", defaultValue: "Show todos"),
-                    isOn: binding(\.showTodos)
-                )
-                Toggle(
-                    appString(localized: "settings.showCompleted", defaultValue: "Show completed todos"),
-                    isOn: binding(\.showCompletedTodos)
-                )
-            }
-            Toggle(
-                appString(localized: "settings.showMemos", defaultValue: "Show memos"),
-                isOn: binding(\.showMemos)
-            )
-            Toggle(
-                appString(
-                    localized: "settings.syncCalendarSelection",
-                    defaultValue: "Show the selected Calendar date on the Lock Screen"
-                ),
-                isOn: binding(\.syncCalendarSelectionToLockScreen)
-            )
         }
     }
 
@@ -359,7 +335,7 @@ struct SettingsTabView: View {
     }
 
     private var appearanceSection: some View {
-        Section(appString(localized: "settings.appearance", defaultValue: "Appearance")) {
+        Section {
             Picker(
                 appString(localized: "settings.theme", defaultValue: "Theme"),
                 selection: $themeStore.mode
@@ -469,6 +445,19 @@ struct SettingsTabView: View {
                     defaultValue: "The App Store review page could not be opened."
                 )
             }
+        }
+    }
+}
+
+private struct CompactSettingsFormModifier: ViewModifier {
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 17.0, *) {
+            content
+                .contentMargins(.top, 0, for: .scrollContent)
+                .listSectionSpacing(.compact)
+        } else {
+            content
         }
     }
 }

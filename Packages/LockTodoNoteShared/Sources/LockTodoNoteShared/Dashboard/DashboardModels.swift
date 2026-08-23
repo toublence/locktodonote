@@ -132,6 +132,7 @@ public struct DashboardSnapshot: Hashable, Sendable {
     public var memoText: String?
     public var memoId: String?
     public var memoItems: [DashboardMemoItem]
+    public var memoCount: Int
     public var todayTitle: String?
     public var todayText: String?
     public var todoItems: [DashboardTodoItem]
@@ -169,6 +170,7 @@ public struct DashboardSnapshot: Hashable, Sendable {
         memoText: String? = nil,
         memoId: String? = nil,
         memoItems: [DashboardMemoItem] = [],
+        memoCount: Int = 0,
         todayTitle: String? = nil,
         todayText: String? = nil,
         todoItems: [DashboardTodoItem] = [],
@@ -205,6 +207,7 @@ public struct DashboardSnapshot: Hashable, Sendable {
         self.memoText = memoText
         self.memoId = memoId
         self.memoItems = memoItems
+        self.memoCount = memoCount
         self.todayTitle = todayTitle
         self.todayText = todayText
         self.todoItems = todoItems
@@ -240,6 +243,7 @@ public struct DashboardSnapshot: Hashable, Sendable {
             "isPro": isPro,
             "calendarDays": calendarDays.map(\.dictionary),
             "memoItems": memoItems.map(\.dictionary),
+            "memoCount": memoCount,
             "todoItems": todoItems.map(\.dictionary),
             "doneCount": doneCount,
             "totalCount": totalCount,
@@ -301,6 +305,7 @@ public struct DashboardSnapshot: Hashable, Sendable {
         memoId = dictionary["memoId"] as? String
         memoItems = (dictionary["memoItems"] as? [[String: Any]] ?? [])
             .compactMap(DashboardMemoItem.init(dictionary:))
+        memoCount = (dictionary["memoCount"] as? NSNumber)?.intValue ?? memoItems.count
         todayTitle = dictionary["todayTitle"] as? String
         todayText = dictionary["todayText"] as? String
         todoItems = (dictionary["todoItems"] as? [[String: Any]] ?? [])

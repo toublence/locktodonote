@@ -39,6 +39,7 @@ public enum AppGroupKeys {
     /// only counter; see `ShortcutUsageLimiter`.
     public static let shortcutUsageDate = "locktodonote_shortcut_usage_date_v1"
     public static let shortcutUsageCount = "locktodonote_shortcut_usage_count_v1"
+    public static let shortcutLimitReached = "locktodonote_shortcut_limit_reached_v1"
     public static let freeShortcutDailyLimit = 5
 
     // MARK: Images
@@ -125,6 +126,14 @@ public enum FlutterPreferenceKeys {
     // Analytics anchors and one-shot flags
     public static let installDate = "locktodonote.analytics.install_date.v1"
     public static let nextDayOpenLogged = "locktodonote.analytics.next_day_open_logged.v1"
+    public static let lastForegroundAt = "locktodonote.analytics.last_foreground_at.v2"
+    public static let lastReturnedDay = "locktodonote.analytics.last_returned_day.v2"
+    public static let firstMemoCreated = "locktodonote.activation.first_memo_created.v2"
+    public static let firstContentCreatedAt = "locktodonote.activation.first_content_created_at.v2"
+    public static let activationContentType = "locktodonote.activation.content_type.v2"
+    public static let explicitlyStoppedLiveActivity = "locktodonote.live_activity.explicitly_stopped.v2"
+    public static let followToday = "locktodonote.dashboard.follow_today.v2"
+    public static let reminderSuggestionShown = "locktodonote.reminder.suggestion_shown.v2"
     public static let sessionCount = "locktodonote.app_session_count.v1"
     public static let trackingAuthorizationRequested = "locktodonote.tracking_authorization_requested.v1"
     public static let notificationPrimerShown = "locktodonote.notification_primer_shown.v1"

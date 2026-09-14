@@ -1,12 +1,14 @@
+import Foundation
 import SwiftUI
+import UIKit
 import LockTodoNoteShared
 
-/// App-side rendering of the same snapshot sent to ActivityKit. It never uses
-/// sample content: empty states remain empty and every visible item comes from
-/// the user's current dashboard payload.
+/// App-side rendering of the same snapshot sent to ActivityKit. Callers may
+/// inject clearly marked preview-only content without writing it to storage.
 struct DashboardPreviewCard: View {
     let snapshot: DashboardSnapshot
     var height: CGFloat = 152
+    var previewImageData: Data? = nil
 
     @EnvironmentObject private var environment: AppEnvironment
 
@@ -33,7 +35,7 @@ struct DashboardPreviewCard: View {
                 }
             case .imageMemo, .imageTodo:
                 split(leadingRatio: 0.36) {
-                    PreviewImage(fileName: snapshot.imageFileName)
+                    PreviewImage(fileName: snapshot.imageFileName, previewImageData: previewImageData)
                 } trailing: {
                     PreviewItems(snapshot: snapshot, mode: selectedMode)
                 }
@@ -262,13 +264,15 @@ private struct PreviewDate: View {
 
 private struct PreviewImage: View {
     let fileName: String?
+    let previewImageData: Data?
 
     @EnvironmentObject private var environment: AppEnvironment
 
     var body: some View {
         GeometryReader { proxy in
             Group {
-                if let image = LockScreenImageStore(store: environment.appGroup).image(fileName: fileName) {
+                if let image = previewImageData.flatMap(UIImage.init(data:))
+                    ?? LockScreenImageStore(store: environment.appGroup).image(fileName: fileName) {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()

@@ -18,6 +18,8 @@ struct QuickCaptureView: View {
     @State private var mode: QuickAddMode = .todo
     @State private var text = ""
     @State private var confirmation: String?
+    @State private var recurrence: TodoRecurrence = .none
+    @State private var saveError: String?
     @FocusState private var isFocused: Bool
 
     var body: some View {
@@ -33,6 +35,21 @@ struct QuickCaptureView: View {
                         .tag(QuickAddMode.memo)
                 }
                 .pickerStyle(.segmented)
+            }
+
+            if mode == .todo {
+                HStack {
+                    Text(appString(localized: "quickAdd.repeat", defaultValue: "Show this todo"))
+                        .foregroundStyle(palette.textSecondary)
+                    Spacer(minLength: 0)
+                    Picker("", selection: $recurrence) {
+                        ForEach(TodoRecurrence.allCases, id: \.self) { option in
+                            Text(option.displayName).tag(option)
+                        }
+                    }
+                    .labelsHidden()
+                    .pickerStyle(.menu)
+                }
             }
 
             HStack(alignment: .bottom, spacing: 10) {
@@ -78,6 +95,8 @@ struct QuickCaptureView: View {
         )
         .onAppear {
             if !allowedModes.contains(mode) { mode = allowedModes.first ?? .memo }
+            settingsStore.settings.selectedContentSection = mode == .todo ? .todo : .memo
+            dashboard.publish()
         }
         .onChange(of: mode) { newMode in
             settingsStore.settings.selectedContentSection = newMode == .todo ? .todo : .memo
@@ -95,6 +114,15 @@ struct QuickCaptureView: View {
                 }
             }
         }
+        .alert(
+            saveError ?? "",
+            isPresented: Binding(
+                get: { saveError != nil },
+                set: { if !$0 { saveError = nil } }
+            )
+        ) {
+            Button(appString(localized: "common.ok", defaultValue: "OK")) { saveError = nil }
+        }
     }
 
     private var trimmedText: String {
@@ -111,7 +139,10 @@ struct QuickCaptureView: View {
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
                 .filter { !$0.isEmpty }
             guard !lines.isEmpty else { return }
-            cardStore.addTodos(texts: lines, to: date)
+            guard cardStore.addTodos(texts: lines, to: date, recurrence: recurrence) else {
+                recordSaveFailure(operation: "create_todo")
+                return
+            }
             let todos = cardStore.todoCards(on: date).flatMap(\.checklistItems)
             analytics.todoCreated(
                 taskCount: todos.count,
@@ -129,13 +160,24 @@ struct QuickCaptureView: View {
             onSaved?(.todo, lines.count)
 
         case .memo:
-            cardStore.addMemo(text: trimmedText, to: date)
-            analytics.memoCreated(source: source)
+            guard cardStore.addMemo(text: trimmedText, to: date) else {
+                recordSaveFailure(operation: "create_memo")
+                return
+            }
+            analytics.memoCreated(source: source, templateId: settingsStore.settings.template.rawValue)
             confirmation = appString(localized: "capture.memoAdded", defaultValue: "Memo added")
             onSaved?(.memo, 1)
         }
 
         text = ""
         dashboard.publish()
+    }
+
+    private func recordSaveFailure(operation: String) {
+        analytics.cardSaveFailed(operation: operation, source: source)
+        saveError = appString(
+            localized: "storage.writeFailed",
+            defaultValue: "That change could not be saved. Your text is still here; please try again."
+        )
     }
 }

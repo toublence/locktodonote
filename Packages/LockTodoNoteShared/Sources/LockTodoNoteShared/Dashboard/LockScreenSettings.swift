@@ -70,13 +70,13 @@ public struct LockScreenSettings: Hashable, Sendable {
 
     /// Where a Shortcuts capture lands.
     ///
-    /// Memo-only and todo-only templates decide for themselves; only the mixed
-    /// layouts consult the user's stated preference.
+    /// Memo-only and todo-only templates decide for themselves. Mixed layouts
+    /// follow the Todo/Memo input tab the user most recently selected.
     public func resolveShortcutTarget() -> ShortcutInsertPriority {
         switch template {
         case .dateMemo, .imageMemo, .ddayMemo: .memo
         case .dateTodo, .imageTodo: .todo
-        case .calendarItems, .memoTodo: shortcutInsertPriority
+        case .calendarItems, .memoTodo: selectedContentSection
         }
     }
 

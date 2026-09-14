@@ -16,6 +16,7 @@ struct QuickAddSheet: View {
 
     @State private var text: String = ""
     @State private var recurrence: TodoRecurrence = .none
+    @State private var saveError: String?
     @FocusState private var isFocused: Bool
 
     var body: some View {
@@ -58,6 +59,15 @@ struct QuickAddSheet: View {
         }
         .presentationDetents([.medium, .large])
         .onAppear { isFocused = true }
+        .alert(
+            saveError ?? "",
+            isPresented: Binding(
+                get: { saveError != nil },
+                set: { if !$0 { saveError = nil } }
+            )
+        ) {
+            Button(appString(localized: "common.ok", defaultValue: "OK")) { saveError = nil }
+        }
     }
 
     private var title: String {
@@ -79,7 +89,10 @@ struct QuickAddSheet: View {
                 .components(separatedBy: .newlines)
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
                 .filter { !$0.isEmpty }
-            cardStore.addTodos(texts: lines, to: date, recurrence: recurrence)
+            guard cardStore.addTodos(texts: lines, to: date, recurrence: recurrence) else {
+                failSave(operation: "create_todo")
+                return
+            }
             let todos = cardStore.todoCards(on: date).flatMap(\.checklistItems)
             analytics.todoCreated(
                 taskCount: todos.count,
@@ -91,10 +104,21 @@ struct QuickAddSheet: View {
             )
             if lines.count > 1 { analytics.multilineTodoImported(count: lines.count, source: source) }
         case .memo:
-            cardStore.addMemo(text: trimmed, to: date)
-            analytics.memoCreated(source: source)
+            guard cardStore.addMemo(text: trimmed, to: date) else {
+                failSave(operation: "create_memo")
+                return
+            }
+            analytics.memoCreated(source: source, templateId: settingsStore.settings.template.rawValue)
         }
         dismiss()
+    }
+
+    private func failSave(operation: String) {
+        analytics.cardSaveFailed(operation: operation, source: source)
+        saveError = appString(
+            localized: "storage.writeFailed",
+            defaultValue: "That change could not be saved. Your text is still here; please try again."
+        )
     }
 }
 
@@ -103,10 +127,12 @@ struct MemoEditorSheet: View {
     let card: Card
 
     @EnvironmentObject private var cardStore: CardStore
+    @EnvironmentObject private var analytics: AnalyticsService
     @Environment(\.dismiss) private var dismiss
 
     @State private var text: String = ""
     @State private var showOnLockScreen: Bool = false
+    @State private var saveError: String?
 
     var body: some View {
         NavigationStack {
@@ -143,13 +169,21 @@ struct MemoEditorSheet: View {
             text = card.body.isEmpty ? card.title : card.body
             showOnLockScreen = card.isPinned
         }
+        .alert(
+            saveError ?? "",
+            isPresented: Binding(
+                get: { saveError != nil },
+                set: { if !$0 { saveError = nil } }
+            )
+        ) {
+            Button(appString(localized: "common.ok", defaultValue: "OK")) { saveError = nil }
+        }
     }
 
     private func save() {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
-            cardStore.delete(id: card.id)
-            dismiss()
+            if cardStore.delete(id: card.id) { dismiss() } else { failSave() }
             return
         }
         var updated = card
@@ -158,18 +192,98 @@ struct MemoEditorSheet: View {
         updated.isPinned = showOnLockScreen
         updated.showOnLockScreen = showOnLockScreen
         updated.updatedAt = Date()
-        cardStore.upsert(updated)
-        dismiss()
+        if cardStore.upsert(updated) { dismiss() } else { failSave() }
+    }
+
+    private func failSave() {
+        analytics.cardSaveFailed(operation: "update_memo", source: "memo_editor")
+        saveError = appString(
+            localized: "storage.writeFailed",
+            defaultValue: "That change could not be saved. Your text is still here; please try again."
+        )
     }
 }
 
 extension TodoRecurrence {
     var displayName: String {
         switch self {
-        case .none: appString(localized: "repeat.none", defaultValue: "Never")
+        case .none: appString(localized: "repeat.none", defaultValue: "Today only")
         case .daily: appString(localized: "repeat.daily", defaultValue: "Every day")
-        case .weekdays: appString(localized: "repeat.weekdays", defaultValue: "Weekdays")
+        case .weekdays: appString(localized: "repeat.weekdays", defaultValue: "Monday to Friday")
         case .weekly: appString(localized: "repeat.weekly", defaultValue: "Every week")
         }
+    }
+}
+
+struct TodoEditorSheet: View {
+    let entry: TodoEntry
+
+    @EnvironmentObject private var cardStore: CardStore
+    @EnvironmentObject private var analytics: AnalyticsService
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var text = ""
+    @State private var recurrence: TodoRecurrence = .none
+    @State private var saveError: String?
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                TextField(appString(localized: "home.todos", defaultValue: "Todo"), text: $text)
+                Picker(
+                    appString(localized: "quickAdd.repeat", defaultValue: "Repeat"),
+                    selection: $recurrence
+                ) {
+                    ForEach(TodoRecurrence.allCases, id: \.self) { option in
+                        Text(option.displayName).tag(option)
+                    }
+                }
+            }
+            .navigationTitle(appString(localized: "common.edit", defaultValue: "Edit"))
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(appString(localized: "common.cancel", defaultValue: "Cancel")) { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(appString(localized: "common.save", defaultValue: "Save")) { save() }
+                        .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+        }
+        .onAppear {
+            text = entry.item.text
+            recurrence = entry.item.recurrence
+        }
+        .alert(
+            saveError ?? "",
+            isPresented: Binding(
+                get: { saveError != nil },
+                set: { if !$0 { saveError = nil } }
+            )
+        ) {
+            Button(appString(localized: "common.ok", defaultValue: "OK")) { saveError = nil }
+        }
+    }
+
+    private func save() {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let itemIndex = entry.card.checklistItems.firstIndex(where: { $0.id == entry.item.id }) else {
+            dismiss()
+            return
+        }
+        var card = entry.card
+        card.checklistItems[itemIndex].text = trimmed
+        card.checklistItems[itemIndex].recurrence = recurrence
+        if itemIndex == 0 { card.title = trimmed }
+        card.updatedAt = Date()
+        guard cardStore.upsert(card) else {
+            analytics.cardSaveFailed(operation: "update_todo", source: "todo_editor")
+            saveError = appString(
+                localized: "storage.writeFailed",
+                defaultValue: "That change could not be saved. Please try again."
+            )
+            return
+        }
+        dismiss()
     }
 }

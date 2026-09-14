@@ -324,7 +324,7 @@ struct ShortcutTargetTests {
     ) -> LockScreenSettings {
         var settings = LockScreenSettings()
         settings.template = template
-        settings.shortcutInsertPriority = priority
+        settings.selectedContentSection = priority
         return settings
     }
 
@@ -341,7 +341,7 @@ struct ShortcutTargetTests {
     }
 
     @Test(arguments: [LockScreenTemplate.calendarItems, .memoTodo])
-    func mixedTemplatesFollowThePreference(_ template: LockScreenTemplate) {
+    func mixedTemplatesFollowTheSelectedInputTab(_ template: LockScreenTemplate) {
         #expect(settings(template: template, priority: .memo).resolveShortcutTarget() == .memo)
         #expect(settings(template: template, priority: .todo).resolveShortcutTarget() == .todo)
     }

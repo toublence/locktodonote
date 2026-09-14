@@ -6,7 +6,7 @@ import LockTodoNoteShared
 ///
 /// Local only — the app has no push entitlement and never had one.
 @MainActor
-final class NotificationService: ObservableObject {
+final class NotificationService: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
     @Published private(set) var authorizationStatus: UNAuthorizationStatus = .notDetermined
     @Published var settings: ReminderSettings {
         didSet {
@@ -17,6 +17,7 @@ final class NotificationService: ObservableObject {
 
     private let center: UNUserNotificationCenter
     private let defaults: UserDefaults?
+    private weak var analytics: AnalyticsService?
 
     private enum Identifier {
         static let morning = "locktodonote.reminder.morning"
@@ -27,6 +28,12 @@ final class NotificationService: ObservableObject {
         self.center = center
         self.defaults = store.defaults
         self.settings = ReminderSettings.load(from: store.defaults)
+        super.init()
+        center.delegate = self
+    }
+
+    func attachAnalytics(_ analytics: AnalyticsService) {
+        self.analytics = analytics
     }
 
     func refreshAuthorizationStatus() async {
@@ -55,6 +62,7 @@ final class NotificationService: ObservableObject {
                 identifier: Identifier.morning,
                 hour: settings.morningHour,
                 minute: settings.morningMinute,
+                kind: "morning",
                 title: appString(localized: "reminder.morningTitle", defaultValue: "Plan your day"),
                 body: appString(localized: "reminder.morningBody",
                     defaultValue: "Set today's card so it's waiting on your Lock Screen."
@@ -66,6 +74,7 @@ final class NotificationService: ObservableObject {
                 identifier: Identifier.evening,
                 hour: settings.eveningHour,
                 minute: settings.eveningMinute,
+                kind: "evening",
                 title: appString(localized: "reminder.eveningTitle", defaultValue: "Wrap up today"),
                 body: appString(localized: "reminder.eveningBody",
                     defaultValue: "Check off what you finished and set up tomorrow."
@@ -78,6 +87,7 @@ final class NotificationService: ObservableObject {
         identifier: String,
         hour: Int,
         minute: Int,
+        kind: String,
         title: String,
         body: String
     ) async {
@@ -85,6 +95,7 @@ final class NotificationService: ObservableObject {
         content.title = title
         content.body = body
         content.sound = .default
+        content.userInfo = ["reminder_kind": kind]
 
         var components = DateComponents()
         components.hour = hour
@@ -98,6 +109,18 @@ final class NotificationService: ObservableObject {
             trigger: UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
         )
         try? await center.add(request)
+    }
+
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        let kind = response.notification.request.content.userInfo["reminder_kind"] as? String ?? "unknown"
+        completionHandler()
+        Task { @MainActor [weak self] in
+            self?.analytics?.reminderAction("opened", kind: kind, source: "notification")
+        }
     }
 }
 

@@ -1,11 +1,7 @@
 import Foundation
 import LockTodoNoteShared
 
-/// One-shot paywall moments.
-///
-/// The Flutter build defined all three of these and never called two of them,
-/// so the app effectively asked for money only from Settings and a day-two
-/// snackbar. Each `claim` returns true at most once per install.
+/// One-shot paywall and reward moments. Each `claim` returns true at most once per install.
 struct MonetizationTriggers {
     private let defaults: UserDefaults?
 
@@ -17,27 +13,6 @@ struct MonetizationTriggers {
     /// the app has actually demonstrated what it does.
     func claimFirstLockScreenSuccess() -> Bool {
         claimOnce(FlutterPreferenceKeys.paywallFirstLockScreenSuccess)
-    }
-
-    /// Second calendar day after install, once activation is done.
-    func claimDayTwo(now: Date = Date()) -> Bool {
-        guard
-            let defaults,
-            !defaults.bool(forKey: FlutterPreferenceKeys.paywallDayTwoFirstOpen),
-            let stored = defaults.string(forKey: FlutterPreferenceKeys.installDate),
-            let installed = FlutterDate.parse(stored)
-        else { return false }
-
-        let calendar = Calendar.current
-        let days = calendar.dateComponents(
-            [.day],
-            from: calendar.startOfDay(for: installed),
-            to: calendar.startOfDay(for: now)
-        ).day ?? 0
-        guard days >= 1 else { return false }
-
-        defaults.set(true, forKey: FlutterPreferenceKeys.paywallDayTwoFirstOpen)
-        return true
     }
 
     /// The 24-hour preview has lapsed — the user just lost something they used.

@@ -87,21 +87,19 @@ final class LockTodoNoteUITests: XCTestCase {
         let app = launchApp(skipOnboarding: true)
         let today = app.buttons["navigation.today"]
         let calendar = app.buttons["navigation.calendar"]
-        let display = app.buttons["navigation.display"]
         let settings = app.buttons["navigation.settings"]
         XCTAssertTrue(today.waitForExistence(timeout: 15))
         XCTAssertTrue(calendar.exists)
-        XCTAssertTrue(display.exists)
         XCTAssertTrue(settings.exists)
 
         calendar.tap()
         XCTAssertTrue(calendar.isSelected)
-        display.tap()
-        XCTAssertTrue(display.isSelected)
         today.tap()
         XCTAssertTrue(today.isSelected)
         settings.tap()
-        XCTAssertTrue(app.navigationBars.firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(
+            app.descendants(matching: .any)["settings.root"].waitForExistence(timeout: 5)
+        )
     }
 
     func testAddingATodo() {
@@ -121,13 +119,14 @@ final class LockTodoNoteUITests: XCTestCase {
         XCTAssertTrue(app.buttons["navigation.today"].waitForExistence(timeout: 15))
         addTodo("Water the plants", in: app)
 
-        let todo = app.staticTexts["Water the plants"]
+        let todo = app.buttons["Water the plants"]
         XCTAssertTrue(todo.waitForExistence(timeout: 5))
         todo.tap()
 
-        // Completion strikes the row through rather than removing it, so the
-        // user can undo by tapping again.
-        XCTAssertTrue(todo.exists)
+        XCTAssertTrue(
+            todo.waitForNonExistence(timeout: 5),
+            "a completed todo should leave the pending list"
+        )
     }
 
     func testTodoSurvivesRelaunch() {
@@ -156,22 +155,24 @@ final class LockTodoNoteUITests: XCTestCase {
     func testTemplatePickerIsOnHomeWithDefaultSelected() {
         let app = launchApp(skipOnboarding: true)
         XCTAssertTrue(app.buttons["navigation.today"].waitForExistence(timeout: 15))
+        expandTemplateSection(in: app)
 
-        let defaultTemplate = app.buttons["template.calendarItems"]
-        XCTAssertTrue(defaultTemplate.waitForExistence(timeout: 5))
+        let defaultTemplate = app.descendants(matching: .any)["template.calendarItems"]
+        XCTAssertTrue(reveal(defaultTemplate, in: app))
         XCTAssertTrue(defaultTemplate.isSelected, "Calendar + Items is the default")
     }
 
     func testSelectingAFreeTemplateMovesTheSelection() {
         let app = launchApp(skipOnboarding: true)
         XCTAssertTrue(app.buttons["navigation.today"].waitForExistence(timeout: 15))
+        expandTemplateSection(in: app)
 
-        let free = app.buttons["template.dateTodo"]
-        XCTAssertTrue(free.waitForExistence(timeout: 5))
+        let free = app.descendants(matching: .any)["template.dateTodo"]
+        XCTAssertTrue(reveal(free, in: app))
         free.tap()
 
         XCTAssertTrue(free.isSelected, "a free template applies immediately")
-        XCTAssertFalse(app.buttons["template.calendarItems"].isSelected)
+        XCTAssertFalse(app.descendants(matching: .any)["template.calendarItems"].isSelected)
     }
 
     /// A locked template must explain itself before asking for money, so it
@@ -179,19 +180,26 @@ final class LockTodoNoteUITests: XCTestCase {
     func testProTemplateDoesNotApplyForFreeUsers() {
         let app = launchApp(skipOnboarding: true)
         XCTAssertTrue(app.buttons["navigation.today"].waitForExistence(timeout: 15))
+        expandTemplateSection(in: app)
 
-        let pro = app.buttons["template.memoTodo"]
-        XCTAssertTrue(pro.waitForExistence(timeout: 5))
+        let pro = app.descendants(matching: .any)["template.memoTodo"]
+        XCTAssertTrue(reveal(pro, in: app))
         pro.tap()
 
         XCTAssertFalse(pro.isSelected, "a locked template is never applied for free")
         XCTAssertTrue(
-            app.buttons["template.calendarItems"].isSelected,
+            app.descendants(matching: .any)["template.calendarItems"].isSelected,
             "the previous selection stays put"
         )
     }
 
     // MARK: - Helpers
+
+    private func expandTemplateSection(in app: XCUIApplication) {
+        let toggle = app.buttons["home.templateSection.toggle"]
+        XCTAssertTrue(toggle.waitForExistence(timeout: 5))
+        toggle.tap()
+    }
 
     private func addTodo(_ text: String, in app: XCUIApplication) {
         let editor = app.textFields["today.quickCapture"]
@@ -202,5 +210,16 @@ final class LockTodoNoteUITests: XCTestCase {
         let save = app.buttons["today.quickCapture.save"]
         XCTAssertTrue(save.isEnabled, "Save unlocks once there is text")
         save.tap()
+    }
+
+    private func reveal(_ element: XCUIElement, in app: XCUIApplication) -> Bool {
+        let scrollView = app.scrollViews["home.scroll"]
+        for _ in 0..<4 {
+            if element.exists, element.isHittable { return true }
+            let start = scrollView.coordinate(withNormalizedOffset: CGVector(dx: 0.02, dy: 0.85))
+            let end = scrollView.coordinate(withNormalizedOffset: CGVector(dx: 0.02, dy: 0.2))
+            start.press(forDuration: 0.05, thenDragTo: end)
+        }
+        return element.exists && element.isHittable
     }
 }

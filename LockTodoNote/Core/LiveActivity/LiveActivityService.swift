@@ -9,8 +9,8 @@ import LockTodoNoteShared
 /// extension now share one typed model.
 @MainActor
 final class LiveActivityService: ObservableObject {
-    /// Matches the Flutter build, which let an activity go stale after 12 hours.
-    static let activityDuration: TimeInterval = 12 * 60 * 60
+    /// ActivityKit keeps an activity active for at most eight hours.
+    static let activityDuration: TimeInterval = 8 * 60 * 60
 
     @Published private(set) var state: ActivityState = .notStarted
 
@@ -24,14 +24,35 @@ final class LiveActivityService: ObservableObject {
     enum ActivityState: Equatable {
         case notStarted
         case active(startedAt: Date)
-        /// Running but past its stale date — iOS dims it and stops trusting it.
         case possiblyExpired
+        case ended
+        case dismissed
+        case missing
         case unsupported(reason: String)
 
         var isRunning: Bool {
             switch self {
-            case .active, .possiblyExpired: true
-            case .notStarted, .unsupported: false
+            case .active: true
+            case .possiblyExpired, .ended, .dismissed, .missing, .notStarted, .unsupported: false
+            }
+        }
+
+        var recoveryRequired: Bool {
+            switch self {
+            case .possiblyExpired, .ended, .missing: true
+            case .active, .dismissed, .notStarted, .unsupported: false
+            }
+        }
+
+        var analyticsName: String {
+            switch self {
+            case .active: "running"
+            case .possiblyExpired: "stale"
+            case .ended: "ended"
+            case .dismissed: "dismissed"
+            case .missing: "missing"
+            case .notStarted: "not_started"
+            case .unsupported(let reason): "unsupported_\(reason)"
             }
         }
     }
@@ -77,6 +98,7 @@ final class LiveActivityService: ObservableObject {
         }
 
         await endAll()
+        store.defaults?.set(false, forKey: FlutterPreferenceKeys.explicitlyStoppedLiveActivity)
         store.defaults?.removeObject(forKey: AppGroupKeys.liveActivityStartedAt)
         store.saveDashboardState(snapshot.dictionary(isPro: isPro))
 
@@ -121,7 +143,10 @@ final class LiveActivityService: ObservableObject {
         refreshState()
     }
 
-    func end() async {
+    func end(userInitiated: Bool = true) async {
+        if userInitiated {
+            store.defaults?.set(true, forKey: FlutterPreferenceKeys.explicitlyStoppedLiveActivity)
+        }
         await endAll()
         store.defaults?.removeObject(forKey: AppGroupKeys.liveActivityStartedAt)
         refreshState()
@@ -146,15 +171,33 @@ final class LiveActivityService: ObservableObject {
             return
         }
         guard let activity = Activity<GlanceDashboardAttributes>.activities.first else {
-            state = .notStarted
+            if store.defaults?.bool(forKey: FlutterPreferenceKeys.explicitlyStoppedLiveActivity) == true {
+                state = .dismissed
+            } else if store.defaults?.bool(forKey: FlutterPreferenceKeys.liveActivityStarted) == true {
+                state = .missing
+            } else {
+                state = .notStarted
+            }
             return
         }
         let storedStartedAt = store.defaults?.double(forKey: AppGroupKeys.liveActivityStartedAt) ?? 0
         let startedAt = storedStartedAt > 0
             ? Date(timeIntervalSince1970: storedStartedAt)
             : Date(timeIntervalSince1970: activity.content.state.updatedAt)
-        state = Date().timeIntervalSince(startedAt) > Self.activityDuration
-            ? .possiblyExpired
-            : .active(startedAt: startedAt)
+        switch activity.activityState {
+        case .pending:
+            state = .notStarted
+        case .active:
+            state = .active(startedAt: startedAt)
+        case .stale:
+            state = .possiblyExpired
+        case .ended:
+            state = .ended
+        case .dismissed:
+            state = .dismissed
+            store.defaults?.set(true, forKey: FlutterPreferenceKeys.explicitlyStoppedLiveActivity)
+        @unknown default:
+            state = .missing
+        }
     }
 }

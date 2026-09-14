@@ -27,17 +27,20 @@ struct CardRepository {
         var cards = try readFile()
         var didChange = false
 
-        let completions = store.drainPendingCompletedTodos()
+        let quickAdds = store.pendingQuickAdds()
+        let quickAddResult = CardMutations.applyQuickAdds(quickAdds, to: cards, calendar: calendar)
+        cards = quickAddResult.cards
+        didChange = didChange || quickAddResult.didChange
+
+        // A Shortcut item can be added and completed before the app next
+        // opens. Merge additions first so its completion can resolve in the
+        // same durable commit.
+        let completions = store.pendingCompletedTodos()
         let completionResult = CardMutations.applyCompletions(
             completions, to: cards, calendar: calendar, now: now
         )
         cards = completionResult.cards
         didChange = didChange || completionResult.didChange
-
-        let quickAdds = store.drainPendingQuickAdds()
-        let quickAddResult = CardMutations.applyQuickAdds(quickAdds, to: cards, calendar: calendar)
-        cards = quickAddResult.cards
-        didChange = didChange || quickAddResult.didChange
 
         let rollover = CardMutations.rollOverIncompleteTodos(cards, calendar: calendar, now: now)
         cards = rollover.cards
@@ -51,6 +54,9 @@ struct CardRepository {
         if didChange {
             try write(cards)
         }
+        // New items appended while writing remain because acknowledgement is ID based.
+        store.acknowledgePendingCompletedTodos(eventIds: Set(completions.map(\.eventId)))
+        store.acknowledgePendingQuickAdds(ids: Set(quickAdds.map(\.id)))
         return LoadResult(
             cards: cards,
             mergedCompletions: completions,

@@ -30,6 +30,10 @@ func appLocale() -> Locale {
     return Locale(identifier: AppLanguagePreference.resolvedLocaleIdentifier(from: defaults))
 }
 
+func bilingualString(korean: String, english: String) -> String {
+    appLocale().language.languageCode?.identifier == "ko" ? korean : english
+}
+
 func appDateString(
     _ date: Date,
     dateStyle: DateFormatter.Style = .medium,

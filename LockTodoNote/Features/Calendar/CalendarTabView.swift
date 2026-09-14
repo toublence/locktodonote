@@ -16,6 +16,8 @@ struct CalendarTabView: View {
     @State private var selectedDate = Date()
     @State private var visibleMonth = Date()
     @State private var selectionConfirmation: String?
+    @State private var editingTodo: TodoEntry?
+    @State private var editingMemo: Card?
 
     private let calendar = Calendar.current
 
@@ -31,9 +33,11 @@ struct CalendarTabView: View {
             .frame(maxWidth: .infinity)
         }
         .background(palette.background)
+        .sheet(item: $editingTodo) { TodoEditorSheet(entry: $0) }
+        .sheet(item: $editingMemo) { MemoEditorSheet(card: $0) }
         .onChange(of: selectedDate) { date in
             guard settingsStore.settings.syncCalendarSelectionToLockScreen else { return }
-            dashboard.selectedDate = date
+            dashboard.selectExplicitDate(date)
             dashboard.publish()
             selectionConfirmation = String(
                 format: appString(
@@ -70,11 +74,14 @@ struct CalendarTabView: View {
             todos: todoEntries,
             memos: cardStore.memoCards(on: selectedDate),
             onToggle: { entry, isDone in
-                cardStore.setItemDone(
+                guard cardStore.setItemDone(
                     cardId: entry.card.id,
                     itemId: entry.item.id,
                     isDone: isDone
-                )
+                ) else {
+                    analytics.cardSaveFailed(operation: "toggle_todo", source: "calendar")
+                    return
+                }
                 if isDone {
                     let items = cardStore.todoCards(on: selectedDate).flatMap(\.checklistItems)
                     analytics.todoCompleted(
@@ -84,9 +91,9 @@ struct CalendarTabView: View {
                         source: "calendar"
                     )
                 }
-                dashboard.publish()
             },
-            onDelete: { cardStore.delete(id: $0) }
+            onEditTodo: { editingTodo = $0 },
+            onEditMemo: { editingMemo = $0 }
         )
     }
 
@@ -309,7 +316,8 @@ private struct SelectedDayList: View {
     let todos: [TodoEntry]
     let memos: [Card]
     let onToggle: (TodoEntry, Bool) -> Void
-    let onDelete: (String) -> Void
+    let onEditTodo: (TodoEntry) -> Void
+    let onEditMemo: (Card) -> Void
 
     @Environment(\.palette) private var palette
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -337,28 +345,32 @@ private struct SelectedDayList: View {
                             .padding(.vertical, 16)
                     } else {
                         ForEach(todos, id: \.compositeId) { entry in
-                            Button {
-                                onToggle(entry, !entry.item.isDone)
-                            } label: {
-                                HStack(spacing: 12) {
+                            HStack(spacing: 12) {
+                                Button {
+                                    onToggle(entry, !entry.item.isDone)
+                                } label: {
                                     Image(systemName: entry.item.isDone ? "checkmark.circle.fill" : "circle")
                                         .foregroundStyle(
                                             entry.item.isDone ? palette.success : palette.textTertiary
                                         )
+                                }
+                                .buttonStyle(.plain)
                                     Text(entry.item.text)
                                         .foregroundStyle(
                                             entry.item.isDone ? palette.textTertiary : palette.textPrimary
                                         )
                                         .strikethrough(entry.item.isDone)
                                     Spacer(minLength: 0)
+                                Button { onEditTodo(entry) } label: {
+                                    Image(systemName: "pencil")
                                 }
-                                .padding(.vertical, 8)
-                                .contentShape(Rectangle())
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
+                            .padding(.vertical, 8)
                         }
 
                         ForEach(memos) { memo in
+                            Button { onEditMemo(memo) } label: {
                             HStack(spacing: 12) {
                                 Image(systemName: "note.text")
                                     .foregroundStyle(palette.textTertiary)
@@ -367,6 +379,8 @@ private struct SelectedDayList: View {
                                 Spacer(minLength: 0)
                             }
                             .padding(.vertical, 8)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                 }

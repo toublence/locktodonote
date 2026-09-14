@@ -15,9 +15,11 @@ final class PurchaseService: ObservableObject, EntitlementProviding {
     @Published private(set) var isLoadingProducts = false
     @Published private(set) var productLoadFailed = false
     @Published private(set) var isPurchasing = false
+    @Published private(set) var introOfferEligibleProductIds: Set<String> = []
 
     private let defaults: UserDefaults?
     private var updatesTask: Task<Void, Never>?
+    var onEntitlementChanged: ((Entitlement, StoreKit.Transaction?) -> Void)?
 
     var isPro: Bool { entitlement.isPro }
 
@@ -81,6 +83,7 @@ final class PurchaseService: ObservableObject, EntitlementProviding {
         } else {
             defaults?.removeObject(forKey: FlutterPreferenceKeys.purchaseState)
         }
+        onEntitlementChanged?(updated, transaction)
     }
 
     // MARK: - Products
@@ -95,9 +98,17 @@ final class PurchaseService: ObservableObject, EntitlementProviding {
                 let rhs = ProductIdentifiers.all.firstIndex(of: $1.id) ?? .max
                 return lhs < rhs
             }
+            var eligibleIds: Set<String> = []
+            for product in products where freeTrial(for: product) != nil {
+                if await product.subscription?.isEligibleForIntroOffer == true {
+                    eligibleIds.insert(product.id)
+                }
+            }
+            introOfferEligibleProductIds = eligibleIds
             productLoadFailed = products.isEmpty
         } catch {
             products = []
+            introOfferEligibleProductIds = []
             productLoadFailed = true
         }
         isLoadingProducts = false
@@ -137,6 +148,10 @@ final class PurchaseService: ObservableObject, EntitlementProviding {
             offer.paymentMode == .freeTrial
         else { return nil }
         return offer.period
+    }
+
+    func isEligibleForFreeTrial(_ product: Product) -> Bool {
+        introOfferEligibleProductIds.contains(product.id)
     }
 
     // MARK: - Purchase

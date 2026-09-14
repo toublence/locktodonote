@@ -67,14 +67,43 @@ struct AnalyticsServiceTests {
 
         service.purchaseStarted(productId: "p", source: "paywall", price: 4.99, currency: "USD")
         service.purchaseCompleted(productId: "p", source: "paywall", price: 4.99, currency: "USD")
-        service.purchaseCancelled(productId: "p", source: "paywall")
-        service.purchaseFailed(productId: "p", source: "paywall")
-        service.restoreCompleted(restored: true)
+        service.purchaseCancelled(productId: "p", source: "paywall", attemptId: "cancel-attempt")
+        service.purchaseFailed(productId: "p", source: "paywall", attemptId: "fail-attempt")
+        service.restoreCompleted(result: "restored")
 
         #expect(backend.names() == [
             "purchase_started", "purchase_completed", "purchase_cancelled",
             "purchase_failed", "restore_completed",
         ])
+        #expect(backend.parameters(for: "purchase_cancelled")?["result"] as? String == "cancelled")
+        #expect(backend.parameters(for: "purchase_cancelled")?["attempt_id"] as? String == "cancel-attempt")
+        #expect(backend.parameters(for: "purchase_failed")?["result"] as? String == "fail")
+        #expect(backend.parameters(for: "purchase_failed")?["attempt_id"] as? String == "fail-attempt")
+    }
+
+    @Test func conversionEventsCarryNormalizedPlanAndPreviewContext() {
+        let (service, backend, suite) = makeService()
+        defer { cleanUp(suite) }
+
+        service.planSelected(
+            productId: ProductIdentifiers.yearlyLegacy,
+            source: "lock_screen_template",
+            price: 7.7,
+            currency: "USD",
+            isTrial: true,
+            isDefault: true,
+            previewTemplate: "imageTodo"
+        )
+
+        let parameters = backend.parameters(for: "plan_selected")
+        #expect(parameters?["plan"] as? String == "yearly")
+        #expect(parameters?["product_id"] as? String == ProductIdentifiers.yearlyLegacy)
+        #expect(parameters?["price"] as? Double == 7.7)
+        #expect(parameters?["currency"] as? String == "USD")
+        #expect(parameters?["is_trial"] as? Int == 1)
+        #expect(parameters?["is_default"] as? Int == 1)
+        #expect(parameters?["paywall_trigger"] as? String == "lock_screen_template")
+        #expect(parameters?["preview_template"] as? String == "imageTodo")
     }
 
     // MARK: - Parameter shape
@@ -103,6 +132,8 @@ struct AnalyticsServiceTests {
         #expect(parameters?["is_premium"] as? Int == 0)
         #expect(parameters?["device_family"] as? String == "ios")
         #expect(parameters?["language"] != nil)
+        #expect(parameters?["analytics_schema_version"] as? Int == 2)
+        #expect(parameters?["app_build"] != nil)
     }
 
     @Test func premiumFlagFollowsEntitlement() {
@@ -192,5 +223,46 @@ struct AnalyticsServiceTests {
         // And never fires twice.
         service.tryCompleteActivation()
         #expect(backend.names().filter { $0 == "activation_complete" }.count == 1)
+    }
+
+    @Test func memoCanActivateWithoutTodoAfterVerifiedSetup() {
+        let suite = "test.analytics.\(UUID().uuidString)"
+        defer { cleanUp(suite) }
+        let store = AppGroupStore(suiteName: suite)
+        let backend = RecordingAnalyticsBackend()
+        let service = AnalyticsService(store: store, backend: backend)
+        let defaults = UserDefaults(suiteName: suite)!
+
+        service.memoCreated(source: "inline", templateId: "dateMemo")
+        #expect(!backend.names().contains("activation_complete"))
+
+        defaults.set(true, forKey: FlutterPreferenceKeys.activationHasLiveActivity)
+        defaults.set("live_activity_success", forKey: FlutterPreferenceKeys.activationMethod)
+        service.tryCompleteActivation()
+
+        #expect(backend.names().filter { $0 == "activation_complete" }.count == 1)
+        #expect(backend.parameters(for: "activation_complete")?["content_type"] as? String == "memo")
+    }
+
+    @Test func queuedEventKeepsOriginalTimeAndAcknowledgesById() {
+        let suite = "test.analytics.\(UUID().uuidString)"
+        defer { cleanUp(suite) }
+        let store = AppGroupStore(suiteName: suite)
+        let backend = RecordingAnalyticsBackend()
+        let service = AnalyticsService(store: store, backend: backend)
+        let occurredAt = Date(timeIntervalSince1970: 1_700_000_000)
+
+        store.enqueueAnalyticsEvent(
+            name: "todo_completed",
+            parameters: ["source": "live_activity"],
+            eventId: "event-1",
+            createdAt: occurredAt
+        )
+        service.flushQueuedEvents()
+
+        let parameters = backend.parameters(for: "todo_completed")
+        #expect(parameters?["event_id"] as? String == "event-1")
+        #expect(parameters?["occurred_at_ms"] as? Int64 == 1_700_000_000_000)
+        #expect(store.queuedAnalyticsEvents().isEmpty)
     }
 }

@@ -26,14 +26,12 @@ struct OnboardingView: View {
         case intro
         case firstTodo
         case activate
-        case automation
 
         var analyticsName: String {
             switch self {
             case .intro: "intro"
             case .firstTodo: "first_todo"
             case .activate: "activate"
-            case .automation: "automation"
             }
         }
     }
@@ -102,7 +100,7 @@ struct OnboardingView: View {
                     defaultValue: "See today's todos and memos without unlocking, and check them off right there."
                 )
             ) {
-                DashboardPreviewCard(snapshot: dashboard.currentSnapshot())
+                DashboardPreviewCard(snapshot: onboardingExampleSnapshot)
                     .padding(.horizontal, 24)
             }
 
@@ -151,24 +149,6 @@ struct OnboardingView: View {
                     .padding(.horizontal, 24)
             }
 
-        case .automation:
-            StepShell(
-                symbol: "clock.arrow.2.circlepath",
-                title: appString(
-                    localized: "onboarding.automation.title",
-                    defaultValue: "Keep it visible all day"
-                ),
-                message: appString(
-                    localized: "onboarding.automation.message",
-                    defaultValue: "iOS can end a Live Activity over time. Three daily automations refresh your Lock Screen card before it disappears."
-                )
-            ) {
-                AutomationGuide {
-                    guard let url = URL(string: "shortcuts://") else { return }
-                    openURL(url)
-                }
-                .padding(.horizontal, 24)
-            }
         }
     }
 
@@ -193,7 +173,8 @@ struct OnboardingView: View {
 
             if step == .activate && !activationSucceeded {
                 Button(appString(localized: "onboarding.later", defaultValue: "Maybe later")) {
-                    step = .automation
+                    analytics.onboardingComplete(skipped: false)
+                    onFinish()
                 }
                 .font(.subheadline)
                 .foregroundStyle(palette.textSecondary)
@@ -211,8 +192,6 @@ struct OnboardingView: View {
             activationSucceeded
                 ? appString(localized: "common.next", defaultValue: "Next")
                 : appString(localized: "liveActivity.start", defaultValue: "Show on Lock Screen")
-        case .automation:
-            appString(localized: "onboarding.finish", defaultValue: "Done")
         }
     }
 
@@ -231,24 +210,28 @@ struct OnboardingView: View {
         case .intro:
             step = .firstTodo
         case .firstTodo:
-            saveFirstTodo()
-            step = .activate
+            if saveFirstTodo() { step = .activate }
         case .activate:
             if activationSucceeded {
-                step = .automation
+                analytics.onboardingComplete(skipped: false)
+                onFinish()
             } else {
                 Task { await activate() }
             }
-        case .automation:
-            analytics.onboardingComplete(skipped: false)
-            onFinish()
         }
     }
 
-    private func saveFirstTodo() {
+    private func saveFirstTodo() -> Bool {
         let trimmed = todoText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return }
-        cardStore.addTodo(text: trimmed, to: Date())
+        guard !trimmed.isEmpty else { return false }
+        guard cardStore.addTodo(text: trimmed, to: Date()) else {
+            analytics.cardSaveFailed(operation: "create_todo", source: "onboarding")
+            startError = appString(
+                localized: "storage.writeFailed",
+                defaultValue: "That change could not be saved. Your text is still here; please try again."
+            )
+            return false
+        }
         analytics.todoCreated(
             taskCount: 1,
             remainingCount: 1,
@@ -257,11 +240,19 @@ struct OnboardingView: View {
             source: "onboarding"
         )
         analytics.lockscreenPreviewSeen(templateId: LockScreenTemplate.default.rawValue, todoCount: 1)
+        return true
     }
 
     private func activate() async {
         isStarting = true
         defer { isStarting = false }
+        let requestId = UUID().uuidString
+        analytics.liveActivityStartAttempt(
+            requestId: requestId,
+            source: "onboarding",
+            templateId: LockScreenTemplate.default.rawValue,
+            reason: "user_start"
+        )
         do {
             try await dashboard.startLiveActivity()
             let todos = cardStore.todoCards(on: Date()).flatMap(\.checklistItems)
@@ -270,19 +261,49 @@ struct OnboardingView: View {
                 remainingCount: todos.filter { !$0.isDone }.count,
                 hasMemo: cardStore.pinnedMemo != nil,
                 templateId: LockScreenTemplate.default.rawValue,
-                source: "onboarding"
+                source: "onboarding",
+                requestId: requestId
             )
-            analytics.lockscreenSetupConfirmed(visible: true, todoCount: todos.count)
             activationSucceeded = true
         } catch let error as LiveActivityService.LiveActivityError {
             analytics.liveActivityStartFailed(
                 reason: error.analyticsReason,
-                templateId: LockScreenTemplate.default.rawValue
+                templateId: LockScreenTemplate.default.rawValue,
+                source: "onboarding",
+                requestId: requestId
             )
             startError = error.errorDescription
         } catch {
+            analytics.liveActivityStartFailed(
+                reason: "unknown",
+                templateId: LockScreenTemplate.default.rawValue,
+                source: "onboarding",
+                requestId: requestId
+            )
             startError = error.localizedDescription
         }
+    }
+
+    private var onboardingExampleSnapshot: DashboardSnapshot {
+        var snapshot = dashboard.currentSnapshot()
+        if snapshot.todoItems.isEmpty {
+            snapshot.todoItems = [
+                DashboardTodoItem(
+                    id: "onboarding-example",
+                    text: appString(localized: "onboarding.exampleTodo", defaultValue: "Check today's plan"),
+                    isDone: false
+                )
+            ]
+            snapshot.totalCount = 1
+            snapshot.doneCount = 0
+        }
+        if snapshot.memoItems.isEmpty {
+            let example = appString(localized: "onboarding.exampleMemo", defaultValue: "Remember what matters")
+            snapshot.memoItems = [DashboardMemoItem(id: "onboarding-example", title: example, bodyPreview: example)]
+            snapshot.memoTitle = example
+            snapshot.memoText = example
+        }
+        return snapshot
     }
 }
 

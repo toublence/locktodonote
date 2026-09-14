@@ -1,0 +1,121 @@
+{
+  "analysis_date": "2026-09-14",
+  "status": "analysis_only_not_a_forecast",
+  "observed": {
+    "asc_period_days": null,
+    "firebase_event_table_period_days": null,
+    "asc_impressions_rounded": 48800,
+    "asc_product_page_views_rounded": 1040,
+    "asc_first_time_downloads": 194,
+    "asc_redownloads": 14,
+    "asc_reported_conversion_rate_daily_average": 0.006,
+    "asc_updates": 345,
+    "asc_proceeds_usd": 18,
+    "asc_iap_count": 7,
+    "asc_active_paid_plans": 3,
+    "asc_mrr_usd": 1,
+    "asc_download_to_paid_d1": 0.0148,
+    "asc_download_to_paid_d7": 0.0211,
+    "asc_download_to_paid_d35": 0.0153,
+    "firebase_activity_overview": {
+      "one_day_users": 6,
+      "seven_day_users": 30,
+      "thirty_day_users": 88,
+      "seven_day_average_dau": null
+    },
+    "firebase_event_table": {
+      "total_events": 6114,
+      "total_users": 83,
+      "total_revenue_usd": 64.52,
+      "events": {
+        "first_open": {"count": 78, "users": 77},
+        "onboarding_start": {"count": 100, "users": 75},
+        "onboarding_started": {"count": 74, "users": 67},
+        "onboarding_complete": {"count": 72, "users": 68},
+        "todo_created": {"count": 267, "users": 63},
+        "first_todo_created": {"count": 58, "users": 48},
+        "memo_created": {"count": 30, "users": 16},
+        "todo_completed": {"count": 287, "users": 33},
+        "lockscreen_preview_seen": {"count": 457, "users": 78},
+        "live_activity_start_success": {"count": 174, "users": 71},
+        "live_activity_started": {"count": 160, "users": 70},
+        "live_activity_start_failed": {"count": 38, "users": 11},
+        "activation_complete": {"count": 68, "users": 68},
+        "lockscreen_setup_confirm_yes": {"count": 43, "users": 43},
+        "lockscreen_activity_updated": {"count": 347, "users": 6},
+        "widget_timeline_requested": {"count": 321, "users": 13},
+        "widget_open_app": {"count": 23, "users": 7},
+        "lockscreen_open_app": {"count": 7, "users": 5},
+        "widget_installed_confirmed": {"count": 9, "users": 4},
+        "next_day_open": {"count": 4, "users": 4},
+        "pro_template_tapped": {"count": 147, "users": 48},
+        "pro_info_sheet_viewed": {"count": 147, "users": 48},
+        "pro_preview_viewed": {"count": 147, "users": 48},
+        "pro_preview_interacted": {"count": 40, "users": 4},
+        "paywall_seen": {"count": 79, "users": 42},
+        "plan_selected": {"count": 16, "users": 7},
+        "purchase_started": {"count": 13, "users": 10},
+        "purchase_completed": {"count": 5, "users": 5},
+        "purchase_cancelled": {"count": 8, "users": 6},
+        "purchase_value_applied": {"count": 1, "users": 1},
+        "app_store_subscription_renew": {"count": 10, "users": 1, "revenue_usd": 57.52},
+        "purchase": {"count": 1, "users": 1, "revenue_usd": 7.00}
+      }
+    },
+    "weekly_cohort_all_users_rates": [1.0, 0.115, 0.053, 0.05, 0.05, 0.0],
+    "daily_retention": {"d1": null, "d7": null, "d30": null},
+    "daily_new_first_opens": null,
+    "daily_new_installs": null,
+    "install_to_first_open_probability": null
+  },
+  "interpretation_constraints": [
+    "Event table user counts do not establish intersections or event ordering.",
+    "ASC and Firebase dates, populations and aggregation types have not been reconciled.",
+    "ASC reported retention numbers may be chart axis ticks; no daily retention adopted.",
+    "Weekly cohort retention is not daily D7 or D30 retention.",
+    "Current SwiftUI working tree and historical Flutter/multi-version analytics are not release-matched.",
+    "Current activation flags and extension duplicate events may distort observed metrics.",
+    "Observed DAU 6 is a snapshot, not a period average.",
+    "First open includes reinstalls and is not necessarily a new human across devices.",
+    "Scenario retention targets below are assumptions, not observations or benchmarks."
+  ],
+  "scenario": {
+    "goal_proposed": "firebase_dau_seven_day_moving_average_100",
+    "formula": "expected_DAU_t = sum(new_first_open_users_t_minus_k * exact_day_retention_k)",
+    "retention_bins_inclusive": [
+      {"day_from": 0, "day_to": 0, "probability": 1.0},
+      {"day_from": 1, "day_to": 1, "probability": 0.40},
+      {"day_from": 2, "day_to": 6, "probability": 0.28},
+      {"day_from": 7, "day_to": 7, "probability": 0.20},
+      {"day_from": 8, "day_to": 13, "probability": 0.16},
+      {"day_from": 14, "day_to": 14, "probability": 0.12},
+      {"day_from": 15, "day_to": 29, "probability": 0.10},
+      {"day_from": 30, "day_to": 30, "probability": 0.08}
+    ],
+    "expected_active_days_first_31_days": 5.66,
+    "new_first_opens_per_day_assumed": 18,
+    "expected_dau_from_latest_31_cohorts": 101.88,
+    "day_31_plus_retention": null,
+    "older_cohort_contribution_included": false,
+    "install_to_first_open_probability_example_assumed": 0.8,
+    "required_daily_installs_in_example": 22.5,
+    "conditional_current_inflow_example": {
+      "period_days_assumed": 30,
+      "first_open_users": 77,
+      "daily_first_opens": 2.566666666666667,
+      "dau_with_scenario_retention": 14.527333333333335
+    },
+    "comparisons": [
+      {"daily_first_opens": 18, "active_days_assumed": 2.5, "expected_dau": 45.0},
+      {"daily_first_opens": 10, "active_days_assumed": 5.66, "expected_dau": 56.6},
+      {"daily_first_opens": 18, "active_days_assumed": 5.66, "expected_dau": 101.88}
+    ],
+    "sensitivity": {
+      "additional_dau_per_one_daily_first_open_at_scenario_retention": 5.66,
+      "additional_dau_per_one_expected_active_day_at_18_daily_first_opens": 18,
+      "additional_dau_if_only_d7_improves_10_percentage_points": 1.8,
+      "additional_dau_if_each_day_d7_through_d30_improves_10_percentage_points": 43.2
+    },
+    "warning": "This is a conditional arithmetic model, not a promised uplift or a time-to-goal forecast."
+  }
+}

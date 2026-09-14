@@ -9,7 +9,13 @@ import LockTodoNoteShared
 /// build drift out of sync.
 @MainActor
 final class DashboardCoordinator: ObservableObject {
-    @Published var selectedDate: Date = Date()
+    enum DateSelectionMode: Equatable {
+        case followToday
+        case explicitDate
+    }
+
+    @Published private(set) var selectedDate: Date
+    @Published private(set) var dateSelectionMode: DateSelectionMode
     @Published private(set) var snapshot: DashboardSnapshot?
 
     private let cardStore: CardStore
@@ -33,6 +39,15 @@ final class DashboardCoordinator: ObservableObject {
         self.entitlements = entitlements
         self.store = store
         self.calendar = calendar
+        let followsToday = store.defaults?.object(forKey: FlutterPreferenceKeys.followToday) as? Bool ?? true
+        self.dateSelectionMode = followsToday ? .followToday : .explicitDate
+        if !followsToday,
+           let raw = store.defaults?.string(forKey: AppGroupKeys.selectedDate),
+           let storedDate = FlutterDate.parse(raw) {
+            self.selectedDate = storedDate
+        } else {
+            self.selectedDate = Date()
+        }
     }
 
     var composer: DashboardComposer {
@@ -44,13 +59,43 @@ final class DashboardCoordinator: ObservableObject {
     }
 
     func currentSnapshot(now: Date = Date()) -> DashboardSnapshot {
-        composer.compose(
+        let effectiveDate = dateSelectionMode == .followToday ? now : selectedDate
+        return composer.compose(
             cards: cardStore.cards,
-            selectedDate: selectedDate,
+            selectedDate: effectiveDate,
             settings: settingsStore.settings,
             privacyMode: settingsStore.defaultPrivacyMode,
             now: now
         )
+    }
+
+    func followToday(now: Date = Date()) {
+        dateSelectionMode = .followToday
+        selectedDate = now
+        store.defaults?.set(true, forKey: FlutterPreferenceKeys.followToday)
+    }
+
+    func selectExplicitDate(_ date: Date) {
+        dateSelectionMode = .explicitDate
+        selectedDate = date
+        store.defaults?.set(false, forKey: FlutterPreferenceKeys.followToday)
+    }
+
+    func refreshFollowingToday(now: Date = Date()) {
+        guard dateSelectionMode == .followToday else { return }
+        selectedDate = now
+    }
+
+    func refreshSelectionFromSharedDefaults(now: Date = Date()) {
+        let followsToday = store.defaults?.object(forKey: FlutterPreferenceKeys.followToday) as? Bool ?? true
+        if followsToday {
+            dateSelectionMode = .followToday
+            selectedDate = now
+        } else if let raw = store.defaults?.string(forKey: AppGroupKeys.selectedDate),
+                  let date = FlutterDate.parse(raw) {
+            dateSelectionMode = .explicitDate
+            selectedDate = date
+        }
     }
 
     /// Recomposes and republishes. Safe to call on every edit.
@@ -59,6 +104,14 @@ final class DashboardCoordinator: ObservableObject {
         self.snapshot = snapshot
         store.saveDashboardState(snapshot.dictionary(isPro: entitlements.isPro))
         Task { await liveActivity.update(snapshot: snapshot, isPro: entitlements.isPro) }
+    }
+
+    /// Recomposes and waits until the running Lock Screen card receives the update.
+    func updateLiveActivity() async {
+        let snapshot = currentSnapshot()
+        self.snapshot = snapshot
+        store.saveDashboardState(snapshot.dictionary(isPro: entitlements.isPro))
+        await liveActivity.update(snapshot: snapshot, isPro: entitlements.isPro)
     }
 
     /// Starts the Lock Screen card. Throws so the caller can show the real

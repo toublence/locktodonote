@@ -32,6 +32,7 @@ struct AddToLockTodoNoteIntent: AppIntent {
         // reach StoreKit.
         let isPro = store.dashboardState()?["isPro"] as? Bool ?? false
         if !isPro, store.shortcutUsageCount() >= AppGroupKeys.freeShortcutDailyLimit {
+            defaults.set(true, forKey: AppGroupKeys.shortcutLimitReached)
             return Self.reply(.limitReached)
         }
 
@@ -118,7 +119,24 @@ struct RefreshLockScreenIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let store = AppGroupStore()
-        let refreshed = try await ShortcutSupport.restartActivity(store: store)
+        let requestId = UUID().uuidString
+        store.defaults?.set(false, forKey: FlutterPreferenceKeys.explicitlyStoppedLiveActivity)
+        let refreshed: Bool
+        do {
+            refreshed = try await ShortcutSupport.restartActivity(store: store, requestId: requestId)
+        } catch {
+            store.enqueueAnalyticsEvent(
+                name: "live_activity_start_failed",
+                parameters: [
+                    "source": "shortcut", "request_id": requestId,
+                    "reason": "activity_request_failed", "result": "fail",
+                ]
+            )
+            return .result(dialog: IntentDialog(stringLiteral: localized(
+                "intent.refreshFailed",
+                defaultValue: "The Lock Screen could not be refreshed. Open the app and try again."
+            )))
+        }
         if refreshed {
             ReviewEligibilityRecorder(store: store).record(
                 .liveActivitySuccess,
@@ -177,9 +195,16 @@ struct ToggleTodoIntent: LiveActivityIntent {
     func perform() async throws -> some IntentResult {
         let store = AppGroupStore()
         guard var payload = store.dashboardState() else { return .result() }
+        let occurredAt = Date()
+        let eventId = UUID().uuidString
 
         store.appendPendingCompletedTodo(
-            PendingCompletedTodo(id: todoId, completedAt: Date(), source: completionSource)
+            PendingCompletedTodo(
+                id: todoId,
+                completedAt: occurredAt,
+                source: completionSource,
+                eventId: eventId
+            )
         )
         ShortcutSupport.completeTodo(todoId, in: &payload)
         store.saveDashboardState(payload)
@@ -197,19 +222,10 @@ struct ToggleTodoIntent: LiveActivityIntent {
 
         store.enqueueAnalyticsEvent(
             name: "todo_completed",
-            parameters: analyticsParameters
+            parameters: analyticsParameters,
+            eventId: eventId,
+            createdAt: occurredAt
         )
-        if completionSource == "widget" {
-            store.enqueueAnalyticsEvent(
-                name: "widget_todo_completed",
-                parameters: analyticsParameters
-            )
-        } else if completionSource == "dynamic_island" {
-            store.enqueueAnalyticsEvent(
-                name: "dynamic_island_interacted",
-                parameters: analyticsParameters
-            )
-        }
         return .result()
     }
 }
@@ -228,9 +244,14 @@ struct SelectDateIntent: LiveActivityIntent {
         let store = AppGroupStore()
         guard var payload = store.dashboardState() else { return .result() }
         ShortcutSupport.selectDate(dateString, in: &payload)
+        store.defaults?.set(false, forKey: FlutterPreferenceKeys.followToday)
         // No widget reload here: only the activity's selection changed.
         store.saveDashboardState(payload, reloadWidget: false)
         await ShortcutSupport.updateActivities(with: payload)
+        store.enqueueAnalyticsEvent(
+            name: "lockscreen_interacted",
+            parameters: ["source": "live_activity", "surface": "live_activity", "action": "select_date", "result": "success"]
+        )
         return .result()
     }
 }
@@ -257,6 +278,10 @@ struct SelectContentSectionIntent: LiveActivityIntent {
         payload["updatedAt"] = Date().timeIntervalSince1970
         store.saveDashboardState(payload, reloadWidget: false)
         await ShortcutSupport.updateActivities(with: payload)
+        store.enqueueAnalyticsEvent(
+            name: "lockscreen_interacted",
+            parameters: ["source": "live_activity", "surface": "live_activity", "action": "select_content", "result": "success"]
+        )
         return .result()
     }
 }
@@ -417,10 +442,17 @@ enum ShortcutSupport {
 
     /// Ends and restarts the activity, which is the only way to clear a stale
     /// one without opening the app.
-    static func restartActivity(store: AppGroupStore) async throws -> Bool {
-        guard var payload = store.dashboardState(), !payload.isEmpty else { return false }
-        payload["updatedAt"] = Date().timeIntervalSince1970
+    static func restartActivity(store: AppGroupStore, requestId: String) async throws -> Bool {
+        guard let payload = rebuiltDashboardPayload(store: store) else { return false }
         store.saveDashboardState(payload)
+
+        var attemptParameters = analyticsParameters(from: payload, source: "shortcut")
+        attemptParameters["request_id"] = requestId
+        attemptParameters["reason"] = "user_refresh"
+        store.enqueueAnalyticsEvent(
+            name: "live_activity_start_attempt",
+            parameters: attemptParameters
+        )
 
         for activity in Activity<GlanceDashboardAttributes>.activities {
             await activity.end(nil, dismissalPolicy: .immediate)
@@ -440,6 +472,12 @@ enum ShortcutSupport {
             name: "lockscreen_activity_updated",
             parameters: analyticsParameters(from: payload, source: "shortcut")
         )
+        var successParameters = analyticsParameters(from: payload, source: "shortcut")
+        successParameters["request_id"] = requestId
+        store.enqueueAnalyticsEvent(
+            name: "live_activity_start_success",
+            parameters: successParameters
+        )
         var restartedParameters = analyticsParameters(from: payload, source: "shortcut")
         restartedParameters["review_signal_recorded"] = true
         store.enqueueAnalyticsEvent(
@@ -447,6 +485,48 @@ enum ShortcutSupport {
             parameters: restartedParameters
         )
         return true
+    }
+
+    /// Rebuilds from durable cards plus unacknowledged extension work. A stale
+    /// dashboard payload is never used as the source of a new activity.
+    private static func rebuiltDashboardPayload(store: AppGroupStore, now: Date = Date()) -> [String: Any]? {
+        guard let url = store.cardStoreURL,
+              let data = try? Data(contentsOf: url),
+              var cards = try? JSONDecoder().decode([Card].self, from: data)
+        else { return nil }
+
+        cards = CardMutations.applyCompletions(
+            store.pendingCompletedTodos(), to: cards, now: now
+        ).cards
+        cards = CardMutations.applyQuickAdds(
+            store.pendingQuickAdds(), to: cards
+        ).cards
+        cards = CardMutations.rollOverIncompleteTodos(cards, now: now).cards
+        cards = CardMutations.createRecurringTodosForToday(cards, now: now).cards
+
+        let defaults = store.defaults
+        let followsToday = defaults?.object(forKey: FlutterPreferenceKeys.followToday) as? Bool ?? true
+        let explicitDate = store.dashboardState()?["selectedDate"] as? String
+        let selectedDate = followsToday ? now : explicitDate.flatMap { FlutterDate.parse($0) }
+        let strings = DashboardStrings(
+            noEvents: localized("noEvents"),
+            hiddenContent: localized("hiddenContent"),
+            checkInApp: localized("openAppToRefresh"),
+            dDayToday: localized("today"),
+            dPlusPrefix: "D+",
+            timePassed: localized("timePassed", defaultValue: "Time passed"),
+            hoursMinutesRemaining: localized("remaining", defaultValue: "left"),
+            remainingTasks: localized("remaining", defaultValue: "Remaining")
+        )
+        let snapshot = DashboardComposer(strings: strings).compose(
+            cards: cards,
+            selectedDate: selectedDate,
+            settings: defaults.map(LockScreenSettings.load(from:)) ?? LockScreenSettings(),
+            privacyMode: PrivacyMode(fromStored: defaults?.string(forKey: FlutterPreferenceKeys.defaultPrivacyMode)),
+            now: now
+        )
+        let isPro = store.dashboardState()?["isPro"] as? Bool ?? false
+        return snapshot.dictionary(isPro: isPro)
     }
 
     static func analyticsParameters(from payload: [String: Any], source: String) -> [String: Any] {

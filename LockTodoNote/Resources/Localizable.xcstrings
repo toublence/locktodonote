@@ -10740,55 +10740,55 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wiederholen"
+            "value": "Aufgabe anzeigen"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Repetir"
+            "value": "Mostrar tarea"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Répéter"
+            "value": "Afficher la tâche"
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "दोहराएँ"
+            "value": "कार्य दिखाएँ"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "繰り返し"
+            "value": "タスクの表示"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "반복"
+            "value": "할 일 표시"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "重复"
+            "value": "显示待办"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "重複"
+            "value": "顯示待辦"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "كرر"
+            "value": "عرض المهمة"
           }
         }
       }
@@ -11035,19 +11035,19 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Täglich"
+            "value": "Jeden Tag"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cada día"
+            "value": "Todos los días"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chaque jour"
+            "value": "Tous les jours"
           }
         },
         "hi": {
@@ -11094,55 +11094,55 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nie"
+            "value": "Nur heute"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nunca"
+            "value": "Solo hoy"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jamais"
+            "value": "Aujourd’hui seulement"
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "कभी नहीं"
+            "value": "केवल आज"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "なし"
+            "value": "今日のみ"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "안 함"
+            "value": "오늘만"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "不重复"
+            "value": "仅今天"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "不重複"
+            "value": "僅今天"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "أبدا"
+            "value": "اليوم فقط"
           }
         }
       }
@@ -11153,55 +11153,55 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wochentags"
+            "value": "Montag bis Freitag"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Entre semana"
+            "value": "De lunes a viernes"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "En semaine"
+            "value": "Du lundi au vendredi"
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "कार्यदिवस"
+            "value": "सोमवार से शुक्रवार"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "平日"
+            "value": "平日のみ"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "평일"
+            "value": "평일마다"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "工作日"
+            "value": "周一至周五"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "平日"
+            "value": "週一至週五"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "أيام الأسبوع"
+            "value": "من الاثنين إلى الجمعة"
           }
         }
       }
@@ -14805,6 +14805,65 @@
         }
       }
     },
+    "template.date.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeige ein ausgewähltes Datum mit Aufgaben oder Notiz auf dem Sperrbildschirm."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muestra una fecha seleccionada con sus tareas o nota en la pantalla bloqueada."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Affichez une date avec ses tâches ou sa note sur l’écran verrouillé."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चुनी हुई तारीख के कार्य या नोट लॉक स्क्रीन पर दिखाएँ।"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選択した日付のタスクやメモをロック画面に表示します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택한 날짜의 할 일이나 메모를 잠금화면에서 확인하세요."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在锁屏上显示所选日期的待办或备忘录。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在鎖定畫面上顯示所選日期的待辦或備忘錄。"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعرض مهام أو ملاحظة تاريخ محدد على شاشة القفل."
+          }
+        }
+      }
+    },
     "template.dateMemo": {
       "extractionState": "manual",
       "localizations": {
@@ -17496,7 +17555,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "업데이트"
+            "value": "수정 반영"
           }
         },
         "zh-Hans": {

@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 import LockTodoNoteShared
 
 /// Template chooser. Tapping a Pro template does not jump straight to the
@@ -36,11 +37,11 @@ struct TemplatePickerView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
         .sheet(item: $infoTemplate) { template in
-            ProTemplateInfoSheet(template: template) {
+            ProTemplateInfoSheet(template: template) { draft in
                 infoTemplate = nil
                 environment.requestPaywall(
                     source: "lock_screen_template",
-                    pendingTemplate: template
+                    preview: draft
                 )
             }
             .environment(\.palette, palette)
@@ -56,7 +57,6 @@ struct TemplatePickerView: View {
     private func select(_ template: LockScreenTemplate) {
         guard !isLocked(template) else {
             analytics.proTemplateTapped(template.rawValue)
-            analytics.proInfoSheetViewed(template.rawValue)
             infoTemplate = template
             return
         }
@@ -127,7 +127,7 @@ private struct TemplateCard: View {
 /// Explains one Pro template before asking for money.
 struct ProTemplateInfoSheet: View {
     let template: LockScreenTemplate
-    let onUpgrade: () -> Void
+    let onUpgrade: (ProPreviewDraft) -> Void
 
     @EnvironmentObject private var dashboard: DashboardCoordinator
     @EnvironmentObject private var analytics: AnalyticsService
@@ -135,9 +135,17 @@ struct ProTemplateInfoSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.palette) private var palette
 
-    @State private var previewTitle = ""
-    @State private var previewMemo = ""
-    @State private var previewDate = Date()
+    @State private var previewTitle = bilingualString(korean: "여행", english: "Trip")
+    @State private var previewMemo = bilingualString(
+        korean: "여권과 충전기 챙기기",
+        english: "Pack your passport and charger"
+    )
+    @State private var previewDate = Calendar.current.date(byAdding: .day, value: 12, to: Date()) ?? Date()
+    @State private var photoItem: PhotosPickerItem?
+    @State private var previewImageData: Data?
+    @State private var didLogPreview = false
+    @State private var didInteract = false
+    @State private var photoError: String?
 
     var body: some View {
         NavigationStack {
@@ -147,31 +155,78 @@ struct ProTemplateInfoSheet: View {
                     .foregroundStyle(palette.textPrimary)
                     .padding(.top, 12)
 
-                DashboardPreviewCard(snapshot: previewSnapshot)
+                DashboardPreviewCard(
+                    snapshot: previewSnapshot,
+                    previewImageData: previewImageData
+                )
+                .onAppear {
+                    guard !didLogPreview else { return }
+                    didLogPreview = true
+                    analytics.proPreviewViewed(template.rawValue)
+                }
 
-                if needsTemporaryPreviewInput {
+                if template == .imageMemo || template == .imageTodo {
+                    PhotosPicker(selection: $photoItem, matching: .images) {
+                        Label(
+                            bilingualString(korean: "사진 선택", english: "Choose a photo"),
+                            systemImage: "photo.on.rectangle"
+                        )
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .onChange(of: photoItem) { item in
+                        guard let item else { return }
+                        Task {
+                            do {
+                                guard let data = try await item.loadTransferable(type: Data.self) else {
+                                    throw PhotoPreviewError.emptyData
+                                }
+                                previewImageData = data
+                                trackInteraction()
+                            } catch {
+                                photoError = appString(
+                                    localized: "image.loadFailed",
+                                    defaultValue: "That photo could not be loaded. Please choose another one."
+                                )
+                            }
+                        }
+                    }
+                }
+
+                if template == .ddayMemo {
                     VStack(spacing: 12) {
                         TextField(
-                            appString(localized: "proPreview.title", defaultValue: "Preview title"),
+                            bilingualString(korean: "제목", english: "Title"),
                             text: $previewTitle
                         )
                         DatePicker(
-                            appString(localized: "proPreview.date", defaultValue: "Preview date"),
+                            bilingualString(korean: "날짜", english: "Date"),
                             selection: $previewDate,
                             displayedComponents: .date
                         )
                         TextField(
-                            appString(localized: "proPreview.memo", defaultValue: "Preview memo"),
+                            bilingualString(korean: "메모", english: "Memo"),
                             text: $previewMemo,
                             axis: .vertical
                         )
                         .lineLimit(2...4)
                     }
                     .textFieldStyle(.roundedBorder)
-                    .onChange(of: previewTitle) { _ in analytics.proPreviewInteracted(template.rawValue) }
-                    .onChange(of: previewMemo) { _ in analytics.proPreviewInteracted(template.rawValue) }
-                    .onChange(of: previewDate) { _ in analytics.proPreviewInteracted(template.rawValue) }
+                    .onChange(of: previewTitle) { _ in trackInteraction() }
+                    .onChange(of: previewMemo) { _ in trackInteraction() }
+                    .onChange(of: previewDate) { _ in trackInteraction() }
                 }
+
+                VStack(spacing: 3) {
+                    Text(bilingualString(korean: "미리보기입니다.", english: "This is a preview."))
+                    Text(bilingualString(
+                        korean: "Pro 구매 후 잠금화면에 적용됩니다.",
+                        english: "It will be applied to your Lock Screen after purchasing Pro."
+                    ))
+                }
+                .font(.caption.weight(.semibold))
+                .multilineTextAlignment(.center)
+                .foregroundStyle(palette.textSecondary)
 
                 Text(template.proDescription)
                     .font(.subheadline)
@@ -181,7 +236,7 @@ struct ProTemplateInfoSheet: View {
 
                 Spacer()
 
-                Button(action: onUpgrade) {
+                Button { onUpgrade(previewDraft) } label: {
                     VStack(spacing: 2) {
                         Text(template.proCTA)
                             .font(.headline)
@@ -216,48 +271,76 @@ struct ProTemplateInfoSheet: View {
         .presentationDetents([.large])
         .onAppear {
             environment.isProInfoPresented = true
-            analytics.proPreviewViewed(template.rawValue)
+            analytics.proInfoSheetViewed(template.rawValue)
         }
         .onDisappear { environment.isProInfoPresented = false }
+        .alert(
+            photoError ?? "",
+            isPresented: Binding(
+                get: { photoError != nil },
+                set: { if !$0 { photoError = nil } }
+            )
+        ) {
+            Button(appString(localized: "common.ok", defaultValue: "OK")) { photoError = nil }
+        }
     }
 
     private var previewSnapshot: DashboardSnapshot {
         var snapshot = dashboard.currentSnapshot()
         snapshot.lockScreenLayout = template.rawValue
-        guard needsTemporaryPreviewInput else { return snapshot }
-
-        snapshot.selectedDate = previewDate
-        snapshot.selectedDateText = appDateString(previewDate)
         if template == .ddayMemo {
+            snapshot.selectedDate = previewDate
+            snapshot.selectedDateText = appDateString(previewDate)
             snapshot.ddayTargetDate = previewDate
-            snapshot.ddayTitle = previewTitle.isEmpty ? nil : previewTitle
-            snapshot.ddayText = appDateString(previewDate)
-            snapshot.ddayMemo = previewMemo.isEmpty ? nil : previewMemo
+            snapshot.ddayTitle = previewTitle.isEmpty
+                ? bilingualString(korean: "제목을 입력하세요", english: "Enter a title")
+                : previewTitle
+            snapshot.ddayText = dashboard.composer.ddayText(previewDate)
+            let memo = previewMemo.isEmpty
+                ? bilingualString(korean: "메모를 입력하세요", english: "Enter a memo")
+                : previewMemo
+            snapshot.ddayMemo = memo
+            snapshot.memoItems = [DashboardMemoItem(id: "preview-dday", title: memo, bodyPreview: memo)]
+            snapshot.memoTitle = memo
+            snapshot.memoText = memo
         }
-        if !previewTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if (template == .memoTodo || template == .imageTodo), snapshot.todoItems.isEmpty {
             snapshot.todoItems = [
-                DashboardTodoItem(id: "preview-only", text: previewTitle, isDone: false)
+                DashboardTodoItem(
+                    id: "preview-todo",
+                    text: bilingualString(korean: "할 일 미리보기", english: "Todo preview"),
+                    isDone: false
+                )
             ]
             snapshot.totalCount = 1
             snapshot.doneCount = 0
         }
-        if !previewMemo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if (template == .memoTodo || template == .imageMemo), snapshot.memoItems.isEmpty {
+            let placeholder = bilingualString(korean: "메모 미리보기", english: "Memo preview")
             snapshot.memoItems = [
-                DashboardMemoItem(
-                    id: "preview-only",
-                    title: previewTitle.isEmpty ? previewMemo : previewTitle,
-                    bodyPreview: previewMemo
-                )
+                DashboardMemoItem(id: "preview-memo", title: placeholder, bodyPreview: placeholder)
             ]
-            snapshot.memoTitle = previewTitle.isEmpty ? previewMemo : previewTitle
-            snapshot.memoText = previewMemo
+            snapshot.memoTitle = placeholder
+            snapshot.memoText = placeholder
         }
         return snapshot
     }
 
-    private var needsTemporaryPreviewInput: Bool {
-        let snapshot = dashboard.currentSnapshot()
-        return snapshot.todoItems.isEmpty && snapshot.memoItems.isEmpty
+    private var previewDraft: ProPreviewDraft {
+        ProPreviewDraft(
+            template: template,
+            snapshot: previewSnapshot,
+            imageData: previewImageData,
+            ddayTitle: template == .ddayMemo ? previewTitle : nil,
+            ddayDate: template == .ddayMemo ? previewDate : nil,
+            ddayMemo: template == .ddayMemo ? previewMemo : nil
+        )
+    }
+
+    private func trackInteraction() {
+        guard !didInteract else { return }
+        didInteract = true
+        analytics.proPreviewInteracted(template.rawValue)
     }
 }
 
@@ -282,7 +365,11 @@ extension LockScreenTemplate: @retroactive Identifiable {
             appString(localized: "template.ddayMemo.description",
                 defaultValue: "Count down to the day that matters, with a note beside it."
             )
-        case .calendarItems, .dateMemo, .dateTodo:
+        case .dateMemo, .dateTodo:
+            appString(localized: "template.date.description",
+                defaultValue: "Show a selected date with its todos or memo on the Lock Screen."
+            )
+        case .calendarItems:
             ""
         }
     }
@@ -299,4 +386,8 @@ extension LockScreenTemplate: @retroactive Identifiable {
             appString(localized: "template.usePro", defaultValue: "Use this card")
         }
     }
+}
+
+private enum PhotoPreviewError: Error {
+    case emptyData
 }

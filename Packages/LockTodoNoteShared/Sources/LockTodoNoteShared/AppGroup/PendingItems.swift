@@ -6,11 +6,13 @@ import Foundation
 public struct PendingCompletedTodo: Hashable, Sendable {
     /// Composite `cardId:itemId` — the same id the dashboard exposes.
     public let id: String
+    public let eventId: String
     public let completedAt: Date
     public let source: String
 
-    public init(id: String, completedAt: Date, source: String) {
+    public init(id: String, completedAt: Date, source: String, eventId: String = UUID().uuidString) {
         self.id = id
+        self.eventId = eventId
         self.completedAt = completedAt
         self.source = source
     }
@@ -18,6 +20,7 @@ public struct PendingCompletedTodo: Hashable, Sendable {
     public init?(dictionary: [String: Any]) {
         guard let id = dictionary["id"] as? String, !id.isEmpty else { return nil }
         self.id = id
+        self.eventId = dictionary["event_id"] as? String ?? "legacy-\(id)"
         self.completedAt = FlutterDate.parse(dictionary["completedAt"] as? String) ?? Date()
         self.source = dictionary["source"] as? String ?? "live_activity"
     }
@@ -25,6 +28,7 @@ public struct PendingCompletedTodo: Hashable, Sendable {
     public var dictionary: [String: Any] {
         [
             "id": id,
+            "event_id": eventId,
             "completedAt": FlutterDate.utcString(from: completedAt),
             "source": source,
         ]
@@ -122,11 +126,18 @@ public struct PendingSharedLink: Hashable, Sendable {
 /// Every value that reaches it has passed `PropertyListSanitizer`, so the
 /// contents are immutable value types — hence the unchecked conformance.
 public struct QueuedAnalyticsEvent: @unchecked Sendable {
+    public let id: String
     public let name: String
     public let parameters: [String: Any]
     public let createdAt: Date
 
-    public init(name: String, parameters: [String: Any], createdAt: Date) {
+    public init(
+        id: String = UUID().uuidString,
+        name: String,
+        parameters: [String: Any],
+        createdAt: Date
+    ) {
+        self.id = id
         self.name = name
         self.parameters = parameters
         self.createdAt = createdAt
@@ -134,6 +145,7 @@ public struct QueuedAnalyticsEvent: @unchecked Sendable {
 
     public init?(dictionary: [String: Any]) {
         guard let name = dictionary["name"] as? String, !name.isEmpty else { return nil }
+        self.id = dictionary["event_id"] as? String ?? UUID().uuidString
         self.name = name
         self.parameters = dictionary["parameters"] as? [String: Any] ?? [:]
         let seconds = dictionary["created_at"] as? TimeInterval ?? Date().timeIntervalSince1970
@@ -143,6 +155,7 @@ public struct QueuedAnalyticsEvent: @unchecked Sendable {
     public var dictionary: [String: Any] {
         [
             "name": name,
+            "event_id": id,
             "parameters": PropertyListSanitizer.sanitize(parameters),
             "created_at": createdAt.timeIntervalSince1970,
         ]

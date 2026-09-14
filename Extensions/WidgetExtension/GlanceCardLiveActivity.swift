@@ -139,7 +139,11 @@ private struct GlanceDashboardActivityView: View {
   private var layoutContent: some View {
     switch state.lockScreenLayout ?? "calendarItems" {
     case "memoTodo":
-      MemoTodoSectionView(state: state)
+      RatioColumns(
+        leadingRatio: 0.5,
+        leading: MemoColumn(state: state),
+        trailing: TodoColumn(state: state)
+      )
     case "dateMemo", "dateTodo":
       RatioColumns(
         leadingRatio: 0.3,

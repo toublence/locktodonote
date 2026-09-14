@@ -16,15 +16,18 @@ struct LockScreenTabView: View {
     @Environment(\.palette) private var palette
 
     @State private var editingCard: Card?
+    @State private var editingTodo: TodoEntry?
     @State private var isEditingDday = false
     @State private var photoItem: PhotosPickerItem?
     @State private var photoSelectionTemplate: LockScreenTemplate?
     @State private var errorMessage: String?
     @State private var captureMode: QuickAddMode = .todo
     @State private var captureText = ""
+    @State private var captureRecurrence: TodoRecurrence = .none
     @State private var captureConfirmation: String?
     @State private var infoTemplate: LockScreenTemplate?
     @State private var showsCompletedTodos = false
+    @State private var isTemplatePreviewExpanded = true
     @FocusState private var isCaptureFocused: Bool
 
     private var today: Date { Date() }
@@ -33,18 +36,23 @@ struct LockScreenTabView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: horizontalSizeClass == .regular ? 24 : 16) {
-                leftColumn
-                rightColumn
+                templateSection
+                quickCapture
             }
             .padding(.horizontal, horizontalSizeClass == .regular ? 36 : 20)
             .padding(.bottom, horizontalSizeClass == .regular ? 36 : 20)
             .frame(maxWidth: horizontalSizeClass == .regular ? 1040 : 720)
             .frame(maxWidth: .infinity)
         }
+        .accessibilityIdentifier("home.scroll")
         .scrollDismissesKeyboard(.interactively)
         .background(palette.background)
         .sheet(item: $editingCard) { card in
             MemoEditorSheet(card: card)
+                .environment(\.palette, palette)
+        }
+        .sheet(item: $editingTodo) { entry in
+            TodoEditorSheet(entry: entry)
                 .environment(\.palette, palette)
         }
         .sheet(isPresented: $isEditingDday) {
@@ -52,11 +60,11 @@ struct LockScreenTabView: View {
                 .environment(\.palette, palette)
         }
         .sheet(item: $infoTemplate) { template in
-            ProTemplateInfoSheet(template: template) {
+            ProTemplateInfoSheet(template: template) { draft in
                 infoTemplate = nil
                 environment.requestPaywall(
                     source: "lock_screen_template",
-                    pendingTemplate: template
+                    preview: draft
                 )
             }
             .environment(\.palette, palette)
@@ -79,17 +87,50 @@ struct LockScreenTabView: View {
         }
     }
 
-    private var leftColumn: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            LiveActivityCard(
+    private var templateSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 8) {
+                templateControl
+
+                Spacer(minLength: 0)
+
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isTemplatePreviewExpanded.toggle()
+                    }
+                } label: {
+                    Image(systemName: isTemplatePreviewExpanded ? "chevron.up" : "chevron.down")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(palette.accent)
+                        .frame(width: 32, height: 32)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("home.templateSection.toggle")
+            }
+
+            if isTemplatePreviewExpanded {
+                DashboardPreviewCard(snapshot: dashboard.currentSnapshot())
+                    .onAppear {
+                        let snapshot = dashboard.currentSnapshot()
+                        analytics.lockscreenPreviewSeen(
+                            templateId: snapshot.lockScreenLayout,
+                            todoCount: snapshot.todoItems.count
+                        )
+                    }
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+
+            Divider()
+
+            LiveActivityStatusRow(
                 state: liveActivity.state,
                 hasStartedBefore: environment.appGroup.defaults?.bool(
                     forKey: FlutterPreferenceKeys.liveActivityStarted
                 ) ?? false,
-                onStart: { await startLiveActivity() }
+                onStart: { await startLiveActivity() },
+                onUpdate: { await dashboard.updateLiveActivity() }
             )
-
-            currentPreview
 
             if template.usesImage {
                 ImageSlotCard(
@@ -108,51 +149,21 @@ struct LockScreenTabView: View {
                 }
             }
         }
+        .padding(16)
+        .background(palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(palette.border, lineWidth: 1)
+        )
         .frame(maxWidth: .infinity, alignment: .topLeading)
-    }
-
-    private var rightColumn: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            quickCapture
-        }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-    }
-
-    private var currentPreview: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            templateControl
-            DashboardPreviewCard(snapshot: dashboard.currentSnapshot())
-        }
-        .accessibilityIdentifier("home.lockScreenPreview")
-        .onAppear {
-            let snapshot = dashboard.currentSnapshot()
-            analytics.lockscreenPreviewSeen(
-                templateId: snapshot.lockScreenLayout,
-                todoCount: snapshot.todoItems.count
-            )
-        }
     }
 
     private var templateControl: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 6) {
-                Text(appString(localized: "home.currentTemplate", defaultValue: "Current template"))
-                    .font(.caption)
-                    .foregroundStyle(palette.textSecondary)
-                Text(template.displayName)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(palette.textPrimary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-            }
-
-            HStack(spacing: 6) {
-                ForEach(LockScreenTemplate.userFacingCases, id: \.self) { option in
-                    compactTemplateButton(option)
-                }
+        HStack(spacing: 6) {
+            ForEach(LockScreenTemplate.userFacingCases, id: \.self) { option in
+                compactTemplateButton(option)
             }
         }
-        .accessibilityIdentifier("home.templatePicker")
     }
 
     @ViewBuilder
@@ -209,7 +220,6 @@ struct LockScreenTabView: View {
     private func selectTemplate(_ template: LockScreenTemplate) {
         guard !isTemplateLocked(template) else {
             analytics.proTemplateTapped(template.rawValue)
-            analytics.proInfoSheetViewed(template.rawValue)
             infoTemplate = template
             return
         }
@@ -302,26 +312,24 @@ struct LockScreenTabView: View {
                     .transition(.opacity)
             }
 
-            if template.supportsTodoAndMemo {
+            if captureMode == .todo {
                 HStack(spacing: 10) {
                     Text(
-                        appString(localized: "capture.shortcutDefault",
-                            defaultValue: "Shortcut default add location"
-                        )
+                        appString(localized: "quickAdd.repeat", defaultValue: "Show this todo")
                     )
                     .font(.caption)
                     .foregroundStyle(palette.textSecondary)
                     Spacer(minLength: 0)
-                    Picker("", selection: shortcutPriorityBinding) {
-                        Text(appString(localized: "home.todos", defaultValue: "Todo"))
-                            .tag(ShortcutInsertPriority.todo)
-                        Text(appString(localized: "home.memos", defaultValue: "Memo"))
-                            .tag(ShortcutInsertPriority.memo)
+                    Picker("", selection: $captureRecurrence) {
+                        ForEach(TodoRecurrence.allCases, id: \.self) { option in
+                            Text(option.displayName).tag(option)
+                        }
                     }
                     .labelsHidden()
                     .pickerStyle(.menu)
                 }
             }
+
         }
         .padding(16)
         .background(palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
@@ -358,22 +366,23 @@ struct LockScreenTabView: View {
             } else {
                 ForEach(pendingTodoItems, id: \.compositeId) { entry in
                     TodoRowView(entry: entry) { isDone in
-                        cardStore.setItemDone(
+                        let saved = cardStore.setItemDone(
                             cardId: entry.card.id,
                             itemId: entry.item.id,
                             isDone: isDone
                         )
-                        if isDone {
+                        if saved, isDone {
                             analytics.todoCompleted(
                                 taskCount: todoItems.count,
                                 remainingCount: max(0, pendingTodoItems.count - 1),
                                 templateId: template.rawValue
                             )
                         }
-                        dashboard.publish()
+                        if !saved { reportSaveFailure(operation: "complete_todo") }
+                    } onEdit: {
+                        editingTodo = entry
                     } onDelete: {
-                        cardStore.delete(id: entry.card.id)
-                        dashboard.publish()
+                        if !cardStore.delete(id: entry.card.id) { reportSaveFailure(operation: "delete_todo") }
                     }
                 }
 
@@ -381,15 +390,15 @@ struct LockScreenTabView: View {
                     DisclosureGroup(isExpanded: $showsCompletedTodos) {
                         ForEach(completedTodoItems, id: \.compositeId) { entry in
                             TodoRowView(entry: entry) { isDone in
-                                cardStore.setItemDone(
+                                if !cardStore.setItemDone(
                                     cardId: entry.card.id,
                                     itemId: entry.item.id,
                                     isDone: isDone
-                                )
-                                dashboard.publish()
+                                ) { reportSaveFailure(operation: "update_todo") }
+                            } onEdit: {
+                                editingTodo = entry
                             } onDelete: {
-                                cardStore.delete(id: entry.card.id)
-                                dashboard.publish()
+                                if !cardStore.delete(id: entry.card.id) { reportSaveFailure(operation: "delete_todo") }
                             }
                         }
                     } label: {
@@ -419,8 +428,7 @@ struct LockScreenTabView: View {
                 MemoRowView(card: card, isPinned: card.isPinned) {
                     editingCard = card
                 } onDelete: {
-                    cardStore.delete(id: card.id)
-                    dashboard.publish()
+                    if !cardStore.delete(id: card.id) { reportSaveFailure(operation: "delete_memo") }
                 }
             }
         }
@@ -441,16 +449,6 @@ struct LockScreenTabView: View {
 
     private var trimmedCaptureText: String {
         captureText.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    private var shortcutPriorityBinding: Binding<ShortcutInsertPriority> {
-        Binding(
-            get: { settingsStore.settings.shortcutInsertPriority },
-            set: {
-                settingsStore.settings.shortcutInsertPriority = $0
-                dashboard.publish()
-            }
-        )
     }
 
     private var captureModeBinding: Binding<QuickAddMode> {
@@ -478,7 +476,10 @@ struct LockScreenTabView: View {
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
                 .filter { !$0.isEmpty }
             guard !lines.isEmpty else { return }
-            cardStore.addTodos(texts: lines, to: today)
+            guard cardStore.addTodos(texts: lines, to: today, recurrence: captureRecurrence) else {
+                reportSaveFailure(operation: "create_todo")
+                return
+            }
             let allTodos = cardStore.todoCards(on: today).flatMap(\.checklistItems)
             analytics.todoCreated(
                 taskCount: allTodos.count,
@@ -493,16 +494,34 @@ struct LockScreenTabView: View {
                 lines.count
             )
         case .memo:
-            cardStore.addMemo(text: trimmedCaptureText, to: today)
-            analytics.memoCreated(source: "inline")
+            guard cardStore.addMemo(text: trimmedCaptureText, to: today) else {
+                reportSaveFailure(operation: "create_memo")
+                return
+            }
+            analytics.memoCreated(source: "inline", templateId: template.rawValue)
             captureConfirmation = appString(localized: "capture.memoAdded", defaultValue: "Memo added")
         }
 
         captureText = ""
     }
 
+    private func reportSaveFailure(operation: String) {
+        analytics.cardSaveFailed(operation: operation, source: "inline")
+        errorMessage = appString(
+            localized: "storage.writeFailed",
+            defaultValue: "That change could not be saved. Your text is still here; please try again."
+        )
+    }
+
     private func startLiveActivity() async {
         let wasRunning = liveActivity.state.isRunning
+        let requestId = UUID().uuidString
+        analytics.liveActivityStartAttempt(
+            requestId: requestId,
+            source: "app",
+            templateId: template.rawValue,
+            reason: "user_start"
+        )
         do {
             try await dashboard.startLiveActivity()
             let todos = todoItems
@@ -510,17 +529,26 @@ struct LockScreenTabView: View {
                 taskCount: todos.count,
                 remainingCount: todos.filter { !$0.item.isDone }.count,
                 hasMemo: !memoCards.isEmpty,
-                templateId: template.rawValue
+                templateId: template.rawValue,
+                requestId: requestId
             )
             if wasRunning { analytics.liveActivityRestarted() }
             // The first successful Lock Screen card is the moment the app has
             // proven its value — the one place a paywall is earned.
             await environment.offerPaywallAfterFirstLockScreenSuccess()
         } catch let error as LiveActivityService.LiveActivityError {
-            analytics.liveActivityStartFailed(reason: error.analyticsReason, templateId: template.rawValue)
+            analytics.liveActivityStartFailed(
+                reason: error.analyticsReason,
+                templateId: template.rawValue,
+                requestId: requestId
+            )
             errorMessage = error.errorDescription
         } catch {
-            analytics.liveActivityStartFailed(reason: "unknown", templateId: template.rawValue)
+            analytics.liveActivityStartFailed(
+                reason: "unknown",
+                templateId: template.rawValue,
+                requestId: requestId
+            )
             errorMessage = error.localizedDescription
         }
     }
@@ -555,12 +583,13 @@ struct LockScreenTabView: View {
     }
 }
 
-struct TodoEntry {
+struct TodoEntry: Identifiable {
     let card: Card
     let item: ChecklistItem
 
     /// The id the Lock Screen and its intents use.
     var compositeId: String { "\(card.id):\(item.id)" }
+    var id: String { compositeId }
 }
 
 private struct CompactTemplateLabel: View {
@@ -595,10 +624,11 @@ private struct CompactTemplateLabel: View {
 
 // MARK: - Cards
 
-private struct LiveActivityCard: View {
+private struct LiveActivityStatusRow: View {
     let state: LiveActivityService.ActivityState
     let hasStartedBefore: Bool
     let onStart: () async -> Void
+    let onUpdate: () async -> Void
 
     @Environment(\.palette) private var palette
     @State private var isWorking = false
@@ -623,41 +653,39 @@ private struct LiveActivityCard: View {
                 Button {
                     Task {
                         isWorking = true
-                        await onStart()
+                        if state.isRunning {
+                            await onUpdate()
+                        } else {
+                            await onStart()
+                        }
                         isWorking = false
                     }
                 } label: {
                     if isWorking {
                         ProgressView()
-                            .frame(minWidth: 88, minHeight: 44)
+                            .frame(minWidth: 72, minHeight: 36)
                     } else if state.isRunning {
                         Label(
-                            appString(localized: "liveActivity.startedButton", defaultValue: "Started"),
-                            systemImage: "checkmark.circle.fill"
+                            appString(localized: "liveActivity.update", defaultValue: "Apply Changes"),
+                            systemImage: "arrow.clockwise"
                         )
-                        .font(.subheadline.weight(.semibold))
+                        .font(.caption.weight(.semibold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
-                        .frame(minWidth: 88, minHeight: 44)
+                        .frame(minWidth: 72, minHeight: 36)
                     } else {
                         Text(appString(localized: "liveActivity.startButton", defaultValue: "Start"))
-                            .font(.subheadline.weight(.semibold))
+                            .font(.caption.weight(.semibold))
                             .lineLimit(1)
                             .minimumScaleFactor(0.75)
-                            .frame(minWidth: 88, minHeight: 44)
+                            .frame(minWidth: 72, minHeight: 36)
                     }
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(state.isRunning ? palette.success : palette.accent)
-                .disabled(isUnsupported || isWorking || state.isRunning)
+                .tint(palette.accent)
+                .disabled(isUnsupported || isWorking)
             }
         }
-        .padding(14)
-        .background(palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(palette.border, lineWidth: 1)
-        )
     }
 
     private var isUnsupported: Bool {
@@ -668,8 +696,8 @@ private struct LiveActivityCard: View {
     private var tint: Color {
         switch state {
         case .active: palette.success
-        case .possiblyExpired: palette.warning
-        case .notStarted: palette.textTertiary
+        case .possiblyExpired, .ended, .missing: palette.warning
+        case .notStarted, .dismissed: palette.textTertiary
         case .unsupported: palette.warning
         }
     }
@@ -685,10 +713,14 @@ private struct LiveActivityCard: View {
                 localized: "liveActivity.staleMessage",
                 defaultValue: "Lock Screen card updates have stopped"
             )
+        case .ended, .missing:
+            appString(localized: "liveActivity.ended", defaultValue: "Live Activity ended")
         case .notStarted:
             hasStartedBefore
                 ? appString(localized: "liveActivity.ended", defaultValue: "Live Activity ended")
                 : appString(localized: "liveActivity.notConfigured", defaultValue: "No Lock Screen card yet")
+        case .dismissed:
+            appString(localized: "liveActivity.ended", defaultValue: "Live Activity ended")
         case .unsupported:
             appString(localized: "liveActivity.unavailable", defaultValue: "Unavailable")
         }
@@ -698,7 +730,7 @@ private struct LiveActivityCard: View {
         switch state {
         case .active(let startedAt):
             remainingText(from: startedAt, at: now)
-        case .possiblyExpired:
+        case .possiblyExpired, .ended, .missing:
             appString(localized: "liveActivity.widgetContinues", defaultValue: "Today's card continues in Widget")
         case .notStarted:
             hasStartedBefore
@@ -706,6 +738,8 @@ private struct LiveActivityCard: View {
                     defaultValue: "Today's card continues in Widget"
                 )
                 : appString(localized: "liveActivity.startDetail", defaultValue: "Start to see today without unlocking")
+        case .dismissed:
+            appString(localized: "liveActivity.startDetail", defaultValue: "Start to see today without unlocking")
         case .unsupported(let reason):
             reason == "disabled"
                 ? appString(localized: "liveActivity.disabledDetail",
@@ -880,6 +914,7 @@ private struct DdaySummaryCard: View {
 private struct TodoRowView: View {
     let entry: TodoEntry
     let onToggle: (Bool) -> Void
+    let onEdit: () -> Void
     let onDelete: () -> Void
 
     @Environment(\.palette) private var palette
@@ -907,6 +942,13 @@ private struct TodoRowView: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+
+            Button(action: onEdit) {
+                Image(systemName: "pencil")
+                    .foregroundStyle(palette.textTertiary)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(appString(localized: "common.edit", defaultValue: "Edit"))
 
             Button(role: .destructive, action: onDelete) {
                 Image(systemName: "trash")

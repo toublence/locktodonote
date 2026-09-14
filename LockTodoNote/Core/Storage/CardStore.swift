@@ -91,7 +91,8 @@ final class CardStore: ObservableObject {
 
     // MARK: - Mutations
 
-    func upsert(_ card: Card) {
+    @discardableResult
+    func upsert(_ card: Card) -> Bool {
         var updated = cards
         // Pinning a memo unpins whatever held the slot before.
         if card.isPinned {
@@ -105,14 +106,16 @@ final class CardStore: ObservableObject {
         } else {
             updated.append(card)
         }
-        commit(updated)
+        return commit(updated)
     }
 
-    func delete(id: String) {
+    @discardableResult
+    func delete(id: String) -> Bool {
         commit(cards.filter { $0.id != id })
     }
 
-    func setPinnedMemo(_ card: Card?) {
+    @discardableResult
+    func setPinnedMemo(_ card: Card?) -> Bool {
         var updated = cards
         for index in updated.indices {
             let isSelected = updated[index].id == card?.id
@@ -127,35 +130,37 @@ final class CardStore: ObservableObject {
             pinned.updatedAt = Date()
             updated.append(pinned)
         }
-        commit(updated)
+        return commit(updated)
     }
 
     /// Toggles one todo. `itemId` is the item's own id, not the composite.
-    func setItemDone(cardId: String, itemId: String, isDone: Bool, source: String = "app") {
-        guard let cardIndex = cards.firstIndex(where: { $0.id == cardId }) else { return }
+    func setItemDone(cardId: String, itemId: String, isDone: Bool, source: String = "app") -> Bool {
+        guard let cardIndex = cards.firstIndex(where: { $0.id == cardId }) else { return false }
         var updated = cards
         guard let itemIndex = updated[cardIndex].checklistItems.firstIndex(where: { $0.id == itemId })
-        else { return }
+        else { return false }
 
         let item = updated[cardIndex].checklistItems[itemIndex]
         updated[cardIndex].checklistItems[itemIndex] = isDone
             ? item.markingDone(at: Date(), source: source, calendar: calendar)
             : item.clearingCompletion()
         updated[cardIndex].updatedAt = Date()
-        commit(updated)
+        return commit(updated)
     }
 
-    func addTodo(text: String, to date: Date, recurrence: TodoRecurrence = .none) {
+    @discardableResult
+    func addTodo(text: String, to date: Date, recurrence: TodoRecurrence = .none) -> Bool {
         addTodos(texts: [text], to: date, recurrence: recurrence)
     }
 
     /// Adds a pasted multi-line list in one commit so storage, WidgetKit, and
     /// ActivityKit refresh only once.
-    func addTodos(texts: [String], to date: Date, recurrence: TodoRecurrence = .none) {
+    @discardableResult
+    func addTodos(texts: [String], to date: Date, recurrence: TodoRecurrence = .none) -> Bool {
         let values = texts
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
-        guard !values.isEmpty else { return }
+        guard !values.isEmpty else { return false }
 
         let now = Date()
         var updated = cards
@@ -176,12 +181,13 @@ final class CardStore: ObservableObject {
                 )
             )
         }
-        commit(updated)
+        return commit(updated)
     }
 
-    func addMemo(text: String, to date: Date, pinned: Bool = true) {
+    @discardableResult
+    func addMemo(text: String, to date: Date, pinned: Bool = true) -> Bool {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return }
+        guard !trimmed.isEmpty else { return false }
         let now = Date()
         let card = Card(
             id: Self.newIdentifier(),
@@ -194,20 +200,21 @@ final class CardStore: ObservableObject {
             createdAt: now,
             updatedAt: now
         )
-        upsert(card)
+        return upsert(card)
     }
 
-    private func commit(_ updated: [Card]) {
-        cards = CardMutations.sorted(updated)
+    private func commit(_ updated: [Card]) -> Bool {
+        let sorted = CardMutations.sorted(updated)
         do {
-            try repository.save(cards)
+            try repository.save(sorted)
+            cards = sorted
             storeError = nil
         } catch {
-            // The edit is live in memory but did not reach disk — the user has
-            // to know before they close the app and lose it.
             storeError = .writeFailed(String(describing: error))
+            return false
         }
         onChange?()
+        return true
     }
 
     /// Matches the Flutter id scheme (microseconds since epoch), which the

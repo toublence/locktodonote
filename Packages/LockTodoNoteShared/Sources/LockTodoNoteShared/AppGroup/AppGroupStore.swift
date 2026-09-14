@@ -64,8 +64,8 @@ public struct AppGroupStore: Sendable {
         defaults.set(rows, forKey: AppGroupKeys.pendingCompletedTodos)
     }
 
-    /// Drains both the current queue and the legacy id-only queue.
-    public func drainPendingCompletedTodos() -> [PendingCompletedTodo] {
+    /// Peeks without deleting. Callers acknowledge only after the card file is durable.
+    public func pendingCompletedTodos() -> [PendingCompletedTodo] {
         guard let defaults else { return [] }
         let rows = defaults.array(forKey: AppGroupKeys.pendingCompletedTodos) as? [[String: Any]] ?? []
         var results = rows.compactMap(PendingCompletedTodo.init(dictionary:))
@@ -78,9 +78,20 @@ public struct AppGroupStore: Sendable {
             }
         )
 
-        defaults.removeObject(forKey: AppGroupKeys.pendingCompletedTodos)
-        defaults.removeObject(forKey: AppGroupKeys.legacyPendingCompletedTodoIds)
         return results
+    }
+
+    public func acknowledgePendingCompletedTodos(eventIds: Set<String>) {
+        guard let defaults, !eventIds.isEmpty else { return }
+        let rows = defaults.array(forKey: AppGroupKeys.pendingCompletedTodos) as? [[String: Any]] ?? []
+        let remaining = rows.filter {
+            guard let item = PendingCompletedTodo(dictionary: $0) else { return false }
+            return !eventIds.contains(item.eventId)
+        }
+        defaults.set(remaining, forKey: AppGroupKeys.pendingCompletedTodos)
+        if eventIds.contains(where: { $0.hasPrefix("legacy-") }) {
+            defaults.removeObject(forKey: AppGroupKeys.legacyPendingCompletedTodoIds)
+        }
     }
 
     // MARK: - Quick add queue
@@ -92,11 +103,22 @@ public struct AppGroupStore: Sendable {
         defaults.set(rows, forKey: AppGroupKeys.pendingQuickAdds)
     }
 
-    public func drainPendingQuickAdds() -> [PendingQuickAdd] {
+    public func pendingQuickAdds() -> [PendingQuickAdd] {
         guard let defaults else { return [] }
         let rows = defaults.array(forKey: AppGroupKeys.pendingQuickAdds) as? [[String: Any]] ?? []
-        defaults.removeObject(forKey: AppGroupKeys.pendingQuickAdds)
         return rows.compactMap(PendingQuickAdd.init(dictionary:))
+    }
+
+    public func acknowledgePendingQuickAdds(ids: Set<String>) {
+        guard let defaults, !ids.isEmpty else { return }
+        let rows = defaults.array(forKey: AppGroupKeys.pendingQuickAdds) as? [[String: Any]] ?? []
+        defaults.set(
+            rows.filter { row in
+                guard let item = PendingQuickAdd(dictionary: row) else { return false }
+                return !ids.contains(item.id)
+            },
+            forKey: AppGroupKeys.pendingQuickAdds
+        )
     }
 
     // MARK: - Shared link queue
@@ -110,10 +132,20 @@ public struct AppGroupStore: Sendable {
 
     // MARK: - Analytics queue
 
-    public func enqueueAnalyticsEvent(name: String, parameters: [String: Any] = [:]) {
+    public func enqueueAnalyticsEvent(
+        name: String,
+        parameters: [String: Any] = [:],
+        eventId: String = UUID().uuidString,
+        createdAt: Date = Date()
+    ) {
         guard let defaults else { return }
         var rows = defaults.array(forKey: AppGroupKeys.queuedAnalyticsEvents) as? [[String: Any]] ?? []
-        let event = QueuedAnalyticsEvent(name: name, parameters: parameters, createdAt: Date())
+        let event = QueuedAnalyticsEvent(
+            id: eventId,
+            name: name,
+            parameters: parameters,
+            createdAt: createdAt
+        )
         rows.append(event.dictionary)
         defaults.set(
             Array(rows.suffix(AppGroupKeys.queuedAnalyticsEventLimit)),
@@ -126,8 +158,16 @@ public struct AppGroupStore: Sendable {
         return rows.compactMap(QueuedAnalyticsEvent.init(dictionary:))
     }
 
-    public func clearQueuedAnalyticsEvents() {
-        defaults?.removeObject(forKey: AppGroupKeys.queuedAnalyticsEvents)
+    public func acknowledgeQueuedAnalyticsEvents(ids: Set<String>) {
+        guard let defaults, !ids.isEmpty else { return }
+        let rows = defaults.array(forKey: AppGroupKeys.queuedAnalyticsEvents) as? [[String: Any]] ?? []
+        defaults.set(
+            rows.filter { row in
+                guard let event = QueuedAnalyticsEvent(dictionary: row) else { return false }
+                return !ids.contains(event.id)
+            },
+            forKey: AppGroupKeys.queuedAnalyticsEvents
+        )
     }
 
     // MARK: - Shortcut throttling

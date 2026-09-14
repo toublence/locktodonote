@@ -11,10 +11,10 @@ struct SettingsTabView: View {
     @EnvironmentObject private var dashboard: DashboardCoordinator
     @EnvironmentObject private var analytics: AnalyticsService
     @EnvironmentObject private var languageStore: AppLanguageStore
+    @EnvironmentObject private var notifications: NotificationService
     @Environment(\.openURL) private var openURL
     @Environment(\.palette) private var palette
 
-    @StateObject private var notifications = NotificationService()
     @State private var restoreMessage: String?
 
     var body: some View {
@@ -25,6 +25,7 @@ struct SettingsTabView: View {
                 aboutSection
                 migrationSection
             }
+            .accessibilityIdentifier("settings.root")
             .environment(\.defaultMinListRowHeight, 40)
             .modifier(CompactSettingsFormModifier())
             .toolbar(.hidden, for: .navigationBar)
@@ -67,13 +68,6 @@ struct SettingsTabView: View {
                     appString(localized: "settings.appearance", defaultValue: "Appearance"),
                     systemImage: "rectangle.on.rectangle.angled"
                 )
-            }
-
-            NavigationLink {
-                Form { shortcutsSection }
-                    .navigationTitle(appString(localized: "settings.shortcuts", defaultValue: "Shortcuts"))
-            } label: {
-                Label(appString(localized: "settings.shortcuts", defaultValue: "Shortcuts"), systemImage: "bolt")
             }
 
             NavigationLink {
@@ -154,6 +148,16 @@ struct SettingsTabView: View {
                         value: appDateString(expiry)
                     )
                 }
+                if environment.pendingProPreview != nil {
+                    Button(appString(localized: "purchase.retryApply", defaultValue: "Apply purchased preview again")) {
+                        Task {
+                            let result = await environment.applyPendingProValue()
+                            restoreMessage = result.succeeded
+                                ? appString(localized: "purchase.applied", defaultValue: "Your Pro preview was applied.")
+                                : appString(localized: "purchase.applyFailed", defaultValue: "The preview could not be applied. Please try again.")
+                        }
+                    }
+                }
             } else {
                 Button {
                     environment.requestPaywall(source: "settings_pro_card")
@@ -190,7 +194,13 @@ struct SettingsTabView: View {
             Button(appString(localized: "paywall.restore", defaultValue: "Restore purchases")) {
                 Task {
                     let outcome = await purchases.restore()
-                    analytics.restoreCompleted(restored: outcome == .restored)
+                    let result: String
+                    switch outcome {
+                    case .restored: result = "restored"
+                    case .noPurchases: result = "no_purchases"
+                    case .failed: result = "failed"
+                    }
+                    analytics.restoreCompleted(result: result)
                     switch outcome {
                     case .restored:
                         restoreMessage = appString(localized: "restore.success",
@@ -254,29 +264,6 @@ struct SettingsTabView: View {
             }
         } footer: {
             Text(settingsStore.defaultPrivacyMode.explanation)
-        }
-    }
-
-    private var shortcutsSection: some View {
-        Section {
-            Picker(
-                appString(localized: "settings.shortcutTarget", defaultValue: "Shortcut add location"),
-                selection: binding(\.shortcutInsertPriority)
-            ) {
-                Text(appString(localized: "settings.todoFirst", defaultValue: "Todo"))
-                    .tag(ShortcutInsertPriority.todo)
-                Text(appString(localized: "settings.memoFirst", defaultValue: "Memo"))
-                    .tag(ShortcutInsertPriority.memo)
-            }
-        } header: {
-            Text(appString(localized: "settings.shortcuts", defaultValue: "Shortcuts"))
-        } footer: {
-            Text(
-                appString(
-                    localized: "settings.shortcutTargetDetail",
-                    defaultValue: "Where should content added with Shortcuts be saved? Mixed templates use this choice; single-content templates choose automatically."
-                )
-            )
         }
     }
 
@@ -424,8 +411,10 @@ struct SettingsTabView: View {
     }
 
     private func setReminder(morning: Bool, enabled: Bool) async {
+        let kind = morning ? "morning" : "evening"
         if enabled, notifications.authorizationStatus != .authorized {
             let granted = await notifications.requestAuthorization()
+            analytics.reminderAction(granted ? "permission_granted" : "permission_denied", kind: kind)
             guard granted else { return }
         }
         if morning {
@@ -433,6 +422,7 @@ struct SettingsTabView: View {
         } else {
             notifications.settings.eveningEnabled = enabled
         }
+        analytics.reminderAction(enabled ? "enabled" : "disabled", kind: kind)
     }
 
     private func openReviewPage() {
@@ -625,5 +615,9 @@ enum AppInfo {
         let version = info?["CFBundleShortVersionString"] as? String ?? "-"
         let build = info?["CFBundleVersion"] as? String ?? "-"
         return "\(version) (\(build))"
+    }
+
+    static var build: String {
+        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "-"
     }
 }

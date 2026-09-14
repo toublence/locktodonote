@@ -30,9 +30,13 @@ final class AnalyticsService: ObservableObject {
     private var commonParameters: [String: Any] {
         let locale = Locale.current
         var parameters: [String: Any] = [
+            "analytics_schema_version": 2,
+            "app_build": AppInfo.build,
+            "implementation": "swiftui",
             "days_since_install": daysSinceInstall,
             "app_version": AppInfo.versionDisplay,
             "is_premium": isPremium ? 1 : 0,
+            "trial_type": trialType,
             "ios_version": ProcessInfo.processInfo.operatingSystemVersionString,
             "device_family": "ios",
         ]
@@ -44,6 +48,7 @@ final class AnalyticsService: ObservableObject {
     }
 
     var isPremium = false
+    var trialType = "none"
 
     private func log(_ name: String, _ parameters: [String: Any] = [:]) {
         var merged = commonParameters
@@ -81,7 +86,6 @@ final class AnalyticsService: ObservableObject {
     /// The Flutter build's name is the one the dashboards already hold.
     func onboardingStart() {
         log("onboarding_start", ["source": "app", "result": "success"])
-        log("onboarding_started", ["source": "app", "result": "success"])
     }
 
     func onboardingStepViewed(step: String, index: Int) {
@@ -92,28 +96,16 @@ final class AnalyticsService: ObservableObject {
         log("onboarding_complete", ["source": "app", "result": "success", "skipped": skipped])
     }
 
-    func lockscreenPreviewSeen(templateId: String, todoCount: Int) {
+    func lockscreenPreviewSeen(templateId: String, todoCount: Int, source: String = "onboarding") {
         defaults?.set(true, forKey: FlutterPreferenceKeys.lockscreenPreviewSeen)
         log("lockscreen_preview_seen", [
-            "source": "onboarding",
+            "source": source,
             "screen_name": "activation_preview",
             "template_id": templateId,
             "todo_count": todoCount,
             "preview_type": "lockscreen_mock",
             "result": "success",
         ])
-    }
-
-    func lockscreenSetupConfirmed(visible: Bool, todoCount: Int) {
-        log(visible ? "lockscreen_setup_confirm_yes" : "lockscreen_setup_confirm_no", [
-            "source": "app",
-            "screen_name": "lockscreen_setup_confirmation",
-            "setup_type": "lockscreen_confirmation",
-            "result": "success",
-        ])
-        guard visible else { return }
-        defaults?.set(true, forKey: FlutterPreferenceKeys.lockscreenConfirmed)
-        recordActivationSignal(todoCount: todoCount, method: "user_confirmed_widget")
     }
 
     // MARK: - Activation
@@ -141,6 +133,8 @@ final class AnalyticsService: ObservableObject {
             "result": "success",
         ])
         guard isFirst else { return }
+        defaults?.set(true, forKey: FlutterPreferenceKeys.firstTodoCreated)
+        recordFirstContent(type: "todo", todoCount: taskCount)
         log("first_todo_created", [
             "source": source,
             "screen_name": "todo_editor",
@@ -149,11 +143,18 @@ final class AnalyticsService: ObservableObject {
             "setup_type": source == "onboarding" ? "onboarding" : "app",
             "result": "success",
         ])
-        recordActivationSignal(todoCount: taskCount, method: nil)
+        tryCompleteActivation()
     }
 
-    func todoCompleted(taskCount: Int, remainingCount: Int, templateId: String, source: String = "app") {
-        log("todo_completed", [
+    func todoCompleted(
+        taskCount: Int,
+        remainingCount: Int,
+        templateId: String,
+        source: String = "app",
+        eventId: String? = nil,
+        occurredAt: Date? = nil
+    ) {
+        var parameters: [String: Any] = [
             "source": source,
             "screen_name": source == "app" ? "todo_list" : "lockscreen",
             "todo_count": taskCount,
@@ -163,24 +164,30 @@ final class AnalyticsService: ObservableObject {
             "template_id": templateId,
             "setup_type": source == "app" ? "app" : "live_activity",
             "result": "success",
-        ])
+        ]
+        if let eventId { parameters["event_id"] = eventId }
+        if let occurredAt { parameters["occurred_at_ms"] = Int64(occurredAt.timeIntervalSince1970 * 1_000) }
+        log("todo_completed", parameters)
     }
 
-    /// A completion that happened on the Lock Screen while the app was closed.
-    func todoCompletedFromExtension(source: String) {
-        log("todo_completed", [
+    func liveActivityStartAttempt(requestId: String, source: String, templateId: String, reason: String) {
+        log("live_activity_start_attempt", [
+            "request_id": requestId,
             "source": source,
-            "screen_name": "lockscreen",
-            "setup_type": "live_activity",
-            "result": "success",
+            "template_id": templateId,
+            "reason": reason,
+            "result": "attempt",
         ])
     }
 
-    func shortcutQuickAddsMerged(count: Int) {
-        log("shortcut_quick_add", ["source": "shortcut", "result": "success", "merged_count": count])
-    }
-
-    func liveActivityStarted(taskCount: Int, remainingCount: Int, hasMemo: Bool, templateId: String, source: String = "app") {
+    func liveActivityStarted(
+        taskCount: Int,
+        remainingCount: Int,
+        hasMemo: Bool,
+        templateId: String,
+        source: String = "app",
+        requestId: String? = nil
+    ) {
         let parameters: [String: Any] = [
             "source": source,
             "screen_name": "lockscreen",
@@ -192,17 +199,26 @@ final class AnalyticsService: ObservableObject {
             "has_memo": hasMemo,
             "template_id": templateId,
             "result": "success",
+            "request_id": requestId ?? "unavailable",
+            "has_user_content": taskCount > 0 || hasMemo,
         ]
         log("live_activity_start_success", parameters)
-        log("live_activity_started", parameters)
         defaults?.set(true, forKey: FlutterPreferenceKeys.liveActivityStarted)
-        defaults?.set(true, forKey: FlutterPreferenceKeys.activationHasLiveActivity)
-        recordActivationSignal(todoCount: taskCount, method: "live_activity_success")
+        if taskCount > 0 || hasMemo {
+            defaults?.set(true, forKey: FlutterPreferenceKeys.activationHasLiveActivity)
+            defaults?.set("live_activity_success", forKey: FlutterPreferenceKeys.activationMethod)
+            tryCompleteActivation()
+        }
     }
 
-    func liveActivityStartFailed(reason: String, templateId: String) {
+    func liveActivityStartFailed(
+        reason: String,
+        templateId: String,
+        source: String = "app",
+        requestId: String? = nil
+    ) {
         log("live_activity_start_failed", [
-            "source": "app",
+            "source": source,
             "screen_name": "lockscreen",
             "setup_type": "live_activity",
             "reason": reason,
@@ -210,6 +226,7 @@ final class AnalyticsService: ObservableObject {
             "live_activity_enabled": false,
             "template_id": templateId,
             "result": "fail",
+            "request_id": requestId ?? "unavailable",
         ])
     }
 
@@ -253,8 +270,18 @@ final class AnalyticsService: ObservableObject {
         log("multiline_todo_imported", ["source": source, "count": count, "result": "success"])
     }
 
-    func memoCreated(source: String) {
-        log("memo_created", ["source": source, "result": "success"])
+    func memoCreated(source: String, templateId: String? = nil) {
+        let isFirst = !(defaults?.bool(forKey: FlutterPreferenceKeys.firstMemoCreated) ?? false)
+        var parameters: [String: Any] = [
+            "source": source, "result": "success", "is_first_memo": isFirst,
+        ]
+        if let templateId { parameters["template_id"] = templateId }
+        log("memo_created", parameters)
+        if isFirst {
+            defaults?.set(true, forKey: FlutterPreferenceKeys.firstMemoCreated)
+            recordFirstContent(type: "memo", todoCount: 0)
+        }
+        tryCompleteActivation()
     }
 
     func liveActivityRestarted() {
@@ -269,8 +296,15 @@ final class AnalyticsService: ObservableObject {
         log("widget_setup_started", ["source": "display", "result": "success"])
     }
 
-    func widgetInstalledConfirmed() {
-        log("widget_installed_confirmed", ["source": "display", "result": "success"])
+    func widgetInstalledConfirmed(method: String = "os_configuration") {
+        log("widget_installed_confirmed", [
+            "source": "display", "confirmation_method": method, "result": "success",
+        ])
+        if method == "os_configuration" {
+            defaults?.set(true, forKey: FlutterPreferenceKeys.lockscreenConfirmed)
+            defaults?.set("widget_confirmed", forKey: FlutterPreferenceKeys.activationMethod)
+            tryCompleteActivation()
+        }
     }
 
     // MARK: - Paywall funnel
@@ -299,45 +333,219 @@ final class AnalyticsService: ObservableObject {
         log("pro_preview_interacted", ["source": "app", "template_id": templateId, "result": "success"])
     }
 
-    func purchaseStarted(productId: String, source: String, price: Decimal?, currency: String?) {
+    func planSelected(
+        productId: String,
+        source: String,
+        price: Decimal?,
+        currency: String?,
+        isTrial: Bool,
+        isDefault: Bool,
+        previewTemplate: String?
+    ) {
+        var parameters = purchaseParameters(
+            productId: productId,
+            source: source,
+            price: price,
+            currency: currency,
+            isTrial: isTrial,
+            previewTemplate: previewTemplate
+        )
+        parameters["is_default"] = isDefault
+        log("plan_selected", parameters)
+    }
+
+    func paywallDismissed(source: String, previewTemplate: String?) {
+        var parameters: [String: Any] = ["source": "paywall", "paywall_trigger": source, "result": "success"]
+        parameters["preview_template"] = previewTemplate ?? "none"
+        log("paywall_dismissed", parameters)
+    }
+
+    func trialCTATapped(productId: String, source: String, previewTemplate: String?) {
         var parameters: [String: Any] = [
-            "source": "paywall",
-            "screen_name": "paywall",
-            "paywall_trigger": source,
-            "product_id": productId,
-            "result": "success",
+            "source": "paywall", "paywall_trigger": source, "product_id": productId, "result": "success",
         ]
-        if let price { parameters["value"] = NSDecimalNumber(decimal: price).doubleValue }
-        if let currency { parameters["currency"] = currency }
+        parameters["preview_template"] = previewTemplate ?? "none"
+        log("trial_cta_tapped", parameters)
+    }
+
+    func purchaseStarted(
+        productId: String,
+        source: String,
+        price: Decimal?,
+        currency: String?,
+        isTrial: Bool = false,
+        previewTemplate: String? = nil,
+        attemptId: String? = nil
+    ) {
+        var parameters = purchaseParameters(
+            productId: productId,
+            source: source,
+            price: price,
+            currency: currency,
+            isTrial: isTrial,
+            previewTemplate: previewTemplate,
+            attemptId: attemptId
+        )
+        parameters["screen_name"] = "paywall"
         log("purchase_started", parameters)
     }
 
-    func purchaseCompleted(productId: String, source: String, price: Decimal?, currency: String?) {
+    func purchaseCompleted(
+        productId: String,
+        source: String,
+        price: Decimal?,
+        currency: String?,
+        isTrial: Bool = false,
+        previewTemplate: String? = nil,
+        attemptId: String? = nil
+    ) {
+        let parameters = purchaseParameters(
+            productId: productId,
+            source: source,
+            price: price,
+            currency: currency,
+            isTrial: isTrial,
+            previewTemplate: previewTemplate,
+            attemptId: attemptId
+        )
+        log("purchase_completed", parameters)
+    }
+
+    func purchasePending(productId: String, source: String, attemptId: String, previewTemplate: String?) {
+        var parameters: [String: Any] = [
+            "source": "paywall", "paywall_trigger": source, "product_id": productId,
+            "attempt_id": attemptId, "result": "pending",
+        ]
+        parameters["preview_template"] = previewTemplate ?? "none"
+        log("purchase_pending", parameters)
+    }
+
+    func purchaseValueApplied(
+        productId: String,
+        source: String,
+        price: Decimal?,
+        currency: String?,
+        isTrial: Bool,
+        previewTemplate: String?,
+        attemptId: String? = nil
+    ) {
+        let parameters = purchaseParameters(
+            productId: productId,
+            source: source,
+            price: price,
+            currency: currency,
+            isTrial: isTrial,
+            previewTemplate: previewTemplate,
+            attemptId: attemptId
+        )
+        log("purchase_value_applied", parameters)
+    }
+
+    private func purchaseParameters(
+        productId: String,
+        source: String,
+        price: Decimal?,
+        currency: String?,
+        isTrial: Bool,
+        previewTemplate: String?,
+        attemptId: String? = nil
+    ) -> [String: Any] {
         var parameters: [String: Any] = [
             "source": "paywall",
             "paywall_trigger": source,
             "product_id": productId,
+            "plan": analyticsPlan(productId),
+            "is_trial": isTrial,
             "result": "success",
         ]
-        if let price { parameters["value"] = NSDecimalNumber(decimal: price).doubleValue }
+        if let price {
+            let value = NSDecimalNumber(decimal: price).doubleValue
+            parameters["value"] = value
+            parameters["price"] = value
+        }
         if let currency { parameters["currency"] = currency }
-        log("purchase_completed", parameters)
+        parameters["preview_template"] = previewTemplate ?? "none"
+        if let attemptId { parameters["attempt_id"] = attemptId }
+        return parameters
     }
 
-    func purchaseCancelled(productId: String, source: String) {
-        log("purchase_cancelled", [
-            "source": "paywall", "paywall_trigger": source, "product_id": productId, "result": "success",
+    private func analyticsPlan(_ productId: String) -> String {
+        if ProductIdentifiers.isYearly(productId) { return "yearly" }
+        if productId == ProductIdentifiers.monthly { return "monthly" }
+        if productId == ProductIdentifiers.lifetime { return "lifetime" }
+        return "unknown"
+    }
+
+    func purchaseCancelled(
+        productId: String,
+        source: String,
+        price: Decimal? = nil,
+        currency: String? = nil,
+        isTrial: Bool = false,
+        previewTemplate: String? = nil,
+        attemptId: String? = nil
+    ) {
+        var parameters = purchaseParameters(
+            productId: productId, source: source, price: price, currency: currency,
+            isTrial: isTrial, previewTemplate: previewTemplate, attemptId: attemptId
+        )
+        parameters["result"] = "cancelled"
+        log("purchase_cancelled", parameters)
+    }
+
+    func purchaseFailed(
+        productId: String,
+        source: String,
+        price: Decimal? = nil,
+        currency: String? = nil,
+        isTrial: Bool = false,
+        previewTemplate: String? = nil,
+        attemptId: String? = nil
+    ) {
+        var parameters = purchaseParameters(
+            productId: productId, source: source, price: price, currency: currency,
+            isTrial: isTrial, previewTemplate: previewTemplate, attemptId: attemptId
+        )
+        parameters["result"] = "fail"
+        log("purchase_failed", parameters)
+    }
+
+    func restoreCompleted(result: String) {
+        log("restore_completed", ["source": "app", "result": result])
+    }
+
+    func reminderAction(_ action: String, kind: String, source: String = "settings") {
+        log("reminder_action", ["source": source, "action": action, "kind": kind, "result": "success"])
+    }
+
+    func cardSaveFailed(operation: String, source: String, errorCode: String = "write_failed") {
+        log("card_save_failed", [
+            "source": source, "operation": operation, "error_code": errorCode, "result": "fail",
         ])
     }
 
-    func purchaseFailed(productId: String, source: String) {
-        log("purchase_failed", [
-            "source": "paywall", "paywall_trigger": source, "product_id": productId, "result": "fail",
+    func lockscreenInteracted(action: String, surface: String, eventId: String, occurredAt: Date) {
+        log("lockscreen_interacted", [
+            "source": surface, "surface": surface, "action": action, "event_id": eventId,
+            "occurred_at_ms": Int64(occurredAt.timeIntervalSince1970 * 1_000), "result": "success",
         ])
     }
 
-    func restoreCompleted(restored: Bool) {
-        log("restore_completed", ["source": "app", "result": "success", "restored": restored])
+    func appReturned(entrySource: String, activityState: String, hasTodayContent: Bool, now: Date = Date()) {
+        guard let defaults else { return }
+        defer { defaults.set(now.timeIntervalSince1970, forKey: FlutterPreferenceKeys.lastForegroundAt) }
+        let previousSeconds = defaults.double(forKey: FlutterPreferenceKeys.lastForegroundAt)
+        guard previousSeconds > 0, daysSinceInstall > 0 else { return }
+        let day = FlutterDate.dateKey(now)
+        guard defaults.string(forKey: FlutterPreferenceKeys.lastReturnedDay) != day else { return }
+        defaults.set(day, forKey: FlutterPreferenceKeys.lastReturnedDay)
+        let previous = Date(timeIntervalSince1970: previousSeconds)
+        let elapsedDays = max(0, Calendar.current.dateComponents([.day], from: previous, to: now).day ?? 0)
+        log("app_returned", [
+            "source": "app", "entry_source": entrySource, "cohort_age_days": daysSinceInstall,
+            "days_since_previous_foreground": elapsedDays, "activity_state": activityState,
+            "has_today_content": hasTodayContent, "result": "success",
+        ])
     }
 
     func temporaryTrialStarted(source: String) {
@@ -389,34 +597,34 @@ final class AnalyticsService: ObservableObject {
         for event in events {
             var parameters = event.parameters
             parameters["queued_delay_hours"] = event.queuedDelayHours()
+            parameters["occurred_at_ms"] = Int64(event.createdAt.timeIntervalSince1970 * 1_000)
+            parameters["event_id"] = event.id
             log(event.name, parameters)
+            store.acknowledgeQueuedAnalyticsEvents(ids: Set([event.id]))
         }
-        store.clearQueuedAnalyticsEvents()
     }
 
     // MARK: - Activation state
 
-    private func recordActivationSignal(todoCount: Int, method: String?) {
-        defaults?.set(true, forKey: FlutterPreferenceKeys.firstTodoCreated)
-        if defaults?.string(forKey: FlutterPreferenceKeys.firstTodoCreatedAt) == nil {
-            defaults?.set(
-                FlutterDate.utcString(from: Date()),
-                forKey: FlutterPreferenceKeys.firstTodoCreatedAt
-            )
+    private func recordFirstContent(type: String, todoCount: Int) {
+        if defaults?.string(forKey: FlutterPreferenceKeys.firstContentCreatedAt) == nil {
+            let now = FlutterDate.utcString(from: Date())
+            defaults?.set(now, forKey: FlutterPreferenceKeys.firstContentCreatedAt)
+            if type == "todo" {
+                defaults?.set(now, forKey: FlutterPreferenceKeys.firstTodoCreatedAt)
+            }
+            defaults?.set(type, forKey: FlutterPreferenceKeys.activationContentType)
+            defaults?.set(todoCount, forKey: FlutterPreferenceKeys.activationTodoCount)
         }
-        if let method {
-            defaults?.set(method, forKey: FlutterPreferenceKeys.activationMethod)
-        }
-        defaults?.set(todoCount, forKey: FlutterPreferenceKeys.activationTodoCount)
-        tryCompleteActivation()
     }
 
-    /// Activation means: created a todo *and* got the card onto the Lock Screen.
+    /// Activation means: saved a todo or memo and got that content onto a verified surface.
     /// Logged at most once per install.
     func tryCompleteActivation() {
         guard
             let defaults,
-            defaults.bool(forKey: FlutterPreferenceKeys.firstTodoCreated),
+            defaults.bool(forKey: FlutterPreferenceKeys.firstTodoCreated)
+                || defaults.bool(forKey: FlutterPreferenceKeys.firstMemoCreated),
             let method = defaults.string(forKey: FlutterPreferenceKeys.activationMethod),
             !method.isEmpty
         else { return }
@@ -432,6 +640,8 @@ final class AnalyticsService: ObservableObject {
             "source": "app",
             "screen_name": "activation",
             "activation_method": method,
+            "activation_definition": "content_and_setup_v2",
+            "content_type": defaults.string(forKey: FlutterPreferenceKeys.activationContentType) ?? "unknown",
             "setup_type": widgetConfirmed && hasLiveActivity
                 ? "live_activity_and_widget"
                 : (widgetConfirmed ? "widget" : "live_activity"),
@@ -439,6 +649,7 @@ final class AnalyticsService: ObservableObject {
             "has_live_activity": hasLiveActivity,
             "widget_setup_confirmed": widgetConfirmed,
             "days_since_first_open": daysSinceInstall,
+            "time_to_value_seconds": timeToValueSeconds,
             "result": "success",
         ])
         defaults.set(true, forKey: FlutterPreferenceKeys.activationEventLogged)
@@ -446,5 +657,14 @@ final class AnalyticsService: ObservableObject {
 
     var hasCompletedActivation: Bool {
         defaults?.bool(forKey: FlutterPreferenceKeys.activationCompleted) ?? false
+    }
+
+    private var timeToValueSeconds: Int {
+        guard let stored = defaults?.string(forKey: FlutterPreferenceKeys.firstContentCreatedAt),
+              let createdAt = FlutterDate.parse(stored),
+              let installedRaw = defaults?.string(forKey: FlutterPreferenceKeys.installDate),
+              let installedAt = FlutterDate.parse(installedRaw)
+        else { return -1 }
+        return max(0, Int(createdAt.timeIntervalSince(installedAt)))
     }
 }

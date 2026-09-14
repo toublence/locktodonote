@@ -108,10 +108,11 @@ public enum LockScreenTemplate: String, Codable, Hashable, Sendable, CaseIterabl
     public var proFeature: ProFeature? {
         switch self {
         case .memoTodo: .memoTodoTemplate
+        case .dateMemo, .dateTodo: .dateTemplate
         case .imageMemo: .imageMemoTemplate
         case .imageTodo: .imageTodoTemplate
         case .ddayMemo: .ddayMemoTemplate
-        case .calendarItems, .dateMemo, .dateTodo: nil
+        case .calendarItems: nil
         }
     }
 }
@@ -129,6 +130,7 @@ public enum ShortcutInsertPriority: String, Codable, Hashable, Sendable, CaseIte
 /// Mirrors `ProFeature` in the Flutter build.
 public enum ProFeature: String, Hashable, Sendable, CaseIterable {
     case memoTodoTemplate
+    case dateTemplate
     case imageMemoTemplate
     case imageTodoTemplate
     case ddayMemoTemplate
@@ -140,7 +142,7 @@ public enum ProFeature: String, Hashable, Sendable, CaseIterable {
     /// The 24-hour trial unlocks templates only — never themes or customization.
     public var unlockedByTemporaryTrial: Bool {
         switch self {
-        case .memoTodoTemplate, .imageMemoTemplate, .imageTodoTemplate, .ddayMemoTemplate:
+        case .memoTodoTemplate, .dateTemplate, .imageMemoTemplate, .imageTodoTemplate, .ddayMemoTemplate:
             true
         case .themes, .unlimitedShortcuts, .cardCustomization, .displayStyle:
             false

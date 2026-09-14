@@ -22,6 +22,7 @@ struct LockTodoNoteApp: App {
                 .environmentObject(environment.liveActivity)
                 .environmentObject(environment.dashboard)
                 .environmentObject(environment.analytics)
+                .environmentObject(environment.notifications)
                 .environmentObject(environment.links)
                 .environmentObject(languageStore)
                 .environment(\.locale, languageStore.locale)

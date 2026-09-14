@@ -38,6 +38,53 @@ struct RootView: View {
                 PaywallView(source: request.source)
                     .environment(\.palette, palette)
             }
+            .sheet(item: $environment.memoEditorRequest) { card in
+                MemoEditorSheet(card: card)
+                    .environment(\.palette, palette)
+            }
+            .alert(
+                bilingualString(
+                    korean: "오늘 무료 단축어 사용 횟수를 모두 사용했어요.",
+                    english: "You've used all free Shortcut adds today."
+                ),
+                isPresented: $environment.showShortcutLimitPrompt
+            ) {
+                Button(bilingualString(korean: "Pro 보기", english: "View Pro")) {
+                    environment.offerPaywallForShortcutLimit()
+                }
+                Button(appString(localized: "common.notNow", defaultValue: "Not now"), role: .cancel) {}
+            } message: {
+                Text(bilingualString(
+                    korean: "Pro에서는 제한 없이 추가할 수 있습니다.",
+                    english: "With Pro, you can add without limits."
+                ))
+            }
+            .confirmationDialog(
+                bilingualString(korean: "언제 오늘 할 일을 알려드릴까요?", english: "When should we remind you about today's tasks?"),
+                isPresented: $environment.showReminderSuggestion,
+                titleVisibility: .visible
+            ) {
+                Button(bilingualString(korean: "아침 8시", english: "8:00 AM")) {
+                    Task { await environment.enableSuggestedReminder(morning: true) }
+                }
+                Button(bilingualString(korean: "저녁 9시", english: "9:00 PM")) {
+                    Task { await environment.enableSuggestedReminder(morning: false) }
+                }
+                Button(appString(localized: "common.notNow", defaultValue: "Not now"), role: .cancel) {
+                    environment.dismissReminderSuggestion()
+                }
+            }
+            .alert(
+                environment.deepLinkError ?? "",
+                isPresented: Binding(
+                    get: { environment.deepLinkError != nil },
+                    set: { if !$0 { environment.deepLinkError = nil } }
+                )
+            ) {
+                Button(appString(localized: "common.ok", defaultValue: "OK")) {
+                    environment.deepLinkError = nil
+                }
+            }
             .onChange(of: environment.pendingDeepLink) { link in
                 guard let link else { return }
                 route(link)
@@ -49,7 +96,9 @@ struct RootView: View {
                     leftForegroundAt = Date()
                     return
                 }
-                Task { await requestTrackingAuthorizationIfNeeded() }
+                if !environment.needsOnboarding {
+                    Task { await requestTrackingAuthorizationIfNeeded() }
+                }
                 guard hasLeftForeground else { return }
                 guard let leftForegroundAt,
                       Date().timeIntervalSince(leftForegroundAt) >= 5
@@ -95,16 +144,16 @@ struct RootView: View {
             environment.requestQuickAdd(.todo, source: link.source ?? "app")
         case .dashboard:
             selectedDestination = .today
-        case .card:
-            // Opening a specific card lands on the day it belongs to.
+        case .card(let id):
             selectedDestination = .calendar
+            environment.openCard(id: id)
         }
     }
 
     @MainActor
     private func finishOnboardingAfterTrackingAuthorization() async {
-        guard await requestTrackingAuthorizationIfNeeded() else { return }
         environment.completeOnboarding()
+        _ = await requestTrackingAuthorizationIfNeeded()
     }
 
     @MainActor

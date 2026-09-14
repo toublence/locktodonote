@@ -46,7 +46,7 @@ struct AppShellView: View {
         .onChange(of: selection) { destination in
             analytics.topDestinationSelected(destination: destination.rawValue)
             if destination == .today {
-                dashboard.selectedDate = Date()
+                dashboard.followToday()
                 dashboard.publish()
             } else if destination == .settings {
                 analytics.settingsOpened(source: "top_control")

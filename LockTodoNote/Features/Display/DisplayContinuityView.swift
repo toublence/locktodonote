@@ -12,6 +12,7 @@ struct DisplayContinuityView: View {
     @Environment(\.palette) private var palette
 
     @State private var selection: DisplayMode = .liveActivity
+    @State private var widgetMessage: String?
 
     var body: some View {
         ScrollView {
@@ -139,6 +140,15 @@ struct DisplayContinuityView: View {
 
             WidgetPreviewCard(snapshot: dashboard.currentSnapshot())
 
+            Label(
+                environment.isWidgetInstalled
+                    ? appString(localized: "display.widget.installed", defaultValue: "Widget installed")
+                    : appString(localized: "display.widget.notVerified", defaultValue: "Widget installation not verified"),
+                systemImage: environment.isWidgetInstalled ? "checkmark.circle.fill" : "circle.dashed"
+            )
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(environment.isWidgetInstalled ? palette.accent : palette.textSecondary)
+
             VStack(alignment: .leading, spacing: 14) {
                 Label(
                     appString(localized: "display.widget.step1", defaultValue: "Touch and hold the Home Screen."),
@@ -164,17 +174,23 @@ struct DisplayContinuityView: View {
             )
 
             Button {
-                analytics.widgetSetupStarted()
-                environment.appGroup.reloadWidgetTimelines()
-                environment.appGroup.defaults?.set(
-                    true,
-                    forKey: FlutterPreferenceKeys.widgetInstallationHandled
-                )
+                let alreadySelfReported = environment.appGroup.defaults?.bool(
+                    forKey: AppGroupKeys.widgetConfirmationPending
+                ) ?? false
                 environment.appGroup.defaults?.set(
                     true,
                     forKey: AppGroupKeys.widgetConfirmationPending
                 )
-                environment.grantWidgetInstallRewardIfNeeded()
+                environment.appGroup.reloadWidgetTimelines()
+                Task {
+                    let installed = await environment.verifyWidgetInstallation()
+                    if !installed, !alreadySelfReported {
+                        analytics.widgetInstalledConfirmed(method: "self_report")
+                    }
+                    widgetMessage = installed
+                        ? appString(localized: "display.widget.verified", defaultValue: "Widget installation verified.")
+                        : appString(localized: "display.widget.verifyFailed", defaultValue: "We couldn't find the widget yet. Add it, then try again.")
+                }
             } label: {
                 Text(appString(localized: "display.widget.confirm", defaultValue: "I added the Widget"))
                     .font(.headline)
@@ -182,6 +198,19 @@ struct DisplayContinuityView: View {
                     .frame(height: 48)
             }
             .buttonStyle(.borderedProminent)
+        }
+        .onAppear {
+            analytics.widgetSetupStarted()
+            Task { _ = await environment.verifyWidgetInstallation() }
+        }
+        .alert(
+            widgetMessage ?? "",
+            isPresented: Binding(
+                get: { widgetMessage != nil },
+                set: { if !$0 { widgetMessage = nil } }
+            )
+        ) {
+            Button(appString(localized: "common.ok", defaultValue: "OK")) { widgetMessage = nil }
         }
     }
 
@@ -330,6 +359,8 @@ struct DisplayContinuityView: View {
         switch liveActivity.state {
         case .active: appString(localized: "display.active", defaultValue: "Active")
         case .possiblyExpired: appString(localized: "display.stale", defaultValue: "Stale")
+        case .ended, .missing: appString(localized: "liveActivity.ended", defaultValue: "Ended")
+        case .dismissed: appString(localized: "liveActivity.ended", defaultValue: "Stopped")
         case .notStarted:
             hasStartedBefore
                 ? appString(localized: "display.ended", defaultValue: "Ended")
@@ -344,8 +375,8 @@ struct DisplayContinuityView: View {
     private var liveStatusTint: Color {
         switch liveActivity.state {
         case .active: palette.success
-        case .possiblyExpired: palette.warning
-        case .notStarted: palette.textTertiary
+        case .possiblyExpired, .ended, .missing: palette.warning
+        case .notStarted, .dismissed: palette.textTertiary
         case .unsupported: palette.danger
         }
     }

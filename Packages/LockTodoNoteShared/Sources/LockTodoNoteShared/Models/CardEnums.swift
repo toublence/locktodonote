@@ -101,6 +101,18 @@ public enum LockScreenTemplate: String, Codable, Hashable, Sendable, CaseIterabl
         self == .ddayMemo
     }
 
+    public var isTodoOnly: Bool {
+        self == .dateTodo || self == .imageTodo
+    }
+
+    public var isMemoOnly: Bool {
+        self == .dateMemo || self == .imageMemo || self == .ddayMemo
+    }
+
+    public var isMixed: Bool {
+        self == .calendarItems || self == .memoTodo
+    }
+
     public var requiresPro: Bool {
         proFeature != nil
     }

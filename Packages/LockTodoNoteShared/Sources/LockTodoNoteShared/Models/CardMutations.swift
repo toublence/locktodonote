@@ -65,22 +65,24 @@ public enum CardMutations {
         var didChange = false
 
         for quickAdd in quickAdds {
-            guard !existingIds.contains(quickAdd.id) else { continue }
             let day = FlutterDate.date(fromKey: quickAdd.dateKey, calendar: calendar) ?? quickAdd.createdAt
             let target = combine(day: day, time: quickAdd.createdAt, calendar: calendar)
 
             switch quickAdd.target {
             case .memo:
+                guard !existingIds.contains(quickAdd.id) else { continue }
                 // Only one memo is pinned to the Lock Screen at a time.
                 for index in result.indices where result[index].type == .quickNote && result[index].isPinned {
                     result[index].isPinned = false
                     result[index].showOnLockScreen = false
                 }
+                let memoBody = QuickCaptureService.cleanMemoText(from: quickAdd.text)
+                guard !memoBody.isEmpty else { continue }
                 result.append(
                     Card(
                         id: quickAdd.id,
-                        title: memoTitle(from: quickAdd.text),
-                        body: quickAdd.text,
+                        title: memoTitle(from: memoBody),
+                        body: memoBody,
                         type: .quickNote,
                         privacyMode: .full,
                         isPinned: true,
@@ -90,25 +92,56 @@ public enum CardMutations {
                         updatedAt: quickAdd.createdAt
                     )
                 )
+                existingIds.insert(quickAdd.id)
+                didChange = true
+
             case .todo:
-                result.append(
-                    Card(
-                        id: quickAdd.id,
-                        title: quickAdd.text,
-                        type: .checklist,
-                        privacyMode: .full,
-                        checklistItems: [
-                            ChecklistItem(id: "\(quickAdd.id)-item-0", text: quickAdd.text)
-                        ],
-                        showOnLockScreen: true,
-                        targetDateTime: target,
-                        createdAt: quickAdd.createdAt,
-                        updatedAt: quickAdd.createdAt
+                let lines = QuickCaptureService.parseTodoLines(from: quickAdd.text)
+                guard !lines.isEmpty else { continue }
+                if lines.count == 1 {
+                    guard !existingIds.contains(quickAdd.id) else { continue }
+                    let line = lines[0]
+                    result.append(
+                        Card(
+                            id: quickAdd.id,
+                            title: line,
+                            type: .checklist,
+                            privacyMode: .full,
+                            checklistItems: [
+                                ChecklistItem(id: "\(quickAdd.id)-item-0", text: line)
+                            ],
+                            showOnLockScreen: true,
+                            targetDateTime: target,
+                            createdAt: quickAdd.createdAt,
+                            updatedAt: quickAdd.createdAt
+                        )
                     )
-                )
+                    existingIds.insert(quickAdd.id)
+                    didChange = true
+                } else {
+                    for (index, line) in lines.enumerated() {
+                        let cardId = "\(quickAdd.id)-\(index)"
+                        guard !existingIds.contains(cardId) else { continue }
+                        result.append(
+                            Card(
+                                id: cardId,
+                                title: line,
+                                type: .checklist,
+                                privacyMode: .full,
+                                checklistItems: [
+                                    ChecklistItem(id: "\(cardId)-item-0", text: line)
+                                ],
+                                showOnLockScreen: true,
+                                targetDateTime: target,
+                                createdAt: quickAdd.createdAt,
+                                updatedAt: quickAdd.createdAt
+                            )
+                        )
+                        existingIds.insert(cardId)
+                        didChange = true
+                    }
+                }
             }
-            existingIds.insert(quickAdd.id)
-            didChange = true
         }
         return (result, didChange)
     }

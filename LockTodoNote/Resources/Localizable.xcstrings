@@ -18698,6 +18698,48 @@
           }
         }
       }
+    },
+    "onboarding.quickAdd.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Add directly from Lock Screen" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "잠금화면에서 바로 추가하기" } }
+      }
+    },
+    "onboarding.quickAdd.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Add todos and memos from anywhere without opening the app by assigning the shortcut to a Lock Screen button or Action button." } },
+        "ko": { "stringUnit": { "state": "translated", "value": "단축어를 잠금화면 버튼이나 액션 버튼에 등록하면, 앱을 열지 않고 어디서든 할 일과 메모를 추가할 수 있어요." } }
+      }
+    },
+    "onboarding.quickAdd.cta": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Set up Quick Add" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "빠른 추가 설정하기" } }
+      }
+    },
+    "home.quickAddTip.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Add todos directly from Lock Screen — Set up Shortcuts" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "잠금화면에서 바로 할 일 추가하기 — 단축어 설정하기" } }
+      }
+    },
+    "shortcuts.intro.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Add todos and memos from anywhere without opening the app using the Lock Screen button, Action button, or Siri." } },
+        "ko": { "stringUnit": { "state": "translated", "value": "잠금화면 버튼, 액션 버튼, Siri로 앱을 열지 않고 어디서든 할 일과 메모를 추가할 수 있습니다." } }
+      }
+    },
+    "shortcuts.openShortcutsApp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Open Shortcuts App" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "단축어 앱 열기" } }
+      }
     }
   },
   "version": "1.0"

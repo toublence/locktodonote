@@ -134,10 +134,7 @@ struct QuickCaptureView: View {
 
         switch mode {
         case .todo:
-            let lines = trimmedText
-                .components(separatedBy: .newlines)
-                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-                .filter { !$0.isEmpty }
+            let lines = QuickCaptureService.parseTodoLines(from: trimmedText)
             guard !lines.isEmpty else { return }
             guard cardStore.addTodos(texts: lines, to: date, recurrence: recurrence) else {
                 recordSaveFailure(operation: "create_todo")

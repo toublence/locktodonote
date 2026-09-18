@@ -2,6 +2,9 @@ import SwiftUI
 import StoreKit
 import WidgetKit
 import LockTodoNoteShared
+#if canImport(Darwin)
+import Darwin
+#endif
 
 /// Wires the stores together and runs one-time launch work.
 ///
@@ -103,6 +106,41 @@ final class AppEnvironment: ObservableObject {
             pendingPurchaseContext = envelope.context
             pendingProPreview = envelope.preview?.draft(snapshot: dashboard.currentSnapshot())
         }
+        setupDataChangeObserver()
+    }
+
+    deinit {
+        #if canImport(Darwin)
+        let name = CFNotificationName(AppGroupKeys.dataChangedNotificationName as CFString)
+        let observer = Unmanaged.passUnretained(self).toOpaque()
+        CFNotificationCenterRemoveObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            observer,
+            name,
+            nil
+        )
+        #endif
+    }
+
+    private func setupDataChangeObserver() {
+        #if canImport(Darwin)
+        let name = CFNotificationName(AppGroupKeys.dataChangedNotificationName as CFString)
+        let observer = Unmanaged.passUnretained(self).toOpaque()
+        CFNotificationCenterAddObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            observer,
+            { _, observer, _, _, _ in
+                guard let observer else { return }
+                let environment = Unmanaged<AppEnvironment>.fromOpaque(observer).takeUnretainedValue()
+                Task { @MainActor in
+                    environment.refreshFromBackgroundWork()
+                }
+            },
+            name.rawValue,
+            nil,
+            .deliverImmediately
+        )
+        #endif
     }
 
     private static func resetForUITestsIfRequested(appGroup: AppGroupStore) {

@@ -96,6 +96,97 @@ final class AnalyticsService: ObservableObject {
         log("onboarding_complete", ["source": "app", "result": "success", "skipped": skipped])
     }
 
+    // MARK: - Quick Add & Shortcuts
+
+    func quickAddInvoked(source: String, selectedTemplate: String, isPro: Bool) {
+        log("quick_add_invoked", [
+            "source": source,
+            "selected_template": selectedTemplate,
+            "is_pro": isPro,
+            "result": "success",
+        ])
+    }
+
+    func quickAddTypeSelected(type: String, source: String) {
+        log("quick_add_type_selected", [
+            "type": type,
+            "source": source,
+            "result": "success",
+        ])
+    }
+
+    func shortcutQuickAdd(
+        type: String,
+        itemCount: Int,
+        source: String,
+        selectedTemplate: String,
+        isPro: Bool
+    ) {
+        log("shortcut_quick_add", [
+            "type": type,
+            "target": type,
+            "item_count": itemCount,
+            "source": source,
+            "selected_template": selectedTemplate,
+            "template_id": selectedTemplate,
+            "is_pro": isPro,
+            "is_premium": isPro,
+            "result": "success",
+        ])
+    }
+
+    func quickAddFailed(reason: String, source: String) {
+        log("quick_add_failed", [
+            "reason": reason,
+            "source": source,
+            "result": "fail",
+        ])
+    }
+
+    func quickAddLimitReached(dailyCount: Int, source: String) {
+        log("quick_add_limit_reached", [
+            "daily_count": dailyCount,
+            "source": source,
+            "result": "limit_reached",
+        ])
+    }
+
+    func quickAddOnboardingSeen() {
+        log("quick_add_onboarding_seen", [
+            "source": "onboarding",
+            "result": "success",
+        ])
+    }
+
+    func quickAddOnboardingCTA() {
+        log("quick_add_onboarding_cta", [
+            "source": "onboarding",
+            "result": "success",
+        ])
+    }
+
+    func quickAddTipSeen() {
+        log("quick_add_tip_seen", [
+            "source": "today_tab",
+            "result": "success",
+        ])
+    }
+
+    func quickAddTipTapped() {
+        log("quick_add_tip_tapped", [
+            "source": "today_tab",
+            "result": "success",
+        ])
+    }
+
+    func quickAddEducationCompleted(source: String = "app") {
+        defaults?.set(true, forKey: AppGroupKeys.quickAddEducationCompleted)
+        log("quick_add_education_completed", [
+            "source": source,
+            "result": "success",
+        ])
+    }
+
     func lockscreenPreviewSeen(templateId: String, todoCount: Int, source: String = "onboarding") {
         defaults?.set(true, forKey: FlutterPreferenceKeys.lockscreenPreviewSeen)
         log("lockscreen_preview_seen", [

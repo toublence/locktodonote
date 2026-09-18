@@ -2,6 +2,9 @@ import Foundation
 #if canImport(WidgetKit)
 import WidgetKit
 #endif
+#if canImport(Darwin)
+import Darwin
+#endif
 
 /// The single door to everything the app and its extensions share: the
 /// dashboard handoff payload, the work queues extensions write into, and the
@@ -101,6 +104,52 @@ public struct AppGroupStore: Sendable {
         var rows = defaults.array(forKey: AppGroupKeys.pendingQuickAdds) as? [[String: Any]] ?? []
         rows.append(quickAdd.dictionary)
         defaults.set(rows, forKey: AppGroupKeys.pendingQuickAdds)
+        markQuickAddEducationCompleted()
+        postDataChangedNotification()
+    }
+
+    public func postDataChangedNotification() {
+        #if canImport(Darwin)
+        let name = CFNotificationName(AppGroupKeys.dataChangedNotificationName as CFString)
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), name, nil, nil, true)
+        #endif
+    }
+
+    public var isQuickAddEducationCompleted: Bool {
+        get { defaults?.bool(forKey: AppGroupKeys.quickAddEducationCompleted) ?? false }
+        set { defaults?.set(newValue, forKey: AppGroupKeys.quickAddEducationCompleted) }
+    }
+
+    public func markQuickAddEducationCompleted() {
+        defaults?.set(true, forKey: AppGroupKeys.quickAddEducationCompleted)
+    }
+
+    public var isQuickAddTipDismissed: Bool {
+        get { defaults?.bool(forKey: AppGroupKeys.quickAddTipDismissed) ?? false }
+        set { defaults?.set(newValue, forKey: AppGroupKeys.quickAddTipDismissed) }
+    }
+
+    public var quickAddTipImpressions: Int {
+        get { defaults?.integer(forKey: AppGroupKeys.quickAddTipImpressions) ?? 0 }
+        set { defaults?.set(newValue, forKey: AppGroupKeys.quickAddTipImpressions) }
+    }
+
+    public var quickAddTipLastShownDate: String? {
+        get { defaults?.string(forKey: AppGroupKeys.quickAddTipLastShownDate) }
+        set { defaults?.set(newValue, forKey: AppGroupKeys.quickAddTipLastShownDate) }
+    }
+
+    public var installDate: Date {
+        if let date = defaults?.object(forKey: AppGroupKeys.installDate) as? Date {
+            return date
+        }
+        let now = Date()
+        defaults?.set(now, forKey: AppGroupKeys.installDate)
+        return now
+    }
+
+    public var daysSinceInstall: Int {
+        Calendar.current.dateComponents([.day], from: installDate, to: Date()).day ?? 0
     }
 
     public func pendingQuickAdds() -> [PendingQuickAdd] {

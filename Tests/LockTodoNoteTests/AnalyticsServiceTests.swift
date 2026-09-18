@@ -265,4 +265,44 @@ struct AnalyticsServiceTests {
         #expect(parameters?["occurred_at_ms"] as? Int64 == 1_700_000_000_000)
         #expect(store.queuedAnalyticsEvents().isEmpty)
     }
+
+    // MARK: - Quick Add Analytics
+
+    @Test func quickAddAnalyticsEventsRecordExpectedNamesAndParameters() {
+        let (service, backend, suite) = makeService()
+        defer { cleanUp(suite) }
+
+        service.quickAddInvoked(entryPoint: "action_button")
+        service.quickAddTypeSelected(target: "todo", entryPoint: "action_button")
+        service.shortcutQuickAdd(type: "todo", itemCount: 3, source: "intent")
+        service.quickAddFailed(reason: "storage_error", entryPoint: "intent")
+        service.quickAddLimitReached(entryPoint: "intent")
+        service.quickAddOnboardingSeen()
+        service.quickAddOnboardingCta()
+        service.quickAddTipSeen()
+        service.quickAddTipTapped()
+        service.quickAddEducationCompleted()
+
+        #expect(backend.names().contains("quick_add_invoked"))
+        #expect(backend.parameters(for: "quick_add_invoked")?["entry_point"] as? String == "action_button")
+
+        #expect(backend.names().contains("quick_add_type_selected"))
+        #expect(backend.parameters(for: "quick_add_type_selected")?["target"] as? String == "todo")
+
+        #expect(backend.names().contains("shortcut_quick_add"))
+        #expect(backend.parameters(for: "shortcut_quick_add")?["type"] as? String == "todo")
+        #expect(backend.parameters(for: "shortcut_quick_add")?["item_count"] as? Int == 3)
+
+        #expect(backend.names().contains("quick_add_failed"))
+        #expect(backend.parameters(for: "quick_add_failed")?["reason"] as? String == "storage_error")
+
+        #expect(backend.names().contains("quick_add_limit_reached"))
+        #expect(backend.parameters(for: "quick_add_limit_reached")?["entry_point"] as? String == "intent")
+
+        #expect(backend.names().contains("quick_add_onboarding_seen"))
+        #expect(backend.names().contains("quick_add_onboarding_cta"))
+        #expect(backend.names().contains("quick_add_tip_seen"))
+        #expect(backend.names().contains("quick_add_tip_tapped"))
+        #expect(backend.names().contains("quick_add_education_completed"))
+    }
 }

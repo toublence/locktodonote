@@ -26,12 +26,14 @@ struct OnboardingView: View {
         case intro
         case firstTodo
         case activate
+        case quickAdd
 
         var analyticsName: String {
             switch self {
             case .intro: "intro"
             case .firstTodo: "first_todo"
             case .activate: "activate"
+            case .quickAdd: "quick_add"
             }
         }
     }
@@ -51,6 +53,9 @@ struct OnboardingView: View {
         }
         .onChange(of: step) { newStep in
             analytics.onboardingStepViewed(step: newStep.analyticsName, index: newStep.rawValue + 1)
+            if newStep == .quickAdd {
+                analytics.quickAddOnboardingSeen()
+            }
         }
         .alert(
             startError ?? "",
@@ -149,6 +154,18 @@ struct OnboardingView: View {
                     .padding(.horizontal, 24)
             }
 
+        case .quickAdd:
+            StepShell(
+                symbol: "bolt.badge.automatic",
+                title: appString(localized: "onboarding.quickAdd.title", defaultValue: "잠금화면에서 바로 추가하기"),
+                message: appString(
+                    localized: "onboarding.quickAdd.message",
+                    defaultValue: "단축어를 잠금화면 버튼이나 액션 버튼에 등록하면, 앱을 열지 않고 어디서든 할 일과 메모를 추가할 수 있어요."
+                )
+            ) {
+                QuickAddFlowPreviewCard()
+                    .padding(.horizontal, 24)
+            }
         }
     }
 
@@ -171,13 +188,18 @@ struct OnboardingView: View {
             .opacity(isPrimaryDisabled ? 0.5 : 1)
             .accessibilityIdentifier("onboarding.primary")
 
-            if step == .activate && !activationSucceeded {
+            if (step == .activate && !activationSucceeded) || step == .quickAdd {
                 Button(appString(localized: "onboarding.later", defaultValue: "Maybe later")) {
-                    analytics.onboardingComplete(skipped: false)
-                    onFinish()
+                    if step == .activate {
+                        step = .quickAdd
+                    } else {
+                        analytics.onboardingComplete(skipped: false)
+                        onFinish()
+                    }
                 }
                 .font(.subheadline)
                 .foregroundStyle(palette.textSecondary)
+                .accessibilityIdentifier("onboarding.secondary")
             }
         }
         .padding(20)
@@ -192,6 +214,8 @@ struct OnboardingView: View {
             activationSucceeded
                 ? appString(localized: "common.next", defaultValue: "Next")
                 : appString(localized: "liveActivity.start", defaultValue: "Show on Lock Screen")
+        case .quickAdd:
+            appString(localized: "onboarding.quickAdd.cta", defaultValue: "빠른 추가 설정하기")
         }
     }
 
@@ -213,11 +237,19 @@ struct OnboardingView: View {
             if saveFirstTodo() { step = .activate }
         case .activate:
             if activationSucceeded {
-                analytics.onboardingComplete(skipped: false)
-                onFinish()
+                step = .quickAdd
             } else {
                 Task { await activate() }
             }
+        case .quickAdd:
+            analytics.quickAddOnboardingCta()
+            analytics.quickAddEducationCompleted()
+            environment.appGroup.markQuickAddEducationCompleted()
+            if let url = URL(string: "shortcuts://") {
+                openURL(url)
+            }
+            analytics.onboardingComplete(skipped: false)
+            onFinish()
         }
     }
 
@@ -307,88 +339,104 @@ struct OnboardingView: View {
     }
 }
 
-private struct AutomationGuide: View {
-    let openShortcuts: () -> Void
-
+private struct QuickAddFlowPreviewCard: View {
     @Environment(\.palette) private var palette
 
     var body: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 8) {
-                AutomationTimeCard(number: 1, hour: 0)
-                AutomationTimeCard(number: 2, hour: 8)
-                AutomationTimeCard(number: 3, hour: 16)
+        VStack(spacing: 16) {
+            HStack(spacing: 6) {
+                flowStep(
+                    number: 1,
+                    icon: "lock.iphone",
+                    title: appString(localized: "onboarding.quickAdd.step1", defaultValue: "잠금화면 버튼")
+                )
+                Image(systemName: "chevron.right")
+                    .font(.caption2.bold())
+                    .foregroundStyle(palette.textSecondary)
+                flowStep(
+                    number: 2,
+                    icon: "text.bubble",
+                    title: appString(localized: "onboarding.quickAdd.step2", defaultValue: "입력창 뜸")
+                )
+                Image(systemName: "chevron.right")
+                    .font(.caption2.bold())
+                    .foregroundStyle(palette.textSecondary)
+                flowStep(
+                    number: 3,
+                    icon: "square.and.pencil",
+                    title: appString(localized: "onboarding.quickAdd.step3", defaultValue: "할일/메모 입력")
+                )
+                Image(systemName: "chevron.right")
+                    .font(.caption2.bold())
+                    .foregroundStyle(palette.textSecondary)
+                flowStep(
+                    number: 4,
+                    icon: "sparkles",
+                    title: appString(localized: "onboarding.quickAdd.step4", defaultValue: "즉시 반영")
+                )
             }
 
-            HStack(alignment: .top, spacing: 10) {
-                Image(systemName: "arrow.triangle.2.circlepath")
-                    .foregroundStyle(palette.accent)
-                Text(
-                    appString(
-                        localized: "onboarding.automation.instruction",
-                        defaultValue: "For each time: Shortcuts → Automation → + → Time of Day. Choose Daily, add “Refresh Lock Screen”, and turn off Ask Before Running."
-                    )
-                )
-                .font(.footnote)
-                .foregroundStyle(palette.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 8) {
+                    Image(systemName: "bolt.circle.fill")
+                        .font(.title3)
+                        .foregroundStyle(palette.accent)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(appString(localized: "onboarding.quickAdd.demoTitle", defaultValue: "LockTodoNote에 추가"))
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(palette.textPrimary)
+                        Text(appString(localized: "onboarding.quickAdd.demoPrompt", defaultValue: "추가할 내용을 입력하세요"))
+                            .font(.caption2)
+                            .foregroundStyle(palette.textSecondary)
+                    }
+                    Spacer()
+                    Text("OK")
+                        .font(.caption.bold())
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(palette.accent, in: Capsule())
+                        .foregroundStyle(palette.onPrimary)
+                }
+                .padding(12)
+                .background(palette.background, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(palette.accent)
+                        .font(.subheadline)
+                    Text(appString(localized: "onboarding.quickAdd.demoLive", defaultValue: "Live Activity & 잠금화면에 즉시 반영"))
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(palette.textPrimary)
+                }
+                .padding(.horizontal, 6)
             }
-            .padding(14)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(palette.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .padding(12)
+            .background(palette.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .stroke(palette.border, lineWidth: 1)
             )
+        }
+    }
 
-            Button(action: openShortcuts) {
-                Label(
-                    appString(
-                        localized: "onboarding.automation.openShortcuts",
-                        defaultValue: "Open Shortcuts"
-                    ),
-                    systemImage: "arrow.up.forward.app"
-                )
-                .font(.subheadline.weight(.semibold))
-                .frame(maxWidth: .infinity, minHeight: 44)
+    private func flowStep(number: Int, icon: String, title: String) -> some View {
+        VStack(spacing: 4) {
+            ZStack {
+                Circle()
+                    .fill(palette.accentSoft)
+                    .frame(width: 38, height: 38)
+                Image(systemName: icon)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(palette.accent)
             }
-            .buttonStyle(.bordered)
-            .tint(palette.accent)
+            Text(title)
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(palette.textSecondary)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
         }
-    }
-}
-
-private struct AutomationTimeCard: View {
-    let number: Int
-    let hour: Int
-
-    @Environment(\.palette) private var palette
-
-    var body: some View {
-        VStack(spacing: 7) {
-            Text("\(number)")
-                .font(.caption2.bold())
-                .foregroundStyle(palette.onPrimary)
-                .frame(width: 22, height: 22)
-                .background(palette.accent, in: Circle())
-            Image(systemName: "clock.fill")
-                .foregroundStyle(palette.accent)
-            Text(timeText)
-                .font(.caption.weight(.semibold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-                .foregroundStyle(palette.textPrimary)
-        }
-        .frame(maxWidth: .infinity, minHeight: 92)
-        .background(palette.accentSoft, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-    }
-
-    private var timeText: String {
-        var components = DateComponents()
-        components.hour = hour
-        components.minute = 0
-        let date = Calendar.current.date(from: components) ?? Date()
-        return date.formatted(.dateTime.hour().minute().locale(appLocale()))
+        .frame(maxWidth: .infinity)
     }
 }
 

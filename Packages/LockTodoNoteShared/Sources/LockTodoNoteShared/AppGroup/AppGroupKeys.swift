@@ -41,6 +41,12 @@ public enum AppGroupKeys {
     public static let shortcutUsageCount = "locktodonote_shortcut_usage_count_v1"
     public static let shortcutLimitReached = "locktodonote_shortcut_limit_reached_v1"
     public static let freeShortcutDailyLimit = 5
+    public static let installDate = "locktodonote_install_date_v1"
+    public static let quickAddEducationCompleted = "locktodonote_quick_add_education_completed_v1"
+    public static let quickAddTipDismissed = "locktodonote_quick_add_tip_dismissed_v1"
+    public static let quickAddTipImpressions = "locktodonote_quick_add_tip_impressions_v1"
+    public static let quickAddTipLastShownDate = "locktodonote_quick_add_tip_last_shown_date_v1"
+    public static let dataChangedNotificationName = "com.namslab.glancecard.dataChanged"
 
     // MARK: Images
 

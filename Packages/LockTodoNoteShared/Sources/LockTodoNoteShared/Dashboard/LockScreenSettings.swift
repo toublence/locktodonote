@@ -76,7 +76,7 @@ public struct LockScreenSettings: Hashable, Sendable {
         switch template {
         case .dateMemo, .imageMemo, .ddayMemo: .memo
         case .dateTodo, .imageTodo: .todo
-        case .calendarItems, .memoTodo: selectedContentSection
+        case .calendarItems, .memoTodo: shortcutInsertPriority
         }
     }
 

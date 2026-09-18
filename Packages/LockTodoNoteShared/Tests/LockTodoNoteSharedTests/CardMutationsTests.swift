@@ -94,6 +94,37 @@ struct CardMutationsTests {
         #expect(card.dayKey(calendar: calendar) == "2026-08-21")
     }
 
+    @Test func quickAddMultiLineCreatesMultipleCardsWithCompositeIds() {
+        let quickAdd = PendingQuickAdd(
+            id: "shortcut-multiline",
+            text: "- Buy milk\n2. Call doctor\n\n* Read a book",
+            target: .todo,
+            dateKey: "2026-08-21",
+            createdAt: day("2026-08-21").addingTimeInterval(3600 * 9)
+        )
+        let (result, didChange) = CardMutations.applyQuickAdds([quickAdd], to: [], calendar: calendar)
+
+        #expect(didChange)
+        #expect(result.count == 3)
+        #expect(result[0].id == "shortcut-multiline-0")
+        #expect(result[0].checklistItems[0].id == "shortcut-multiline-0-item-0")
+        #expect(result[0].checklistItems[0].text == "Buy milk")
+        #expect(result[1].id == "shortcut-multiline-1")
+        #expect(result[1].checklistItems[0].id == "shortcut-multiline-1-item-0")
+        #expect(result[1].checklistItems[0].text == "Call doctor")
+        #expect(result[2].id == "shortcut-multiline-2")
+        #expect(result[2].checklistItems[0].id == "shortcut-multiline-2-item-0")
+        #expect(result[2].checklistItems[0].text == "Read a book")
+    }
+
+    @Test func quickCaptureServiceParsesBulletsAndCleansMemo() {
+        let lines = QuickCaptureService.parseTodoLines("• First item\n- Second item\n1. Third item\n   \n Fourth item ")
+        #expect(lines == ["First item", "Second item", "Third item", "Fourth item"])
+
+        let memo = QuickCaptureService.cleanMemoText("\n\n  Hello World  \nLine 2\n\n")
+        #expect(memo == "Hello World\nLine 2")
+    }
+
     @Test func quickAddMemoUnpinsThePreviousMemo() {
         let existing = Card(
             id: "old-memo",

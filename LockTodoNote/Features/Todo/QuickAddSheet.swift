@@ -85,10 +85,7 @@ struct QuickAddSheet: View {
         guard !trimmed.isEmpty else { return }
         switch mode {
         case .todo:
-            let lines = trimmed
-                .components(separatedBy: .newlines)
-                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-                .filter { !$0.isEmpty }
+            let lines = QuickCaptureService.parseTodoLines(from: trimmed)
             guard cardStore.addTodos(texts: lines, to: date, recurrence: recurrence) else {
                 failSave(operation: "create_todo")
                 return

@@ -14,6 +14,7 @@ struct LockScreenTabView: View {
     @EnvironmentObject private var purchases: PurchaseService
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.palette) private var palette
+    @Environment(\.openURL) private var openURL
 
     @State private var editingCard: Card?
     @State private var editingTodo: TodoEntry?
@@ -28,6 +29,7 @@ struct LockScreenTabView: View {
     @State private var infoTemplate: LockScreenTemplate?
     @State private var showsCompletedTodos = false
     @State private var isTemplatePreviewExpanded = true
+    @State private var isTipDismissed = false
     @FocusState private var isCaptureFocused: Bool
 
     private var today: Date { Date() }
@@ -36,6 +38,9 @@ struct LockScreenTabView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: horizontalSizeClass == .regular ? 24 : 16) {
+                if shouldShowQuickAddTip {
+                    quickAddTipBanner
+                }
                 templateSection
                 quickCapture
             }
@@ -84,6 +89,81 @@ struct LockScreenTabView: View {
             )
         ) {
             Button(appString(localized: "common.ok", defaultValue: "OK")) { errorMessage = nil }
+        }
+    }
+
+    private var shouldShowQuickAddTip: Bool {
+        guard !isTipDismissed else { return false }
+        let store = environment.appGroup
+        guard !store.isQuickAddTipDismissed else { return false }
+        guard !store.isQuickAddEducationCompleted, store.shortcutUsageCount() == 0 else { return false }
+        guard store.daysSinceInstall <= 3 else { return false }
+        guard store.quickAddTipImpressions < 3 else { return false }
+        return true
+    }
+
+    private var quickAddTipBanner: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "lightbulb.fill")
+                .font(.headline)
+                .foregroundStyle(.yellow)
+
+            Button {
+                analytics.quickAddTipTapped()
+                if let url = URL(string: "shortcuts://") {
+                    openURL(url)
+                }
+            } label: {
+                HStack(spacing: 4) {
+                    Text(
+                        appString(
+                            localized: "home.quickAddTip.title",
+                            defaultValue: "잠금화면에서 바로 할 일 추가하기 — 단축어 설정하기"
+                        )
+                    )
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(palette.textPrimary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
+
+                    Image(systemName: "chevron.right")
+                        .font(.caption2.bold())
+                        .foregroundStyle(palette.textSecondary)
+                }
+            }
+            .buttonStyle(.plain)
+
+            Spacer(minLength: 0)
+
+            Button {
+                withAnimation {
+                    isTipDismissed = true
+                    environment.appGroup.isQuickAddTipDismissed = true
+                }
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.caption.bold())
+                    .foregroundStyle(palette.textSecondary)
+                    .padding(6)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(appString(localized: "common.close", defaultValue: "Close"))
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .background(palette.surface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(palette.border, lineWidth: 1)
+        )
+        .onAppear {
+            let today = FlutterDate.dateKey(Date())
+            if environment.appGroup.quickAddTipLastShownDate != today {
+                environment.appGroup.quickAddTipLastShownDate = today
+                environment.appGroup.quickAddTipImpressions += 1
+                analytics.quickAddTipSeen()
+            }
         }
     }
 

@@ -95,6 +95,15 @@ struct SettingsTabView: View {
             }
 
             NavigationLink {
+                ShortcutsSettingsView()
+            } label: {
+                Label(
+                    appString(localized: "settings.shortcuts", defaultValue: "Shortcuts & Quick Add"),
+                    systemImage: "bolt.badge.automatic"
+                )
+            }
+
+            NavigationLink {
                 Form {
                     Section {
                         Text(
@@ -594,6 +603,216 @@ extension PrivacyMode {
                 defaultValue: "Only how many items remain is shown."
             )
         }
+    }
+}
+
+struct ShortcutsSettingsView: View {
+    @EnvironmentObject private var environment: AppEnvironment
+    @EnvironmentObject private var settingsStore: LockScreenSettingsStore
+    @EnvironmentObject private var purchases: PurchaseService
+    @EnvironmentObject private var dashboard: DashboardCoordinator
+    @Environment(\.palette) private var palette
+    @Environment(\.openURL) private var openURL
+
+    var body: some View {
+        Form {
+            // 1) Quick Add 소개 및 상태
+            Section {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(
+                        appString(
+                            localized: "shortcuts.intro.description",
+                            defaultValue: "잠금화면 버튼, 액션 버튼, Siri로 앱을 열지 않고 어디서든 할 일과 메모를 추가할 수 있습니다."
+                        )
+                    )
+                    .font(.subheadline)
+                    .foregroundStyle(palette.textSecondary)
+
+                    Button {
+                        if let url = URL(string: "shortcuts://") {
+                            openURL(url)
+                        }
+                    } label: {
+                        Label(
+                            appString(localized: "shortcuts.openShortcutsApp", defaultValue: "단축어 앱 열기"),
+                            systemImage: "arrow.up.forward.app"
+                        )
+                        .font(.subheadline.weight(.semibold))
+                    }
+                    .padding(.top, 4)
+                }
+                .padding(.vertical, 4)
+            } header: {
+                Text(appString(localized: "shortcuts.intro.header", defaultValue: "빠른 추가 (Quick Add)"))
+            }
+
+            // 2) 혼합 템플릿 기본 추가 위치 설정
+            Section {
+                VStack(alignment: .leading, spacing: 8) {
+                    Picker(
+                        appString(localized: "shortcuts.mixedPriority.label", defaultValue: "기본 추가 대상"),
+                        selection: Binding(
+                            get: { settingsStore.settings.shortcutInsertPriority },
+                            set: { newValue in
+                                settingsStore.settings.shortcutInsertPriority = newValue
+                                dashboard.publish()
+                            }
+                        )
+                    ) {
+                        Text(appString(localized: "common.todo", defaultValue: "할 일")).tag(ShortcutInsertPriority.todo)
+                        Text(appString(localized: "common.memo", defaultValue: "메모")).tag(ShortcutInsertPriority.memo)
+                    }
+                    .pickerStyle(.segmented)
+                }
+            } header: {
+                Text(appString(localized: "shortcuts.mixedPriority.header", defaultValue: "혼합 템플릿 기본 추가 위치"))
+            } footer: {
+                Text(
+                    appString(
+                        localized: "shortcuts.mixedPriority.footer",
+                        defaultValue: "Memo/Todo 등 혼합 템플릿 사용 시, 단축어에 대상이 지정되지 않으면 이 설정에 따라 추가됩니다."
+                    )
+                )
+            }
+
+            // 3) 무료/Pro 사용량 상태
+            Section {
+                if purchases.isPro {
+                    LabeledContent {
+                        HStack(spacing: 4) {
+                            Image(systemName: "checkmark.seal.fill")
+                                .foregroundStyle(palette.accent)
+                            Text(appString(localized: "shortcuts.usage.unlimited", defaultValue: "무제한 사용 중"))
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(palette.accent)
+                        }
+                    } label: {
+                        Text(appString(localized: "shortcuts.usage.status", defaultValue: "사용 상태"))
+                    }
+                } else {
+                    LabeledContent {
+                        Text(
+                            String(
+                                format: appString(
+                                    localized: "shortcuts.usage.freeCount",
+                                    defaultValue: "%d / 5회 (매일 자정 초기화)"
+                                ),
+                                environment.appGroup.shortcutUsageCount()
+                            )
+                        )
+                        .font(.subheadline)
+                        .foregroundStyle(palette.textSecondary)
+                    } label: {
+                        Text(appString(localized: "shortcuts.usage.today", defaultValue: "오늘 사용량"))
+                    }
+
+                    Button {
+                        environment.requestPaywall(source: "settings_shortcuts")
+                    } label: {
+                        HStack {
+                            Image(systemName: "sparkles")
+                                .foregroundStyle(palette.accent)
+                            Text(appString(localized: "shortcuts.usage.upgradePro", defaultValue: "Pro로 업그레이드하고 무제한 사용하기"))
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(palette.textPrimary)
+                        }
+                    }
+                }
+            } header: {
+                Text(appString(localized: "shortcuts.usage.header", defaultValue: "사용량 상태"))
+            }
+
+            // 4) 등록 지원 위치 가이드 (시각적 카드)
+            Section {
+                locationRow(
+                    icon: "lock.iphone",
+                    title: appString(localized: "shortcuts.loc.lockScreen.title", defaultValue: "잠금화면 위젯 버튼"),
+                    subtitle: appString(localized: "shortcuts.loc.lockScreen.detail", defaultValue: "iOS 16+ 잠금화면 커스텀 시 바로가기 위젯 등록")
+                )
+                locationRow(
+                    icon: "button.programmable",
+                    title: appString(localized: "shortcuts.loc.actionButton.title", defaultValue: "액션 버튼"),
+                    subtitle: appString(localized: "shortcuts.loc.actionButton.detail", defaultValue: "iPhone 15 Pro+, 16 설정 > 동작 버튼에서 단축어 할당")
+                )
+                locationRow(
+                    icon: "waveform",
+                    title: appString(localized: "shortcuts.loc.siri.title", defaultValue: "Siri 음성 명령"),
+                    subtitle: appString(localized: "shortcuts.loc.siri.detail", defaultValue: "“Siri야, LockTodoNote에 추가” 말하기")
+                )
+                locationRow(
+                    icon: "square.grid.2x2",
+                    title: appString(localized: "shortcuts.loc.widget.title", defaultValue: "홈 화면 단축어 위젯"),
+                    subtitle: appString(localized: "shortcuts.loc.widget.detail", defaultValue: "홈 화면 위젯 또는 앱 아이콘으로 빠른 실행")
+                )
+            } header: {
+                Text(appString(localized: "shortcuts.locations.header", defaultValue: "등록 지원 위치"))
+            }
+
+            // 5) 3단계 빠른 등록 가이드
+            Section {
+                guideStepRow(
+                    step: 1,
+                    text: appString(localized: "shortcuts.guide.step1", defaultValue: "단축어 앱 열기")
+                )
+                guideStepRow(
+                    step: 2,
+                    text: appString(localized: "shortcuts.guide.step2", defaultValue: "‘단축어’ 탭에서 “LockTodoNote에 추가” 찾기")
+                )
+                guideStepRow(
+                    step: 3,
+                    text: appString(localized: "shortcuts.guide.step3", defaultValue: "잠금화면 위젯 또는 액션 버튼에 할당")
+                )
+
+                Button {
+                    if let url = URL(string: "shortcuts://") {
+                        openURL(url)
+                    }
+                } label: {
+                    Label(
+                        appString(localized: "shortcuts.openShortcutsApp", defaultValue: "단축어 앱 바로가기"),
+                        systemImage: "arrow.up.forward.app"
+                    )
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity, alignment: .center)
+                }
+            } header: {
+                Text(appString(localized: "shortcuts.guide.header", defaultValue: "3단계 빠른 등록 가이드"))
+            }
+        }
+        .navigationTitle(appString(localized: "settings.shortcuts", defaultValue: "단축어 & 빠른 추가"))
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func locationRow(icon: String, title: String, subtitle: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.title3)
+                .foregroundStyle(palette.accent)
+                .frame(width: 32)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(palette.textPrimary)
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundStyle(palette.textSecondary)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func guideStepRow(step: Int, text: String) -> some View {
+        HStack(spacing: 12) {
+            Text("\(step)")
+                .font(.caption2.bold())
+                .foregroundStyle(palette.onPrimary)
+                .frame(width: 22, height: 22)
+                .background(palette.accent, in: Circle())
+            Text(text)
+                .font(.subheadline)
+                .foregroundStyle(palette.textPrimary)
+        }
+        .padding(.vertical, 2)
     }
 }
 

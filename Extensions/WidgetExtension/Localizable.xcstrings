@@ -326,6 +326,57 @@
         }
       }
     },
+    "intent.multipleTodosAdded": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d todos added."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d개의 할 일이 추가되었어요."
+          }
+        }
+      }
+    },
+    "intent.promptText": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What do you want to add?"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가할 내용을 입력하세요"
+          }
+        }
+      }
+    },
+    "intent.promptTarget": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where do you want to add it?"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가할 대상을 선택하세요"
+          }
+        }
+      }
+    },
     "intent.failed": {
       "extractionState": "manual",
       "localizations": {

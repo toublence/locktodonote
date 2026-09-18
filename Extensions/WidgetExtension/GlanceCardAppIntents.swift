@@ -6,82 +6,215 @@ import LockTodoNoteShared
 
 // MARK: - Public intents
 
-/// The one capture intent users see in the Shortcuts app.
+@available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
+public enum QuickAddTarget: String, AppEnum {
+    case todo
+    case memo
+
+    public static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Type")
+    public static let caseDisplayRepresentations: [QuickAddTarget: DisplayRepresentation] = [
+        .todo: DisplayRepresentation(
+            title: LocalizedStringResource("quickAdd.target.todo", defaultValue: "Todo")
+        ),
+        .memo: DisplayRepresentation(
+            title: LocalizedStringResource("quickAdd.target.memo", defaultValue: "Memo")
+        ),
+    ]
+}
+
+/// The core Quick Add intent users run from Shortcuts, Siri, Action Button, and Lock Screen.
 @available(iOS 16.2, iOSApplicationExtension 16.2, *)
 struct AddToLockTodoNoteIntent: AppIntent {
-    static let title: LocalizedStringResource = "Add to LockTodoNote"
-    static let description = IntentDescription("Add a memo or todo to LockTodoNote.")
+    static let title: LocalizedStringResource = LocalizedStringResource(
+        "intent.addToLockTodoNote.title",
+        defaultValue: "Add to LockTodoNote"
+    )
+    static let description = IntentDescription(
+        LocalizedStringResource(
+            "intent.addToLockTodoNote.description",
+            defaultValue: "Quickly add a todo or note without opening the app."
+        )
+    )
     static let isDiscoverable: Bool = true
     static let openAppWhenRun = false
 
-    @Parameter(title: "Text", requestValueDialog: "What do you want to add?")
+    @Parameter(title: "Text", default: "")
     var text: String
 
-    func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog {
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else {
-            return Self.reply(.emptyText)
-        }
+    @Parameter(title: "Type", default: nil)
+    var target: QuickAddTarget?
 
+    @Parameter(title: "Date", default: nil)
+    var date: Date?
+
+    @Parameter(title: "Source", default: "unknown")
+    var source: String
+
+    func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog {
         let store = AppGroupStore()
         guard let defaults = store.defaults else {
             return Self.reply(.failed)
         }
 
-        // Pro is read from the published dashboard state; the extension cannot
-        // reach StoreKit.
+        let settings = LockScreenSettings.load(from: defaults)
         let isPro = store.dashboardState()?["isPro"] as? Bool ?? false
+        let safeSource = source.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "unknown" : source
+
+        // Check daily limit before prompting user for text
         if !isPro, store.shortcutUsageCount() >= AppGroupKeys.freeShortcutDailyLimit {
             defaults.set(true, forKey: AppGroupKeys.shortcutLimitReached)
+            store.enqueueAnalyticsEvent(
+                name: "quick_add_limit_reached",
+                parameters: [
+                    "daily_count": store.shortcutUsageCount(),
+                    "source": safeSource
+                ]
+            )
+            store.enqueueAnalyticsEvent(
+                name: "quick_add_failed",
+                parameters: [
+                    "reason": "daily_limit",
+                    "source": safeSource
+                ]
+            )
             return Self.reply(.limitReached)
         }
 
-        let settings = LockScreenSettings.load(from: defaults)
-        let target = settings.resolveShortcutTarget()
-        let dateKey = ShortcutSupport.selectedDateKey(store: store)
+        store.enqueueAnalyticsEvent(
+            name: "quick_add_invoked",
+            parameters: [
+                "source": safeSource,
+                "selected_template": settings.template.rawValue,
+                "is_pro": isPro
+            ]
+        )
+
+        // Resolve Target (Todo vs Memo)
+        let resolvedTarget: ShortcutInsertPriority
+        if let target {
+            resolvedTarget = (target == .memo) ? .memo : .todo
+        } else if settings.template.isTodoOnly {
+            resolvedTarget = .todo
+        } else if settings.template.isMemoOnly {
+            resolvedTarget = .memo
+        } else {
+            // Mixed template: check if user configured a default in Settings > Shortcuts
+            if defaults.object(forKey: FlutterPreferenceKeys.shortcutInsertPriority) != nil {
+                resolvedTarget = settings.shortcutInsertPriority
+            } else {
+                let chosen = try await $target.requestDisambiguation(
+                    among: [.todo, .memo],
+                    dialog: IntentDialog(stringLiteral: localized("intent.promptTarget", defaultValue: "What do you want to add?"))
+                )
+                resolvedTarget = (chosen == .memo) ? .memo : .todo
+                store.enqueueAnalyticsEvent(
+                    name: "quick_add_type_selected",
+                    parameters: [
+                        "type": resolvedTarget.rawValue,
+                        "source": safeSource
+                    ]
+                )
+            }
+        }
+
+        // Resolve Content Text
+        var content = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if content.isEmpty {
+            content = try await $text.requestValue(
+                IntentDialog(stringLiteral: localized("intent.promptText", defaultValue: "What do you want to add?"))
+            ).trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+
+        guard !content.isEmpty else {
+            store.enqueueAnalyticsEvent(
+                name: "quick_add_failed",
+                parameters: [
+                    "reason": "empty_text",
+                    "source": safeSource
+                ]
+            )
+            return Self.reply(.emptyText)
+        }
+
+        let effectiveDate = date ?? Date()
+        let dateKey = FlutterDate.dateKey(effectiveDate)
         let id = "shortcut-\(Int(Date().timeIntervalSince1970 * 1_000_000))"
+
+        let itemCount: Int
+        if resolvedTarget == .todo {
+            let lines = QuickCaptureService.parseTodoLines(from: content)
+            guard !lines.isEmpty else {
+                store.enqueueAnalyticsEvent(
+                    name: "quick_add_failed",
+                    parameters: ["reason": "empty_text", "source": safeSource]
+                )
+                return Self.reply(.emptyText)
+            }
+            itemCount = lines.count
+        } else {
+            itemCount = 1
+        }
 
         store.appendPendingQuickAdd(
             PendingQuickAdd(
                 id: id,
-                text: trimmed,
-                target: target,
+                text: content,
+                target: resolvedTarget,
                 dateKey: dateKey,
                 createdAt: Date()
             )
         )
-        // Counted once, here. The Flutter build also counted it again inside the
-        // app against a separate key, so the two could disagree.
         if !isPro { store.recordShortcutUsage() }
 
         ShortcutSupport.applyQuickAddToDashboard(
             id: id,
-            text: trimmed,
-            target: target,
+            text: content,
+            target: resolvedTarget,
             dateKey: dateKey,
             store: store
         )
-        await ShortcutSupport.refreshActivities(store: store, source: "shortcut")
+
+        let activityUpdated = await ShortcutSupport.refreshActivities(store: store, source: safeSource)
+        if !activityUpdated {
+            store.enqueueAnalyticsEvent(
+                name: "quick_add_failed",
+                parameters: [
+                    "reason": "live_activity_update_failed",
+                    "source": safeSource
+                ]
+            )
+        }
 
         store.enqueueAnalyticsEvent(
             name: "shortcut_quick_add",
             parameters: [
-                "source": "shortcut",
-                "target": target.rawValue,
+                "type": resolvedTarget.rawValue,
+                "target": resolvedTarget.rawValue,
+                "item_count": itemCount,
+                "source": safeSource,
+                "selected_template": settings.template.rawValue,
                 "template_id": settings.template.rawValue,
+                "is_pro": isPro,
                 "is_premium": isPro,
                 "result": "success",
             ]
         )
+        store.markQuickAddEducationCompleted()
+        store.enqueueAnalyticsEvent(
+            name: "quick_add_education_completed",
+            parameters: ["source": safeSource]
+        )
+
         ReviewEligibilityRecorder(store: store).record(
-            target == .memo ? .memoCreated(1) : .todoCreated(1),
+            resolvedTarget == .memo ? .memoCreated(1) : .todoCreated(itemCount),
             trigger: "shortcut_quick_add"
         )
-        return Self.reply(target == .memo ? .addedToMemo : .addedToTodo)
+
+        return Self.reply(resolvedTarget == .memo ? .addedToMemo : .addedToTodo(count: itemCount))
     }
 
     private enum Reply {
-        case emptyText, limitReached, addedToTodo, addedToMemo, failed
+        case emptyText, limitReached, addedToTodo(count: Int), addedToMemo, failed
 
         var message: String {
             switch self {
@@ -90,12 +223,17 @@ struct AddToLockTodoNoteIntent: AppIntent {
             case .limitReached:
                 localized(
                     "intent.limitReached",
-                    defaultValue: "You've used all free Shortcut adds today. Upgrade to Pro for unlimited adds."
+                    defaultValue: "You've used all free Quick Adds for today. LockTodoNote Pro includes unlimited Quick Add."
                 )
-            case .addedToTodo:
-                localized("intent.addedToTodo", defaultValue: "Added to Todo")
+            case .addedToTodo(let count):
+                if count <= 1 {
+                    return localized("intent.addedToTodo", defaultValue: "Todo added.")
+                } else {
+                    let format = localized("intent.multipleTodosAdded", defaultValue: "%d todos added.")
+                    return String(format: format, count)
+                }
             case .addedToMemo:
-                localized("intent.addedToMemo", defaultValue: "Added to Memo")
+                localized("intent.addedToMemo", defaultValue: "Note added.")
             case .failed:
                 localized("intent.failed", defaultValue: "Could not save that.")
             }
@@ -114,7 +252,7 @@ struct AddToLockTodoNoteIntent: AppIntent {
 struct RefreshLockScreenIntent: AppIntent {
     static let title: LocalizedStringResource = "Refresh Lock Screen"
     static let description = IntentDescription("Restart the LockTodoNote Live Activity.")
-    static let isDiscoverable: Bool = true
+    static let isDiscoverable: Bool = false
     static let openAppWhenRun = false
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
@@ -160,8 +298,13 @@ struct LockTodoNoteShortcuts: AppShortcutsProvider {
             intent: AddToLockTodoNoteIntent(),
             phrases: [
                 "Add to \(.applicationName)",
+                "Add a todo to \(.applicationName)",
+                "Add a note to \(.applicationName)",
+                "\(.applicationName)에 추가",
+                "\(.applicationName) 할 일 추가",
+                "\(.applicationName) 메모 추가",
             ],
-            shortTitle: "Add to LockTodoNote",
+            shortTitle: LocalizedStringResource("shortcuts.add.shortTitle", defaultValue: "Add to LockTodoNote"),
             systemImageName: "plus.circle"
         )
         AppShortcut(
@@ -169,7 +312,7 @@ struct LockTodoNoteShortcuts: AppShortcutsProvider {
             phrases: [
                 "Refresh \(.applicationName)",
             ],
-            shortTitle: "Refresh Lock Screen",
+            shortTitle: LocalizedStringResource("shortcuts.refresh.shortTitle", defaultValue: "Refresh Lock Screen"),
             systemImageName: "arrow.clockwise"
         )
     }
@@ -315,24 +458,32 @@ enum ShortcutSupport {
 
         switch target {
         case .todo:
-            // Must match the id the app builds when it merges the queue.
-            let item: [String: Any] = ["id": "\(id):\(id)-item-0", "text": text, "isDone": false]
+            let lines = QuickCaptureService.parseTodoLines(from: text)
+            guard !lines.isEmpty else { return }
             var todos = payload["todoItems"] as? [[String: Any]] ?? []
-            todos.insert(item, at: 0)
+            for (index, line) in lines.enumerated().reversed() {
+                let cardId = lines.count == 1 ? id : "\(id)-\(index)"
+                let itemId = "\(cardId)-item-0"
+                let compositeId = "\(cardId):\(itemId)"
+                let item: [String: Any] = ["id": compositeId, "text": line, "isDone": false]
+                todos.insert(item, at: 0)
+                insertCalendarItem(item, key: "todoItems", dateKey: dateKey, in: &payload)
+            }
             payload["todoItems"] = Array(todos.prefix(5))
-            payload["totalCount"] = ((payload["totalCount"] as? NSNumber)?.intValue ?? 0) + 1
-            insertCalendarItem(item, key: "todoItems", dateKey: dateKey, in: &payload)
+            payload["totalCount"] = ((payload["totalCount"] as? NSNumber)?.intValue ?? 0) + lines.count
         case .memo:
+            let cleaned = QuickCaptureService.cleanMemoText(from: text)
+            guard !cleaned.isEmpty else { return }
             let item: [String: Any] = [
                 "id": id,
-                "title": CardMutations.memoTitle(from: text),
-                "bodyPreview": String(text.prefix(42)),
+                "title": CardMutations.memoTitle(from: cleaned),
+                "bodyPreview": String(cleaned.prefix(42)),
             ]
             var memos = payload["memoItems"] as? [[String: Any]] ?? []
             memos.insert(item, at: 0)
             payload["memoItems"] = Array(memos.prefix(2))
             payload["memoTitle"] = item["title"]
-            payload["memoText"] = text
+            payload["memoText"] = cleaned
             payload["memoId"] = id
             insertCalendarItem(item, key: "memoItems", dateKey: dateKey, in: &payload)
         }
@@ -431,13 +582,15 @@ enum ShortcutSupport {
         }
     }
 
-    static func refreshActivities(store: AppGroupStore, source: String) async {
-        guard let payload = store.dashboardState() else { return }
+    @discardableResult
+    static func refreshActivities(store: AppGroupStore, source: String) async -> Bool {
+        guard let payload = store.dashboardState() else { return false }
         await updateActivities(with: payload)
         store.enqueueAnalyticsEvent(
             name: "lockscreen_activity_updated",
             parameters: analyticsParameters(from: payload, source: source)
         )
+        return true
     }
 
     /// Ends and restarts the activity, which is the only way to clear a stale

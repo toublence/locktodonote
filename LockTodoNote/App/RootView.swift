@@ -44,18 +44,18 @@ struct RootView: View {
             }
             .alert(
                 bilingualString(
-                    korean: "오늘 무료 단축어 사용 횟수를 모두 사용했어요.",
-                    english: "You've used all free Shortcut adds today."
+                    korean: "빠른 추가를 자주 사용하시나요?",
+                    english: "Enjoying Quick Add?"
                 ),
                 isPresented: $environment.showShortcutLimitPrompt
             ) {
                 Button(bilingualString(korean: "Pro 보기", english: "View Pro")) {
                     environment.offerPaywallForShortcutLimit()
                 }
-                Button(appString(localized: "common.notNow", defaultValue: "Not now"), role: .cancel) {}
+                Button(bilingualString(korean: "나중에", english: "Later"), role: .cancel) {}
             } message: {
                 Text(bilingualString(
-                    korean: "Pro에서는 제한 없이 추가할 수 있습니다.",
+                    korean: "Pro에서는 횟수 제한 없이 사용할 수 있어요.",
                     english: "With Pro, you can add without limits."
                 ))
             }

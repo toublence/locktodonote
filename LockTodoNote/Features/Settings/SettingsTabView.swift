@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import LockTodoNoteShared
 
 /// Settings keeps the Flutter build's ordering so returning users find things
@@ -12,6 +13,7 @@ struct SettingsTabView: View {
     @EnvironmentObject private var analytics: AnalyticsService
     @EnvironmentObject private var languageStore: AppLanguageStore
     @EnvironmentObject private var notifications: NotificationService
+    @EnvironmentObject private var ads: AdService
     @Environment(\.openURL) private var openURL
     @Environment(\.palette) private var palette
 
@@ -47,6 +49,22 @@ struct SettingsTabView: View {
     private var settingsDestinations: some View {
         Section {
             NavigationLink {
+                AppleRemindersSettingsView()
+                    .modifier(ShellBackButtonModifier())
+            } label: {
+                Label(
+                    bilingualString(korean: "Apple 미리알림 연동", english: "Apple Reminders"),
+                    systemImage: "checklist"
+                ).accessibilityIdentifier("settings.appleReminders")
+            }
+            NavigationLink {
+                LayoutProfilesView()
+                .modifier(ShellBackButtonModifier())
+            } label: {
+                Label(bilingualString(korean: "저장한 잠금화면 구성", english: "Saved layouts"), systemImage: "rectangle.stack")
+                    .accessibilityIdentifier("settings.savedLayouts")
+            }
+            NavigationLink {
                 VStack(spacing: 0) {
                     DashboardPreviewCard(snapshot: dashboard.currentSnapshot())
                         .padding(.horizontal, 20)
@@ -63,6 +81,7 @@ struct SettingsTabView: View {
                 .navigationTitle(
                     appString(localized: "settings.appearance", defaultValue: "Appearance")
                 )
+                .modifier(ShellBackButtonModifier())
             } label: {
                 Label(
                     appString(localized: "settings.appearance", defaultValue: "Appearance"),
@@ -75,6 +94,7 @@ struct SettingsTabView: View {
                     .navigationTitle(
                         appString(localized: "settings.morningBriefing", defaultValue: "Morning Briefing")
                     )
+                .modifier(ShellBackButtonModifier())
             } label: {
                 Label(
                     appString(localized: "settings.morningBriefing", defaultValue: "Morning Briefing"),
@@ -87,6 +107,7 @@ struct SettingsTabView: View {
                     .navigationTitle(
                         appString(localized: "settings.liveAndWidget", defaultValue: "Live Activity & Widget")
                     )
+                .modifier(ShellBackButtonModifier())
             } label: {
                 Label(
                     appString(localized: "settings.liveAndWidget", defaultValue: "Live Activity & Widget"),
@@ -96,6 +117,7 @@ struct SettingsTabView: View {
 
             NavigationLink {
                 ShortcutsSettingsView()
+                .modifier(ShellBackButtonModifier())
             } label: {
                 Label(
                     appString(localized: "settings.shortcuts", defaultValue: "Shortcuts & Quick Add"),
@@ -118,6 +140,7 @@ struct SettingsTabView: View {
                 .navigationTitle(
                     appString(localized: "settings.syncData", defaultValue: "Sync & Data")
                 )
+                .modifier(ShellBackButtonModifier())
             } label: {
                 Label(
                     appString(localized: "settings.syncData", defaultValue: "Sync & Data"),
@@ -127,6 +150,7 @@ struct SettingsTabView: View {
 
             NavigationLink {
                 LanguageSettingsView()
+                .modifier(ShellBackButtonModifier())
             } label: {
                 LabeledContent {
                     Text(languageStore.selection.displayName)
@@ -163,7 +187,7 @@ struct SettingsTabView: View {
                             let result = await environment.applyPendingProValue()
                             restoreMessage = result.succeeded
                                 ? appString(localized: "purchase.applied", defaultValue: "Your Pro preview was applied.")
-                                : appString(localized: "purchase.applyFailed", defaultValue: "The preview could not be applied. Please try again.")
+                                : result.recoveryMessage
                         }
                     }
                 }
@@ -343,6 +367,7 @@ struct SettingsTabView: View {
 
             NavigationLink {
                 ColorThemePicker()
+                .modifier(ShellBackButtonModifier())
             } label: {
                 HStack {
                     Text(appString(localized: "settings.accent", defaultValue: "Accent colour"))
@@ -362,6 +387,15 @@ struct SettingsTabView: View {
 
     private var aboutSection: some View {
         Section(appString(localized: "settings.about", defaultValue: "About")) {
+            if ads.requiresPrivacyOptions {
+                Button(bilingualString(korean: "광고 개인정보 선택", english: "Advertising privacy choices")) {
+                    Task {
+                        do { try await ads.presentPrivacyOptions() }
+                        catch { restoreMessage = error.localizedDescription }
+                    }
+                }
+                .disabled(ads.isGatheringConsent)
+            }
             Link(
                 appString(localized: "settings.privacy", defaultValue: "Privacy Policy"),
                 destination: LegalLinks.privacyPolicy

@@ -1,0 +1,107 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "43E5786E-AD91-4906-BA5E-57C1B7C985F6.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "free-capture-persistence_0_94CEB0AF-4003-4CCC-BEB2-4B6573FA9066.png",
+        "timestamp" : 1792043489.43
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "EDDBBA70-5535-455A-892D-6BD77D82ADAB.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "free-repeat-paywall_0_F28B621A-4E45-4280-90B9-63C3294F50AB.png",
+        "timestamp" : 1792043483.1
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "F7EFD7CF-436C-426D-AE0A-A09BC986B4C5.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "free-input-after-save_0_0FF4FA05-2BBA-4E25-A6E8-C4C883F70857.png",
+        "timestamp" : 1792043466.138
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "59C2CC87-1494-4D5D-A24B-9459A8F94825.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "free-input-before-save_0_3CE9E772-EDD9-465E-8DE3-76D57FC24F70.png",
+        "timestamp" : 1792043465.545
+      }
+    ],
+    "testIdentifier" : "DeviceFeatureUITests/test01FreeCaptureRepeatGateAndPersistence()",
+    "testIdentifierURL" : "test://com.apple.xcode/LockTodoNote/LockTodoNoteUITests/DeviceFeatureUITests/test01FreeCaptureRepeatGateAndPersistence"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "0311F781-D537-4875-A4D6-0F6DB2CC3300.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "pro-reminder-source-completion_0_6ABB7580-08FD-4605-86CE-9D74F72F8CF7.png",
+        "timestamp" : 1792043505.282
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "38CAD9CA-EE5D-433C-8F33-F715D004777F.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "pro-reminder-app-completion_0_E5A85279-4E7E-44D2-9E77-E25FB4433FF9.png",
+        "timestamp" : 1792043502.166
+      }
+    ],
+    "testIdentifier" : "DeviceFeatureUITests/test06ProAppleRemindersRoundTrip()",
+    "testIdentifierURL" : "test://com.apple.xcode/LockTodoNote/LockTodoNoteUITests/DeviceFeatureUITests/test06ProAppleRemindersRoundTrip"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "3DD3C43D-07CA-4282-B33C-4C65D297C1AD.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "free-apple-reminders-paywall_0_59E5CEE3-1AEE-4B2D-8F92-C34638A36324.png",
+        "timestamp" : 1792043514.845
+      }
+    ],
+    "testIdentifier" : "DeviceFeatureUITests/test08FreeAppleRemindersRequiresPro()",
+    "testIdentifierURL" : "test://com.apple.xcode/LockTodoNote/LockTodoNoteUITests/DeviceFeatureUITests/test08FreeAppleRemindersRequiresPro"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "66DFDB3D-D16D-4313-8EC7-B1B6274C32C5.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "pro-no-advertising_0_008DB790-5915-4631-A4A0-0CC7E8B6EB3B.png",
+        "timestamp" : 1792043531.295
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "97D7092A-C91A-46DE-8D33-7A7B6D592260.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "free-admob-official-test-banner_0_8E2A872F-E578-4A2C-B91F-825A0BD230FA.png",
+        "timestamp" : 1792043523.776
+      }
+    ],
+    "testIdentifier" : "DeviceFeatureUITests/test09AdMobTestBannerAndProSuppression()",
+    "testIdentifierURL" : "test://com.apple.xcode/LockTodoNote/LockTodoNoteUITests/DeviceFeatureUITests/test09AdMobTestBannerAndProSuppression"
+  }
+]

@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import LockTodoNoteShared
 
 /// Month grid plus the selected day's contents — the same split the Live
@@ -9,6 +10,8 @@ struct CalendarTabView: View {
     @EnvironmentObject private var dashboard: DashboardCoordinator
     @EnvironmentObject private var settingsStore: LockScreenSettingsStore
     @EnvironmentObject private var analytics: AnalyticsService
+    @EnvironmentObject private var ads: AdService
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.palette) private var palette
@@ -18,6 +21,7 @@ struct CalendarTabView: View {
     @State private var selectionConfirmation: String?
     @State private var editingTodo: TodoEntry?
     @State private var editingMemo: Card?
+    @State private var isKeyboardVisible = false
 
     private let calendar = Calendar.current
 
@@ -33,8 +37,15 @@ struct CalendarTabView: View {
             .frame(maxWidth: .infinity)
         }
         .background(palette.background)
+        .preference(key: BannerEligibilityPreferenceKey.self, value: [.calendar: canShowBanner])
         .sheet(item: $editingTodo) { TodoEditorSheet(entry: $0) }
         .sheet(item: $editingMemo) { MemoEditorSheet(card: $0) }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+            isKeyboardVisible = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+            isKeyboardVisible = false
+        }
         .onChange(of: selectedDate) { date in
             guard settingsStore.settings.syncCalendarSelectionToLockScreen else { return }
             dashboard.selectExplicitDate(date)
@@ -64,6 +75,15 @@ struct CalendarTabView: View {
         }
     }
 
+    private var canShowBanner: Bool {
+        ads.isReady && scenePhase == .active && !environment.purchases.isPro
+            && !isKeyboardVisible && editingTodo == nil && editingMemo == nil
+            && environment.quickAddRequest == nil && environment.memoEditorRequest == nil
+            && environment.paywallRequest == nil && !environment.isProInfoPresented
+            && !environment.showReminderSuggestion && !environment.showShortcutLimitPrompt
+            && !environment.purchases.isPurchasing && !ads.isGatheringConsent
+    }
+
     private var monthGrid: some View {
         MonthGrid(visibleMonth: $visibleMonth, selectedDate: $selectedDate)
     }
@@ -74,7 +94,8 @@ struct CalendarTabView: View {
             todos: todoEntries,
             memos: cardStore.memoCards(on: selectedDate),
             onToggle: { entry, isDone in
-                guard cardStore.setItemDone(
+                guard cardStore.materializeCalendarTodo(id: entry.card.id, on: selectedDate),
+                      cardStore.setItemDone(
                     cardId: entry.card.id,
                     itemId: entry.item.id,
                     isDone: isDone
@@ -92,13 +113,18 @@ struct CalendarTabView: View {
                     )
                 }
             },
-            onEditTodo: { editingTodo = $0 },
+            onEditTodo: { entry in
+                guard cardStore.materializeCalendarTodo(id: entry.card.id, on: selectedDate),
+                      let card = cardStore.card(id: entry.card.id),
+                      let item = card.checklistItems.first(where: { $0.id == entry.item.id }) else { return }
+                editingTodo = TodoEntry(card: card, item: item)
+            },
             onEditMemo: { editingMemo = $0 }
         )
     }
 
     private var todoEntries: [TodoEntry] {
-        cardStore.todoCards(on: selectedDate).flatMap { card in
+        cardStore.calendarTodoCards(on: selectedDate).flatMap { card in
             card.checklistItems.map { TodoEntry(card: card, item: $0) }
         }
     }
@@ -126,7 +152,7 @@ private struct MonthGrid: View {
                 }
                 ForEach(Array(days.enumerated()), id: \.offset) { _, date in
                     if let date {
-                        let todoItems = cardStore.todoCards(on: date).flatMap(\.checklistItems)
+                        let todoItems = cardStore.calendarTodoCards(on: date).flatMap(\.checklistItems)
                         let memoCount = cardStore.memoCards(on: date).count
                         DayCell(
                             date: date,
@@ -355,16 +381,22 @@ private struct SelectedDayList: View {
                                         )
                                 }
                                 .buttonStyle(.plain)
-                                    Text(entry.item.text)
+                                    Text(entry.item.displayText())
                                         .foregroundStyle(
                                             entry.item.isDone ? palette.textTertiary : palette.textPrimary
                                         )
                                         .strikethrough(entry.item.isDone)
                                     Spacer(minLength: 0)
-                                Button { onEditTodo(entry) } label: {
-                                    Image(systemName: "pencil")
+                                if AppleReminderMirror.reminderID(from: entry.card.id) != nil {
+                                    Image(systemName: "checklist")
+                                        .foregroundStyle(palette.textTertiary)
+                                        .accessibilityLabel("Apple Reminders")
+                                } else {
+                                    Button { onEditTodo(entry) } label: {
+                                        Image(systemName: "pencil")
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
                             }
                             .padding(.vertical, 8)
                         }

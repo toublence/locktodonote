@@ -24,6 +24,28 @@
 	<true/>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
+	<key>NSRemindersUsageDescription</key>
+	<string>LockTodoNote reads your selected Reminders lists to show tasks on the Lock Screen and saves completion changes back to Apple Reminders.</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>LockTodoNote reads your selected Reminders lists to show tasks on the Lock Screen and saves completion changes back to Apple Reminders.</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.namslab.glancecard.reminders.refresh</string>
+		<string>com.namslab.glancecard.smart-lock-screen.refresh</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+	</array>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-6169297934919363~4721414955</string>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
 	<true/>
 	<key>CFBundleURLTypes</key>

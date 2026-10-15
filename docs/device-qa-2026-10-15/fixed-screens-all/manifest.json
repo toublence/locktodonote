@@ -1,0 +1,509 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "6DF8F5ED-1280-406B-B498-FBC769DB6157.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "App UI hierarchy for com.namslab_0_2E1BE4C2-0F43-410A-9B5B-D98A12B15161.glancecard",
+        "timestamp" : 1792043157.801
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "815D4F5A-4B37-417D-AEA3-ED66B8D6AD67",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-15 at 02.45.57 오후",
+        "timestamp" : 1792043157.801
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "428C54B0-2C83-4C94-B56F-C272EE5BF5AE.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"smartRepeat.save\" Button`_0_67A76534-DD58-4827-BFF4-9B34E64919AF.txt",
+        "timestamp" : 1792043157.608
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "4985E6AC-6119-41B2-A45F-69CDBBB61D60.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"smartRepeat.save\" Button`_0_BF2972FD-2CB5-4B6D-996E-04B8BF93C32D.txt",
+        "timestamp" : 1792043156.606
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "BE225B60-B123-48E2-BE2E-CEABEF358482.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"smartRepeat.save\" Button`_0_2A3970DC-3A77-4375-8C38-988956ADE89F.txt",
+        "timestamp" : 1792043155.68
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "5A0E94EB-516F-45D5-B682-BC6E058A4048.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"smartRepeat.save\" Button`_0_5F488EDC-0292-4428-A9F1-9AD1AC485D37.txt",
+        "timestamp" : 1792043154.652
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "7D6AC325-8056-41D1-B8E3-4C20B169E04C.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"smartRepeat.save\" Button`_0_D69F9DA7-887A-4ADC-9877-FEECD7FE214D.txt",
+        "timestamp" : 1792043153.63
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "5E22FF7C-E80D-47CC-BEA2-75189FEF7049",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-15 at 02.45.52 오후",
+        "timestamp" : 1792043152.171
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "0CE84649-2D82-4DE7-B0D5-BAB75352F98C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.45.52 오후",
+        "timestamp" : 1792043152.497
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "74CD168A-672F-407D-93D9-8A0D2357F26B",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-15 at 02.45.51 오후",
+        "timestamp" : 1792043151.97
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "E675126F-B1B7-4591-B397-91922B2CEB99.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "free-input-after-save_0_9D0850A1-4E17-44A9-9F8D-A89449BF7C97.png",
+        "timestamp" : 1792043150.346
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "D1083247-5552-45D1-9CC9-63279C342F6F",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.45.50 오후",
+        "timestamp" : 1792043150.196
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "3695CB1B-1EDF-4B2E-A02B-5515A75ABE6B.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "free-input-before-save_0_372A9417-CBC7-41E0-8674-24F91E8EF3D3.png",
+        "timestamp" : 1792043149.753
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "42147F8D-CD4D-47EB-A41B-3EC3690FD96E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.45.49 오후",
+        "timestamp" : 1792043149.509
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "46467507-327A-46F3-810A-DC8C460CEFB0",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.45.48 오후",
+        "timestamp" : 1792043148.345
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "9DFA96E4-747B-4BB9-A57A-7C072A63C5A7.mp4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screen Recording 2026-10-15 at 02.45.40 오후.mp4",
+        "timestamp" : 1792043140.158
+      }
+    ],
+    "testIdentifier" : "DeviceFeatureUITests/test01FreeCaptureRepeatGateAndPersistence()",
+    "testIdentifierURL" : "test://com.apple.xcode/LockTodoNote/LockTodoNoteUITests/DeviceFeatureUITests/test01FreeCaptureRepeatGateAndPersistence"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "ED86D39B-A874-4BBF-B2E5-5F8C96AC9B51.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "free-schedule-gate_0_EC4AF5A2-B8FF-40B5-AEA4-3D1B8DA62557.png",
+        "timestamp" : 1792043179.306
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "CC2C37D5-334B-4A9D-849E-6A7DF3A3360F.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "free-layout-limit_0_B7B65CAF-888C-4CDE-8D49-BE4F760FC417.png",
+        "timestamp" : 1792043172.727
+      }
+    ],
+    "testIdentifier" : "DeviceFeatureUITests/test02FreeLayoutLimitAndAutomaticSwitchGate()",
+    "testIdentifierURL" : "test://com.apple.xcode/LockTodoNote/LockTodoNoteUITests/DeviceFeatureUITests/test02FreeLayoutLimitAndAutomaticSwitchGate"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "148E07A6-F4F5-406A-A1AA-FABFB279DA6F.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "App UI hierarchy for com.namslab_0_5A79F9A7-BB3B-4A8C-83D3-7C305AE46F98.glancecard",
+        "timestamp" : 1792043199.863
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "832C1F9D-A5EE-4844-A89D-A06E0359F6F7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-15 at 02.46.39 오후",
+        "timestamp" : 1792043199.863
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "6CBF6044-DD8D-4572-89E7-20BE78350F23.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"smartRepeat.save\" Button`_0_2F0B4E4E-9AE0-4F8D-A869-CCC101835BC3.txt",
+        "timestamp" : 1792043199.694
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "B927EA16-5793-4E0F-84F9-12E349A02AF0.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"smartRepeat.save\" Button`_0_36239ED5-0E84-42AF-94B3-5AC81ED894F5.txt",
+        "timestamp" : 1792043198.759
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "133EEE6E-A30E-4796-87AA-FA8DEDB8BBA6.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"smartRepeat.save\" Button`_0_813D11A9-4B3F-4279-9676-46E4172828BC.txt",
+        "timestamp" : 1792043197.754
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "2120EAFD-8FA0-4488-B654-7749BBC2644F.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"smartRepeat.save\" Button`_0_94D05B20-94BB-4840-A624-5A758B4DA310.txt",
+        "timestamp" : 1792043196.743
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "8F78915A-57E4-4613-9F96-D57BEB2D0118.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"smartRepeat.save\" Button`_0_EA052411-8D48-4BE0-9112-8A46376A969E.txt",
+        "timestamp" : 1792043195.722
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "D29298B3-C23F-4625-9914-16AA1AAA7560",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.46.34 오후",
+        "timestamp" : 1792043194.59
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "F70E5BA8-2370-4574-8B9B-ED36D5B3F5C0",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.46.34 오후",
+        "timestamp" : 1792043194.056
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "46FA6737-AF91-40AE-AD8C-12FF48DAF9B2",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.46.32 오후",
+        "timestamp" : 1792043192.981
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "7860C98F-EB18-4C68-8EAD-2354412A6A45",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.46.31 오후",
+        "timestamp" : 1792043191.338
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "C42F6924-1938-469A-AF14-3EB9A5CCC1BE",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.46.30 오후",
+        "timestamp" : 1792043190.107
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "3932345E-5F3D-42D0-884D-04A5AEC7CF88.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "pro-repeat-selectedWeekdays_0_8DDADB2C-7704-47D8-B08B-A6C35AEEB286.png",
+        "timestamp" : 1792043189.675
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "FE0324F3-D2E1-4826-B2A2-0CE0E1D26DF7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.46.27 오후",
+        "timestamp" : 1792043187.573
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "E818382F-1AEE-418F-8AB9-492B06BAD8B8",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.46.26 오후",
+        "timestamp" : 1792043186.945
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "C274E74B-E1D2-4E44-8163-E131847CC3BB",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.46.25 오후",
+        "timestamp" : 1792043185.91
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "B6346CB1-9AA3-4A0F-9233-BD8A4BF050DE.mp4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screen Recording 2026-10-15 at 02.46.19 오후.mp4",
+        "timestamp" : 1792043179.573
+      }
+    ],
+    "testIdentifier" : "DeviceFeatureUITests/test03ProAdvancedRepeatFourRules()",
+    "testIdentifierURL" : "test://com.apple.xcode/LockTodoNote/LockTodoNoteUITests/DeviceFeatureUITests/test03ProAdvancedRepeatFourRules"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "D3769EFB-53EE-4E5C-8507-0964DAC76A15.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "pro-overlap-protection_0_4328DAF8-DE55-4E16-A575-6241D25FF18B.png",
+        "timestamp" : 1792043232.152
+      }
+    ],
+    "testIdentifier" : "DeviceFeatureUITests/test04ProMultipleLayoutsAndOverlapProtection()",
+    "testIdentifierURL" : "test://com.apple.xcode/LockTodoNote/LockTodoNoteUITests/DeviceFeatureUITests/test04ProMultipleLayoutsAndOverlapProtection"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "8385972D-A813-4F7D-A799-02F40C8E8611.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "App UI hierarchy for com.namslab_0_10A8F2F6-5C2A-46EC-9B6A-002C53D07AEA.glancecard",
+        "timestamp" : 1792043249.096
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "49FC59BF-9FD4-488B-A3F2-C8DFEE71D3BF",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-15 at 02.47.29 오후",
+        "timestamp" : 1792043249.096
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "0C10B158-5393-4A65-9328-24881463EFAD.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"QA Apple Reminder\" Button`_0_FE728A44-F7C5-4593-9847-5F27761D56AD.txt",
+        "timestamp" : 1792043248.937
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "D1EC6624-D266-473E-B0A3-5D3C5FE836FC.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"QA Apple Reminder\" Button`_0_E4314BAE-B43C-4A63-A406-3C1D1BB9AF81.txt",
+        "timestamp" : 1792043247.944
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "E65114A3-9DDB-4688-B4D2-7F06F0D78C2E.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"QA Apple Reminder\" Button`_0_F9AD8634-01BA-4D76-AE6D-327D78379DAF.txt",
+        "timestamp" : 1792043246.944
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "25753280-2C7B-4668-9415-CE7D55123FB7.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"QA Apple Reminder\" Button`_0_5E805C44-AFE2-44CE-9542-B58478AAF8E6.txt",
+        "timestamp" : 1792043245.951
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "E6D23D6F-0B1D-41A9-BBE7-EC3AE46D9B00.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"QA Apple Reminder\" Button`_0_2DDEB941-A43B-4473-98AE-B0753F723D15.txt",
+        "timestamp" : 1792043244.96
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "36B66199-156C-4BA8-B811-9342FE480F6F",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-15 at 02.47.23 오후",
+        "timestamp" : 1792043243.855
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "F0F3A26D-F54A-44F2-A8EA-203849CF51F5",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-15 at 02.47.21 오후",
+        "timestamp" : 1792043241.713
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "78017B46-ECE7-4CE3-95A3-726FEA478AF0",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.47.22 오후",
+        "timestamp" : 1792043242.003
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "7F2568CA-9700-4CEA-8EC9-741210C7ABBB",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-15 at 02.47.21 오후",
+        "timestamp" : 1792043241.604
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "D48DCCAD-D053-492D-AE9A-36E3A18174BB",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-15 at 02.47.20 오후",
+        "timestamp" : 1792043240.215
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "7C4FF962-9225-46C4-B248-51F78EABB429",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.47.20 오후",
+        "timestamp" : 1792043240.505
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "D37233B5-F148-41BD-B0E6-FEBC15EB28E8",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.47.19 오후",
+        "timestamp" : 1792043239.854
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "8846CCDB-3E1D-46DE-AB90-A5B2F79F8E49",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.47.17 오후",
+        "timestamp" : 1792043237.983
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "0011083B-DF31-462C-8F7F-E78627E64876",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.47.17 오후",
+        "timestamp" : 1792043237.57
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "926EA3EE-31EE-45E5-A216-772459E22ED8.mp4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screen Recording 2026-10-15 at 02.47.12 오후.mp4",
+        "timestamp" : 1792043232.434
+      }
+    ],
+    "testIdentifier" : "DeviceFeatureUITests/test06ProAppleRemindersRoundTrip()",
+    "testIdentifierURL" : "test://com.apple.xcode/LockTodoNote/LockTodoNoteUITests/DeviceFeatureUITests/test06ProAppleRemindersRoundTrip"
+  }
+]

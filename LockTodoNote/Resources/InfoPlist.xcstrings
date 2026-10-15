@@ -1,6 +1,136 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "NSRemindersUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote reads your selected Reminders lists to show tasks on the Lock Screen and saves completion changes back to Apple Reminders."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택한 미리알림 목록의 할 일을 잠금화면에 표시하고, 완료 상태를 Apple 미리알림에도 반영하기 위해 접근 권한이 필요합니다."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選択したリマインダーリストのタスクをロック画面に表示し、完了状態をAppleのリマインダーにも反映するためにアクセスを使用します。"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote accede a las listas seleccionadas de Recordatorios para mostrar tareas en la pantalla de bloqueo y guardar su estado de finalización en Recordatorios de Apple."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote लॉक स्क्रीन पर कार्य दिखाने के लिए आपकी चुनी हुई रिमाइंडर सूचियाँ पढ़ता है और कार्य पूरे होने की स्थिति Apple Reminders में भी सहेजता है।"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote liest deine ausgewählten Erinnerungslisten, zeigt Aufgaben auf dem Sperrbildschirm und überträgt deren Erledigungsstatus an Apple Erinnerungen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote lit les listes de rappels sélectionnées pour afficher les tâches sur l’écran verrouillé et synchronise leur état d’achèvement avec Rappels d’Apple."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote 读取您选择的提醒事项列表，在锁定屏幕上显示任务，并将完成状态同步回 Apple 提醒事项。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote 讀取您選擇的提醒事項列表，在鎖定畫面上顯示任務，並將完成狀態同步回 Apple 提醒事項。"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يقرأ LockTodoNote قوائم التذكيرات التي تختارها لعرض المهام على شاشة القفل ويحفظ حالة إكمالها في تذكيرات Apple."
+          }
+        }
+      }
+    },
+    "NSRemindersFullAccessUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote reads your selected Reminders lists to show tasks on the Lock Screen and saves completion changes back to Apple Reminders."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택한 미리알림 목록의 할 일을 잠금화면에 표시하고, 완료 상태를 Apple 미리알림에도 반영하기 위해 접근 권한이 필요합니다."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選択したリマインダーリストのタスクをロック画面に表示し、完了状態をAppleのリマインダーにも反映するためにアクセスを使用します。"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote accede a las listas seleccionadas de Recordatorios para mostrar tareas en la pantalla de bloqueo y guardar su estado de finalización en Recordatorios de Apple."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote लॉक स्क्रीन पर कार्य दिखाने के लिए आपकी चुनी हुई रिमाइंडर सूचियाँ पढ़ता है और कार्य पूरे होने की स्थिति Apple Reminders में भी सहेजता है।"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote liest deine ausgewählten Erinnerungslisten, zeigt Aufgaben auf dem Sperrbildschirm und überträgt deren Erledigungsstatus an Apple Erinnerungen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote lit les listes de rappels sélectionnées pour afficher les tâches sur l’écran verrouillé et synchronise leur état d’achèvement avec Rappels d’Apple."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote 读取您选择的提醒事项列表，在锁定屏幕上显示任务，并将完成状态同步回 Apple 提醒事项。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LockTodoNote 讀取您選擇的提醒事項列表，在鎖定畫面上顯示任務，並將完成狀態同步回 Apple 提醒事項。"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يقرأ LockTodoNote قوائم التذكيرات التي تختارها لعرض المهام على شاشة القفل ويحفظ حالة إكمالها في تذكيرات Apple."
+          }
+        }
+      }
+    },
     "CFBundleDisplayName" : {
       "comment" : "Bundle display name",
       "extractionState" : "extracted_with_value",

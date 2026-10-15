@@ -1,0 +1,146 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "67B2D880-40AF-46BD-B4C8-CB772542AFA7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.48.21 오후",
+        "timestamp" : 1792043301.865
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "B5AED771-F26F-4EB7-8A71-4CA6CA685BDE",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.48.21 오후",
+        "timestamp" : 1792043301.31
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "498F025B-41B9-45F3-9C55-30074408578C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.48.20 오후",
+        "timestamp" : 1792043300.275
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "2489A91F-141A-494D-8719-857386B37B2C.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "free-input-after-save_0_F2549711-D20A-4DCD-B5B2-4BCFCE6BA6BC.png",
+        "timestamp" : 1792043297.355
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "114480F7-06E6-4137-B6CA-465B8D43AA13",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.48.17 오후",
+        "timestamp" : 1792043297.201
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "2CF84A6C-E9B2-4F4E-BBEF-0D7D4BCFF73C.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "free-input-before-save_0_0B9A5FAF-2287-4870-9E35-FA87453A1797.png",
+        "timestamp" : 1792043296.761
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "A9D0ED1A-C2B1-47A5-9D87-FD3238140E6F",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.48.16 오후",
+        "timestamp" : 1792043296.515
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "37D97B42-AA48-4763-B0CD-226728E9F2CE",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-15 at 02.48.15 오후",
+        "timestamp" : 1792043295.362
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "0BCB13C5-9B22-4024-81F8-2427C04D1B9E.mp4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screen Recording 2026-10-15 at 02.48.07 오후.mp4",
+        "timestamp" : 1792043287.455
+      }
+    ],
+    "testIdentifier" : "DeviceFeatureUITests/test01FreeCaptureRepeatGateAndPersistence()",
+    "testIdentifierURL" : "test://com.apple.xcode/LockTodoNote/LockTodoNoteUITests/DeviceFeatureUITests/test01FreeCaptureRepeatGateAndPersistence"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "41BDF21D-9CF3-4F2D-8E98-64CF02793925.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "pro-repeat-everyNDays_0_E75DB0C1-622F-4A84-A444-348DDF6A0E1E.png",
+        "timestamp" : 1792043349.265
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "7F2B4F8D-6D4A-414E-829F-09ED1D2EE929.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "pro-repeat-biweekly_0_C488B92F-6D31-4574-A3E5-6C371319D04C.png",
+        "timestamp" : 1792043338.317
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "4528425D-0720-4802-9F99-C9CF4E204BEF.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "pro-repeat-monthlyLastWeekday_0_6E13FDF0-9629-4540-A97A-BEB4EDAF4203.png",
+        "timestamp" : 1792043324.259
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "32E553BB-B419-42EA-8E8A-A09A9C52E466.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "pro-repeat-selectedWeekdays_0_D9E30AA2-257A-40F0-8F03-D653835944A6.png",
+        "timestamp" : 1792043313.281
+      }
+    ],
+    "testIdentifier" : "DeviceFeatureUITests/test03ProAdvancedRepeatFourRules()",
+    "testIdentifierURL" : "test://com.apple.xcode/LockTodoNote/LockTodoNoteUITests/DeviceFeatureUITests/test03ProAdvancedRepeatFourRules"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "00008112-001848821413601E",
+        "deviceName" : "iPad (4)",
+        "exportedFileName" : "04B8ED72-1BA6-4C71-9CB9-DC8C8D4435D8.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "live-activity-real-system-task_0_8BC24870-ADE5-40F8-A2A0-55AE5A996547.png",
+        "timestamp" : 1792043361.886
+      }
+    ],
+    "testIdentifier" : "DeviceFeatureUITests/test07LiveActivityRendersOnDeviceNotificationCenter()",
+    "testIdentifierURL" : "test://com.apple.xcode/LockTodoNote/LockTodoNoteUITests/DeviceFeatureUITests/test07LiveActivityRendersOnDeviceNotificationCenter"
+  }
+]

@@ -400,6 +400,40 @@ final class AnalyticsService: ObservableObject {
 
     // MARK: - Paywall funnel
 
+    func adEvent(_ name: String, errorCode: Int? = nil, consentState: Int? = nil, placement: String = AdPolicy.placement) {
+        var parameters: [String: Any] = [
+            "placement": placement,
+            "ad_format": "banner",
+            "ad_unit": AdPolicy.bannerUnitID,
+            "ad_is_test": 1,
+        ]
+        if let errorCode { parameters["error_code"] = errorCode }
+        if let consentState { parameters["consent_state"] = consentState }
+        log(name, parameters)
+    }
+
+    func adRevenue(value: Decimal, currency: String, precision: Int, placement: String = AdPolicy.placement) {
+        // Test callbacks must never be counted as production purchase/ad revenue.
+        log("ad_test_revenue", [
+            "placement": placement,
+            "ad_format": "banner",
+            "ad_unit": AdPolicy.bannerUnitID,
+            "ad_is_test": 1,
+            "value": NSDecimalNumber(decimal: value).doubleValue,
+            "currency": currency,
+            "precision": precision,
+        ])
+    }
+
+    func proDisplayResult(template: String, result: String) {
+        log("pro_display_result", ["template_id": template, "result": result])
+    }
+
+    func layoutProfileAction(_ action: String, count: Int) {
+        // Profile names and user content are intentionally omitted.
+        log("layout_profile_\(action)", ["source": "settings", "profile_count": count])
+    }
+
     func paywallSeen(source: String) {
         log("paywall_seen", [
             "source": "app", "screen_name": "paywall", "paywall_trigger": source, "result": "success",
@@ -551,9 +585,12 @@ final class AnalyticsService: ObservableObject {
         ]
         if let price {
             let value = NSDecimalNumber(decimal: price).doubleValue
-            parameters["value"] = value
+            parameters["value"] = isTrial ? 0 : value
             parameters["price"] = value
+            parameters["quoted_price"] = value
+            parameters["value_basis"] = isTrial ? "free_trial" : "quoted_product_price"
         }
+        parameters["is_revenue_event"] = 0
         if let currency { parameters["currency"] = currency }
         parameters["preview_template"] = previewTemplate ?? "none"
         if let attemptId { parameters["attempt_id"] = attemptId }

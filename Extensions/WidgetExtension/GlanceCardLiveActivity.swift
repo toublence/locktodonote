@@ -50,7 +50,7 @@ struct GlanceCardLiveActivity: Widget {
               .truncationMode(.tail)
             HStack(spacing: 8) {
               if #available(iOSApplicationExtension 17.0, *),
-                 let firstTodo = context.state.todoItems.first(where: { !$0.isDone }) {
+                 let firstTodo = context.state.todoItems.first(where: { !$0.isDone && !$0.id.hasPrefix("projected:") }) {
                 Button(
                   intent: ToggleTodoIntent(
                     todoId: firstTodo.id,
@@ -1043,7 +1043,7 @@ private struct TodoColumn: View {
           .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
       } else {
         ForEach(Array(state.todoItems.prefix(visibleRowLimit)), id: \.self) { item in
-          if item.isDone {
+          if item.isDone || item.id.hasPrefix("projected:") {
             TodoRow(item: item, state: state)
           } else if #available(iOSApplicationExtension 17.0, *) {
             Button(

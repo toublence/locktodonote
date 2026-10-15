@@ -1,0 +1,16 @@
+Attributes: StaticText, 0x14ddc3980, {{0.0, 791.0}, {136.0, 20.0}}, identifier: 'qa.dashboard', label: 'QA FREE · calendarItems · '
+Element subtree:
+ →StaticText, 0x14ddc3980, {{0.0, 791.0}, {136.0, 20.0}}, identifier: 'qa.dashboard', label: 'QA FREE · calendarItems · '
+Path to element:
+ →Application, 0x14dd0f200, pid: 12545, label: 'LockTodoNote'
+  ↳Window (Main), 0x14dd0c280, {{0.0, 0.0}, {820.0, 1180.0}}
+   ↳Other, 0x14dd0f980, {{0.0, 0.0}, {820.0, 1180.0}}
+    ↳Other, 0x14dd0e940, {{0.0, 0.0}, {820.0, 1180.0}}
+     ↳Other, 0x14dd0ea80, {{0.0, 0.0}, {820.0, 1180.0}}
+      ↳Other, 0x14dd0e6c0, {{0.0, 0.0}, {820.0, 1180.0}}
+       ↳Other, 0x14dd0e800, {{0.0, 0.0}, {820.0, 1180.0}}
+        ↳StaticText, 0x14ddc3980, {{0.0, 791.0}, {136.0, 20.0}}, identifier: 'qa.dashboard', label: 'QA FREE · calendarItems · '
+Query chain:
+ →Find: Target Application 'com.namslab.glancecard'
+  ↪︎Find: Descendants matching type StaticText
+    ↪︎Find: Elements matching predicate '"qa.dashboard" IN identifiers'

@@ -1,0 +1,73 @@
+{
+  "device": "iPad Air 11-inch (M2)",
+  "os": "iPadOS 26.6.2",
+  "date": "2026-10-15",
+  "timezone": "Asia/Seoul",
+  "entitlement_mode": "Debug override, no real purchase",
+  "passed_scenarios": 9,
+  "results": [
+    {
+      "test": "test01FreeCaptureRepeatGateAndPersistence",
+      "scenario": "무료 입력·문장 인식·기본 반복·저장 보존",
+      "status": "passed",
+      "duration_seconds": 33.722,
+      "evidence_log": "final-checks.log"
+    },
+    {
+      "test": "test02FreeLayoutLimitAndAutomaticSwitchGate",
+      "scenario": "무료 구성 1개 제한·자동 전환 Pro 안내",
+      "status": "passed",
+      "duration_seconds": 21.476,
+      "evidence_log": "fixed-features.log"
+    },
+    {
+      "test": "test03ProAdvancedRepeatFourRules",
+      "scenario": "Pro 고급 반복 4종 저장",
+      "status": "passed",
+      "duration_seconds": 49.105,
+      "evidence_log": "remaining-features.log"
+    },
+    {
+      "test": "test04ProMultipleLayoutsAndOverlapProtection",
+      "scenario": "Pro 여러 구성·전환 규칙·겹침 방지",
+      "status": "passed",
+      "duration_seconds": 32.251,
+      "evidence_log": "fixed-features.log"
+    },
+    {
+      "test": "test05ProRealClockSwitchAndFallback",
+      "scenario": "실제 시각의 개인→업무→수동 복귀",
+      "status": "passed",
+      "duration_seconds": 178.992,
+      "evidence_log": "device-tests.log"
+    },
+    {
+      "test": "test06ProAppleRemindersRoundTrip",
+      "scenario": "실제 EventKit 가져오기·원본 완료 반영",
+      "status": "passed",
+      "duration_seconds": 15.816,
+      "evidence_log": "final-checks.log"
+    },
+    {
+      "test": "test07LiveActivityRendersOnDeviceNotificationCenter",
+      "scenario": "iPad 알림센터 실제 Live Activity 표시",
+      "status": "passed",
+      "duration_seconds": 10.88,
+      "evidence_log": "remaining-features.log"
+    },
+    {
+      "test": "test08FreeAppleRemindersRequiresPro",
+      "scenario": "무료 미리알림 연동 Pro 안내",
+      "status": "passed",
+      "duration_seconds": 9.547,
+      "evidence_log": "final-checks.log"
+    },
+    {
+      "test": "test09AdMobTestBannerAndProSuppression",
+      "scenario": "무료 테스트 광고 실제 노출·Pro 광고 숨김",
+      "status": "passed",
+      "duration_seconds": 16.451,
+      "evidence_log": "final-checks.log"
+    }
+  ]
+}

@@ -7,7 +7,7 @@ import Foundation
 /// extensions, which is why the intent had to re-read a flattened copy from the
 /// dashboard payload. They now live in the App Group so intents read the real
 /// settings directly.
-public struct LockScreenSettings: Hashable, Sendable {
+public struct LockScreenSettings: Codable, Hashable, Sendable {
     public static let defaultTextFontWeight = "regular"
     public static let defaultTextScale = 1.0
     public static let minTextScale = 0.85

@@ -1,4 +1,3 @@
-import AppTrackingTransparency
 import StoreKit
 import SwiftUI
 import UIKit
@@ -7,6 +6,7 @@ import LockTodoNoteShared
 struct RootView: View {
     @EnvironmentObject private var environment: AppEnvironment
     @EnvironmentObject private var themeStore: ThemeStore
+    @EnvironmentObject private var ads: AdService
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.scenePhase) private var scenePhase
 
@@ -14,7 +14,7 @@ struct RootView: View {
     @State private var selectedDestination: PrimaryDestination = .today
     @State private var hasLeftForeground = false
     @State private var leftForegroundAt: Date?
-    @State private var isRequestingTrackingAuthorization = false
+    @State private var isKeyboardVisible = false
 
     var body: some View {
         let palette = themeStore.palette(for: colorScheme)
@@ -23,6 +23,11 @@ struct RootView: View {
             // RootView observes ThemeStore directly, so changing the picker
             // updates the whole app immediately instead of only after relaunch.
             .preferredColorScheme(themeStore.mode.colorScheme)
+            #if DEBUG
+            .overlay(alignment: .bottomLeading) {
+                if DeviceQASupport.isEnabled { DeviceQADiagnosticsView() }
+            }
+            #endif
             .tint(palette.accent)
             .environment(\.palette, palette)
             .background(palette.background)
@@ -92,12 +97,13 @@ struct RootView: View {
             }
             .onChange(of: scenePhase) { phase in
                 guard phase == .active else {
+                    if phase == .background { ads.startNextSession() }
                     hasLeftForeground = true
                     leftForegroundAt = Date()
                     return
                 }
                 if !environment.needsOnboarding {
-                    Task { await requestTrackingAuthorizationIfNeeded() }
+                    Task { await prepareAdvertisingIfPossible() }
                 }
                 guard hasLeftForeground else { return }
                 guard let leftForegroundAt,
@@ -107,9 +113,12 @@ struct RootView: View {
                     try? await Task.sleep(for: .seconds(1.75))
                     guard scenePhase == .active else { return }
                     let blocked = environment.needsOnboarding
+                        || ads.isGatheringConsent
                         || environment.quickAddRequest != nil
                         || environment.paywallRequest != nil
                         || environment.isProInfoPresented
+                        || environment.showReminderSuggestion
+                        || environment.showShortcutLimitPrompt
                         || environment.purchases.isPurchasing
                         || selectedDestination == .settings
                         || UIApplication.shared.hasActiveTextInput
@@ -120,13 +129,18 @@ struct RootView: View {
             }
             .fullScreenCover(isPresented: $environment.needsOnboarding) {
                 OnboardingView {
-                    Task { await finishOnboardingAfterTrackingAuthorization() }
+                    environment.completeOnboarding()
                 }
                     .environment(\.palette, palette)
             }
-            .task {
-                guard !environment.needsOnboarding else { return }
-                await requestTrackingAuthorizationIfNeeded()
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+                isKeyboardVisible = true
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+                isKeyboardVisible = false
+            }
+            .task(id: "\(ads.eligibilityRevision)_\(advertisingIsBlocked)") {
+                await prepareAdvertisingIfPossible()
             }
     }
 
@@ -150,27 +164,24 @@ struct RootView: View {
         }
     }
 
-    @MainActor
-    private func finishOnboardingAfterTrackingAuthorization() async {
-        environment.completeOnboarding()
-        _ = await requestTrackingAuthorizationIfNeeded()
+    private var advertisingIsBlocked: Bool {
+        environment.needsOnboarding
+            || selectedDestination == .today
+            || environment.quickAddRequest != nil
+            || environment.paywallRequest != nil
+            || environment.memoEditorRequest != nil
+            || environment.isProInfoPresented
+            || environment.showReminderSuggestion
+            || environment.showShortcutLimitPrompt
+            || environment.purchases.isPurchasing
+            || isKeyboardVisible
     }
 
     @MainActor
-    @discardableResult
-    private func requestTrackingAuthorizationIfNeeded() async -> Bool {
-        guard scenePhase == .active,
-              !isRequestingTrackingAuthorization
-        else { return false }
-
-        let currentStatus = ATTrackingManager.trackingAuthorizationStatus
-        guard currentStatus == .notDetermined else { return true }
-
-        isRequestingTrackingAuthorization = true
-        defer { isRequestingTrackingAuthorization = false }
-
-        _ = await ATTrackingManager.requestTrackingAuthorization()
-        return true
+    private func prepareAdvertisingIfPossible() async {
+        guard scenePhase == .active, !advertisingIsBlocked,
+              !UIApplication.shared.hasActiveTextInput else { return }
+        await ads.prepareIfNeeded()
     }
 }
 

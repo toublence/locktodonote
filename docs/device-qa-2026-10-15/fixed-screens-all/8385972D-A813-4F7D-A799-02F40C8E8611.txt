@@ -1,0 +1,162 @@
+Application, 0x115019180, pid: 12556, label: 'LockTodoNote' <App element pid: 12556>
+  Window (Main), 0x115019400, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12556, elementOrHash.elementID: 4349045264.4>
+    Other, 0x115019540, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12556, elementOrHash.elementID: 4360407040.6>
+      Other, 0x115019680, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12556, elementOrHash.elementID: 4361226752.8>
+        Other, 0x1150197c0, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12556, elementOrHash.elementID: 4360395776.10>
+          Other, 0x115019900, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12556, elementOrHash.elementID: 4349057648.11>
+            Other, 0x115019a40, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12556, elementOrHash.elementID: 4679609280.12>
+              Button, 0x115019b80, {{24.5, 56.5}, {9.0, 15.0}}, identifier: 'chevron.left', label: 'Back' <AX element pid: 12556, elementOrHash.elementID: 4678585408.119>
+              SegmentedControl, 0x115019cc0, {{280.0, 40.0}, {260.0, 48.0}} <AX element pid: 12556, elementOrHash.elementID: 4361084416.13>
+                Button, 0x115019e00, {{280.0, 40.0}, {130.0, 49.0}}, identifier: 'navigation.today', label: 'Today', Selected <AX element pid: 12556, elementOrHash.elementID: 4677681152.18>
+                Button, 0x115019f40, {{410.0, 40.0}, {130.0, 49.0}}, identifier: 'navigation.calendar', label: 'Calendar' <AX element pid: 12556, elementOrHash.elementID: 4677681920.19>
+              Button, 0x11501a080, {{768.0, 42.0}, {44.0, 44.0}}, identifier: 'navigation.settings', label: 'Settings' <AX element pid: 12556, elementOrHash.elementID: 4678586752.14>
+              Other, 0x11501a1c0, {{0.0, 96.0}, {820.0, 1084.0}} <AX element pid: 12556, elementOrHash.elementID: 4679611968.120>
+                NavigationBar, 0x11501a300, {{0.0, 106.0}, {820.0, 54.0}}, identifier: 'Apple Reminders' <AX element pid: 12556, elementOrHash.elementID: 4677684992.278>
+                  StaticText, 0x11501a440, {{342.0, 117.5}, {135.5, 21.0}}, label: 'Apple Reminders' <AX element pid: 12556, elementOrHash.elementID: 4667911552.279>
+                Other, 0x11501a580, {{0.0, 96.0}, {820.0, 1084.0}} <AX element pid: 12556, elementOrHash.elementID: 4679612416.121>
+                  Other, 0x11501a6c0, {{0.0, 96.0}, {820.0, 1084.0}} <AX element pid: 12556, elementOrHash.elementID: 4679607936.123>
+                    Other, 0x11501a800, {{0.0, 96.0}, {820.0, 1084.0}} <AX element pid: 12556, elementOrHash.elementID: 4667904384.280>
+                      Other, 0x11501a940, {{0.0, 96.0}, {820.0, 1084.0}} <AX element pid: 12556, elementOrHash.elementID: 4670819840.281>
+                        CollectionView, 0x11501aa80, {{0.0, 96.0}, {820.0, 1084.0}} <AX element pid: 12556, elementOrHash.elementID: 4679425024.282>
+                          Other, 0x11501abc0, {{-20.0, -2008.0}, {860.0, 2382.0}} <AX element pid: 12556, elementOrHash.elementID: 4667977728.283>
+                          Other, 0x11501ad00, {{0.0, 96.0}, {820.0, 1084.0}} <AX element pid: 12556, elementOrHash.elementID: 4679604352.284>
+                          Other, 0x11501ae40, {{0.0, 96.0}, {820.0, 1084.0}} <AX element pid: 12556, elementOrHash.elementID: 4679605248.285>
+                          Cell, 0x11501af80, {{20.0, 160.0}, {780.0, 40.5}} <AX element pid: 12556, elementOrHash.elementID: 4798206976.286>
+                            Other, 0x11501b0c0, {{20.0, 160.0}, {780.0, 40.5}} <AX element pid: 12556, elementOrHash.elementID: 4667980288.300>
+                            Other, 0x11501b200, {{20.0, 160.0}, {780.0, 40.5}} <AX element pid: 12556, elementOrHash.elementID: 4667595776.301>
+                              Other, 0x11501b340, {{20.0, 160.0}, {780.0, 40.5}} <AX element pid: 12556, elementOrHash.elementID: 4797996544.317>
+                                Other, 0x11501b480, {{20.0, 160.0}, {780.0, 40.5}} <AX element pid: 12556, elementOrHash.elementID: 4670818048.330>
+                                  StaticText, 0x11501b5c0, {{20.0, 160.0}, {780.0, 40.5}}, label: 'Device QA — real EventKit' <AX element pid: 12556, elementOrHash.elementID: 4670819392.338>
+                          Cell, 0x11501b700, {{20.0, 200.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4361457408.287>
+                            Other, 0x11501b840, {{20.0, 200.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4670321664.302>
+                              Other, 0x11501b980, {{20.0, 200.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4667601600.318>
+                            Other, 0x11501bac0, {{20.0, 200.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4667602048.303>
+                              Other, 0x11501bc00, {{20.0, 200.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4797988864.319>
+                                Other, 0x11501bd40, {{20.0, 200.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4670816704.331>
+                                  Button, 0x11501be80, {{20.0, 200.5}, {780.0, 52.0}}, identifier: 'qa.reminder.create', label: 'QA Create Apple Reminder' <AX element pid: 12556, elementOrHash.elementID: 4670817152.339>
+                          Cell, 0x11615abc0, {{20.0, 252.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4798201856.288>
+                            Other, 0x11615ad00, {{20.0, 252.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4670322688.304>
+                              Other, 0x11615ae40, {{20.0, 252.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4667592192.320>
+                            Other, 0x11615a940, {{20.0, 252.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4667603392.305>
+                              Other, 0x11615af80, {{20.0, 252.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4797990400.321>
+                                Other, 0x11615b0c0, {{20.0, 252.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4670827904.332>
+                                  Button, 0x11615b200, {{20.0, 252.5}, {780.0, 52.0}}, identifier: 'qa.reminder.verify', label: 'QA Verify Apple Source' <AX element pid: 12556, elementOrHash.elementID: 4670827008.340>
+                          Other, 0x11615b340, {{40.0, 251.5}, {740.0, 1.0}} <AX element pid: 12556, elementOrHash.elementID: 4667975680.289>
+                          Cell, 0x11615b480, {{20.0, 304.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4798203136.290>
+                            Other, 0x11615b5c0, {{20.0, 304.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4670323712.306>
+                              Other, 0x11615b700, {{20.0, 304.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4667597568.322>
+                            Other, 0x11615a440, {{20.0, 304.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4667591744.307>
+                              Other, 0x11615bd40, {{20.0, 304.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4797991936.323>
+                                Other, 0x11615b980, {{20.0, 304.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4670827456.333>
+                                  StaticText, 0x11615bac0, {{20.0, 304.5}, {780.0, 52.0}}, identifier: 'qa.reminder.status', label: 'QA imported' <AX element pid: 12556, elementOrHash.elementID: 4670828352.341>
+                          Other, 0x11615bc00, {{40.0, 303.5}, {740.0, 1.0}} <AX element pid: 12556, elementOrHash.elementID: 4667975168.291>
+                          Other, 0x11615b840, {{-20.0, 374.0}, {860.0, 188.0}} <AX element pid: 12556, elementOrHash.elementID: 4667974656.292>
+                          Cell, 0x11615be80, {{20.0, 391.5}, {780.0, 72.5}} <AX element pid: 12556, elementOrHash.elementID: 4798204416.293>
+                            Other, 0x115370000, {{20.0, 391.5}, {780.0, 72.5}} <AX element pid: 12556, elementOrHash.elementID: 4667977216.308>
+                              Other, 0x115370140, {{20.0, 391.5}, {780.0, 72.5}} <AX element pid: 12556, elementOrHash.elementID: 4667593088.324>
+                            Other, 0x115370280, {{20.0, 391.5}, {780.0, 72.5}} <AX element pid: 12556, elementOrHash.elementID: 4667592640.309>
+                              Other, 0x1153703c0, {{20.0, 391.5}, {780.0, 72.5}} <AX element pid: 12556, elementOrHash.elementID: 4797993472.325>
+                                Other, 0x115370500, {{20.0, 391.5}, {780.0, 72.5}} <AX element pid: 12556, elementOrHash.elementID: 4360396224.334>
+                                  StaticText, 0x115370640, {{20.0, 391.5}, {780.0, 72.5}}, label: 'Bring your Apple Reminders to the Lock Screen. Completing a task here also completes the original reminder, without entering it twice.' <AX element pid: 12556, elementOrHash.elementID: 4670829248.342>
+                          Cell, 0x115370780, {{20.0, 464.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4798210816.346>
+                            Other, 0x1153708c0, {{20.0, 464.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4670710784.360>
+                              Other, 0x115370a00, {{20.0, 464.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4679606592.378>
+                            Other, 0x115370b40, {{20.0, 464.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4679605696.361>
+                              Other, 0x115370c80, {{20.0, 464.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4798001152.379>
+                                Other, 0x115370dc0, {{20.0, 464.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4679568448.394>
+                                  Switch, 0x115370f00, {{20.0, 464.0}, {780.0, 52.0}}, label: 'Automatic sync', value: 1 <AX element pid: 12556, elementOrHash.elementID: 4679566208.403>
+                                    StaticText, 0x115371040, {{40.0, 479.8}, {117.5, 20.5}}, label: 'Automatic sync' <AX element pid: 12556, elementOrHash.elementID: 4679570688.413>
+                                    Switch, 0x115371180, {{719.0, 476.0}, {63.0, 28.0}}, value: 1 <AX element pid: 12556, elementOrHash.elementID: 4361239552.414>
+                          Other, 0x1153712c0, {{40.0, 463.0}, {740.0, 1.0}} <AX element pid: 12556, elementOrHash.elementID: 4667974144.295>
+                          Cell, 0x115371400, {{20.0, 516.0}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4798208256.296>
+                            Other, 0x115371540, {{20.0, 516.0}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4667979264.312>
+                            Other, 0x115371680, {{20.0, 516.0}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4667596224.313>
+                              Other, 0x1153717c0, {{20.0, 516.0}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4797998080.328>
+                                Other, 0x115371900, {{20.0, 516.0}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4667594880.336>
+                                  StaticText, 0x115371a40, {{20.0, 516.0}, {780.0, 46.0}}, label: 'Connecting imports your default list first. Choose other lists below. Disconnecting removes only imported copies from this app and keeps the Apple originals.' <AX element pid: 12556, elementOrHash.elementID: 4360394880.344>
+                          Other, 0x115371b80, {{-20.0, 562.0}, {860.0, 294.5}} <AX element pid: 12556, elementOrHash.elementID: 4670320640.347>
+                          Cell, 0x115371cc0, {{20.0, 562.0}, {780.0, 40.5}} <AX element pid: 12556, elementOrHash.elementID: 4799547904.348>
+                            Other, 0x115371e00, {{20.0, 562.0}, {780.0, 40.5}} <AX element pid: 12556, elementOrHash.elementID: 4360408576.362>
+                            Other, 0x115371f40, {{20.0, 562.0}, {780.0, 40.5}} <AX element pid: 12556, elementOrHash.elementID: 4799334592.363>
+                              Other, 0x115372080, {{20.0, 562.0}, {780.0, 40.5}} <AX element pid: 12556, elementOrHash.elementID: 4799369728.380>
+                                Other, 0x1153721c0, {{20.0, 562.0}, {780.0, 40.5}} <AX element pid: 12556, elementOrHash.elementID: 4679580096.395>
+                                  StaticText, 0x115372300, {{20.0, 562.0}, {780.0, 40.5}}, label: 'Lists to sync' <AX element pid: 12556, elementOrHash.elementID: 4679567104.404>
+                          Cell, 0x115372440, {{20.0, 602.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4798212096.349>
+                            Other, 0x115372580, {{20.0, 602.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4668825088.364>
+                              Other, 0x1153726c0, {{20.0, 602.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4679567552.381>
+                            Other, 0x115372800, {{20.0, 602.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4679566656.365>
+                              Other, 0x115372940, {{20.0, 602.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4798002688.382>
+                                Other, 0x115372a80, {{20.0, 602.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4679572480.396>
+                                  Switch, 0x115372bc0, {{20.0, 602.5}, {780.0, 52.0}}, label: '[LockTodoNote QA] 08792003', value: 1 <AX element pid: 12556, elementOrHash.elementID: 4679574720.405>
+                                    StaticText, 0x115372d00, {{40.0, 618.2}, {235.0, 20.5}}, label: '[LockTodoNote QA] 08792003' <AX element pid: 12556, elementOrHash.elementID: 4679580544.415>
+                                    Switch, 0x115372e40, {{719.0, 614.5}, {63.0, 28.0}}, value: 1 <AX element pid: 12556, elementOrHash.elementID: 4361235712.416>
+                          Cell, 0x115372f80, {{20.0, 654.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4798213376.350>
+                            Other, 0x1153730c0, {{20.0, 654.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4668823552.366>
+                              Other, 0x115373200, {{20.0, 654.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799104768.383>
+                            Other, 0x115373340, {{20.0, 654.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799104320.367>
+                              Other, 0x115373480, {{20.0, 654.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4502144512.384>
+                                Other, 0x1153735c0, {{20.0, 654.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4679573376.397>
+                                  Switch, 0x115373700, {{20.0, 654.5}, {780.0, 52.0}}, label: '[LockTodoNote QA] E96DA230', value: 0 <AX element pid: 12556, elementOrHash.elementID: 4679570240.406>
+                                    StaticText, 0x115373840, {{40.0, 670.2}, {237.5, 20.5}}, label: '[LockTodoNote QA] E96DA230' <AX element pid: 12556, elementOrHash.elementID: 4679571136.417>
+                                    Switch, 0x115373980, {{719.0, 666.5}, {63.0, 28.0}}, value: 0 <AX element pid: 12556, elementOrHash.elementID: 4361233152.418>
+                          Other, 0x115373ac0, {{40.0, 653.5}, {740.0, 1.0}} <AX element pid: 12556, elementOrHash.elementID: 4670317056.351>
+                          Cell, 0x115373c00, {{20.0, 706.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4798214656.352>
+                            Other, 0x115373d40, {{20.0, 706.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4668821504.368>
+                              Other, 0x115373e80, {{20.0, 706.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799110144.385>
+                            Other, 0x115374000, {{20.0, 706.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799107008.369>
+                              Other, 0x115374140, {{20.0, 706.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4502146048.386>
+                                Other, 0x115374280, {{20.0, 706.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4796975296.398>
+                                  Switch, 0x1153743c0, {{20.0, 706.5}, {780.0, 52.0}}, label: 'LIVENOTE 📋', value: 0 <AX element pid: 12556, elementOrHash.elementID: 4796975744.407>
+                                    StaticText, 0x115374500, {{40.0, 722.2}, {106.0, 20.5}}, label: 'LIVENOTE 📋' <AX element pid: 12556, elementOrHash.elementID: 4679573824.419>
+                                    Switch, 0x115374640, {{719.0, 718.5}, {63.0, 28.0}}, value: 0 <AX element pid: 12556, elementOrHash.elementID: 4361238272.420>
+                          Other, 0x115374780, {{40.0, 705.5}, {740.0, 1.0}} <AX element pid: 12556, elementOrHash.elementID: 4669661696.353>
+                          Cell, 0x1153748c0, {{20.0, 758.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4798215936.354>
+                            Other, 0x115374a00, {{20.0, 758.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4360411136.370>
+                              Other, 0x115374b40, {{20.0, 758.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799334144.387>
+                            Other, 0x115374c80, {{20.0, 758.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799333696.371>
+                              Other, 0x115374dc0, {{20.0, 758.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799365120.388>
+                                Other, 0x115374f00, {{20.0, 758.5}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799106560.399>
+                                  Switch, 0x115375040, {{20.0, 758.5}, {780.0, 52.0}}, label: '미리 알림', value: 0 <AX element pid: 12556, elementOrHash.elementID: 4799106112.408>
+                                    StaticText, 0x115375180, {{40.0, 774.2}, {63.5, 20.5}}, label: '미리 알림' <AX element pid: 12556, elementOrHash.elementID: 4679602560.421>
+                                    Switch, 0x1153752c0, {{719.0, 770.5}, {63.0, 28.0}}, value: 0 <AX element pid: 12556, elementOrHash.elementID: 4799300224.422>
+                          Other, 0x115375400, {{40.0, 757.5}, {740.0, 1.0}} <AX element pid: 12556, elementOrHash.elementID: 4669660160.355>
+                          Cell, 0x115375540, {{20.0, 810.5}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4799549184.356>
+                            Other, 0x115375680, {{20.0, 810.5}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4668818432.372>
+                            Other, 0x1153757c0, {{20.0, 810.5}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4799336832.373>
+                              Other, 0x115375900, {{20.0, 810.5}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4799371264.389>
+                                Other, 0x115375a40, {{20.0, 810.5}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4799113280.400>
+                                  StaticText, 0x115375b80, {{20.0, 810.5}, {780.0, 46.0}}, label: 'Only writable lists are shown. Undated and overdue tasks appear today; future tasks appear on their due date. Edit titles, dates, recurrence, or delete tasks in Apple Reminders.' <AX element pid: 12556, elementOrHash.elementID: 4799112832.409>
+                          Other, 0x115375cc0, {{-20.0, 856.5}, {860.0, 2335.5}} <AX element pid: 12556, elementOrHash.elementID: 4667973632.297>
+                          Cell, 0x115375e00, {{20.0, 874.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799550464.357>
+                            Other, 0x115375f40, {{20.0, 874.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4670709760.374>
+                              Other, 0x115376080, {{20.0, 874.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4679569344.390>
+                            Other, 0x1153761c0, {{20.0, 874.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4679568896.375>
+                              Other, 0x115376300, {{20.0, 874.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799372800.391>
+                                Other, 0x115376440, {{20.0, 874.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799335488.401>
+                                  StaticText, 0x115376580, {{40.0, 889.8}, {92.0, 20.5}}, label: 'Last synced' <AX element pid: 12556, elementOrHash.elementID: 4799105216.410>
+                                  StaticText, 0x1153766c0, {{20.0, 874.0}, {780.0, 52.0}}, label: 'Last synced, Oct 15, 2026 at 2:47 PM' <AX element pid: 12556, elementOrHash.elementID: 4799107456.411>
+                          Cell, 0x115376800, {{20.0, 926.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799546624.358>
+                            Other, 0x115376940, {{20.0, 926.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4360413184.376>
+                              Other, 0x115376a80, {{20.0, 926.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799335040.392>
+                            Other, 0x115376bc0, {{20.0, 926.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799340416.377>
+                              Other, 0x115376d00, {{20.0, 926.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799368192.393>
+                                Other, 0x115376e40, {{20.0, 926.0}, {780.0, 52.0}} <AX element pid: 12556, elementOrHash.elementID: 4799342208.402>
+                                  Button, 0x115376f80, {{20.0, 926.0}, {780.0, 52.0}}, label: 'Sync now' <AX element pid: 12556, elementOrHash.elementID: 4799335936.412>
+                          Other, 0x1153770c0, {{40.0, 925.0}, {740.0, 1.0}} <AX element pid: 12556, elementOrHash.elementID: 4670710272.359>
+                          Cell, 0x115377200, {{20.0, 978.0}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4798209536.298>
+                            Other, 0x115377340, {{20.0, 978.0}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4667978240.314>
+                            Other, 0x115377480, {{20.0, 978.0}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4667594432.315>
+                              Other, 0x1153775c0, {{20.0, 978.0}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4797999616.329>
+                                Other, 0x115377700, {{20.0, 978.0}, {780.0, 46.0}} <AX element pid: 12556, elementOrHash.elementID: 4667603840.337>
+                                  StaticText, 0x115377840, {{20.0, 978.0}, {780.0, 46.0}}, label: 'Sync runs on launch, return to the app, and Reminders changes while running. With the app closed, iOS controls background refresh timing, so updates may be delayed. Lock Screen completion saves directly to the original.' <AX element pid: 12556, elementOrHash.elementID: 4667600704.345>
+                          Other, 0x115377980, {{787.0, 160.0}, {30.0, 1002.0}}, label: 'Vertical scroll bar, 1 page', value: 0% <AX element pid: 12556, elementOrHash.elementID: 4670318080.299>
+                            Other, 0x115377ac0, {{814.0, 294.0}, {3.0, 865.0}} <AX element pid: 12556, elementOrHash.elementID: 4679598080.316>
+                          Other, 0x115377c00, {{787.0, 160.0}, {30.0, 1002.0}}, label: 'Vertical scroll bar, 1 page', value: 0% <AX element pid: 12556, elementOrHash.elementID: 4670318080.299>
+                            Other, 0x115377d40, {{814.0, 294.0}, {3.0, 865.0}} <AX element pid: 12556, elementOrHash.elementID: 4679598080.316>
+                Other, 0x115377e80, {{0.0, 96.0}, {820.0, 1084.0}} <AX element pid: 12556, elementOrHash.elementID: 4670713856.122>
+                  Other, 0x115380000, {{0.0, 96.0}, {820.0, 1084.0}} <AX element pid: 12556, elementOrHash.elementID: 4670715904.124>
+              StaticText, 0x115380140, {{0.0, 1122.0}, {226.0, 20.0}}, identifier: 'qa.dashboard', label: 'QA PRO · calendarItems · QA Apple Reminder' <AX element pid: 12556, elementOrHash.elementID: 4679608384.16>
+              StaticText, 0x115380280, {{0.0, 1144.0}, {86.5, 11.0}}, identifier: 'qa.storage', label: 'QA storage: 1 cards', value: [{"lastActivatedAt... <AX element pid: 12556, elementOrHash.elementID: 4679608832.17>
+  Window, 0x1153803c0, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12556, elementOrHash.elementID: 4361458688.5>
+    Other, 0x115380500, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12556, elementOrHash.elementID: 4670831936.7>
+      Other, 0x115380640, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12556, elementOrHash.elementID: 4360402496.9>

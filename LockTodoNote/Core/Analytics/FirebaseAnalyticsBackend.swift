@@ -31,7 +31,11 @@ enum FirebaseBootstrap {
         // deliberate: it keeps events flowing into the same app record the
         // Flutter build used, which is what preserves the existing dashboards.
         FirebaseApp.configure()
+        #if DEBUG
+        Analytics.setAnalyticsCollectionEnabled(!ProcessInfo.processInfo.arguments.contains("-device-qa"))
+        #else
         Analytics.setAnalyticsCollectionEnabled(true)
+        #endif
         #endif
     }
 }
@@ -42,7 +46,12 @@ enum FirebaseBootstrap {
 /// The existing Firebase project and `GoogleService-Info.plist` are reused
 /// unchanged to keep the historical dashboards continuous.
 final class FirebaseAnalyticsBackend: AnalyticsBackend {
-    var isEnabled: Bool { FirebaseBootstrap.isConfigured }
+    var isEnabled: Bool {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-device-qa") { return false }
+        #endif
+        return FirebaseBootstrap.isConfigured
+    }
 
     init() {
         // Safety net: if the entry point ever stops calling this, configure

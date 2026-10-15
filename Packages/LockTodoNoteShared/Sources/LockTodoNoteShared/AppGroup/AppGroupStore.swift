@@ -117,7 +117,7 @@ public struct AppGroupStore: Sendable {
 
     public var isQuickAddEducationCompleted: Bool {
         get { defaults?.bool(forKey: AppGroupKeys.quickAddEducationCompleted) ?? false }
-        set { defaults?.set(newValue, forKey: AppGroupKeys.quickAddEducationCompleted) }
+        nonmutating set { defaults?.set(newValue, forKey: AppGroupKeys.quickAddEducationCompleted) }
     }
 
     public func markQuickAddEducationCompleted() {
@@ -126,17 +126,17 @@ public struct AppGroupStore: Sendable {
 
     public var isQuickAddTipDismissed: Bool {
         get { defaults?.bool(forKey: AppGroupKeys.quickAddTipDismissed) ?? false }
-        set { defaults?.set(newValue, forKey: AppGroupKeys.quickAddTipDismissed) }
+        nonmutating set { defaults?.set(newValue, forKey: AppGroupKeys.quickAddTipDismissed) }
     }
 
     public var quickAddTipImpressions: Int {
         get { defaults?.integer(forKey: AppGroupKeys.quickAddTipImpressions) ?? 0 }
-        set { defaults?.set(newValue, forKey: AppGroupKeys.quickAddTipImpressions) }
+        nonmutating set { defaults?.set(newValue, forKey: AppGroupKeys.quickAddTipImpressions) }
     }
 
     public var quickAddTipLastShownDate: String? {
         get { defaults?.string(forKey: AppGroupKeys.quickAddTipLastShownDate) }
-        set { defaults?.set(newValue, forKey: AppGroupKeys.quickAddTipLastShownDate) }
+        nonmutating set { defaults?.set(newValue, forKey: AppGroupKeys.quickAddTipLastShownDate) }
     }
 
     public var installDate: Date {

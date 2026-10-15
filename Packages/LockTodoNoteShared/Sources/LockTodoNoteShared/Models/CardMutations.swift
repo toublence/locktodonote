@@ -96,6 +96,15 @@ public enum CardMutations {
                 didChange = true
 
             case .todo:
+                if let todos = quickAdd.smartTodos {
+                    for (index, todo) in todos.enumerated() {
+                        let cardID = todos.count == 1 ? quickAdd.id : "\(quickAdd.id)-\(index)"
+                        guard existingIds.insert(cardID).inserted else { continue }
+                        result.append(todo.card(id: cardID, createdAt: quickAdd.createdAt))
+                        didChange = true
+                    }
+                    continue
+                }
                 let lines = QuickCaptureService.parseTodoLines(from: quickAdd.text)
                 guard !lines.isEmpty else { continue }
                 if lines.count == 1 {
@@ -206,6 +215,31 @@ public enum CardMutations {
 
     // MARK: - 4. Recurring todos
 
+    /// Read-only calendar projection. Materialize an occurrence only when edited
+    /// or completed, so browsing months does not create unbounded stored cards.
+    public static func calendarTodos(
+        _ cards: [Card], on date: Date, calendar: Calendar = .current, now: Date = Date()
+    ) -> [Card] {
+        let day = calendar.startOfDay(for: date)
+        let stored = cards.filter { $0.type == .checklist && $0.day(calendar: calendar) == day }
+        guard day > calendar.startOfDay(for: now) else { return stored }
+        // Apple owns its recurrence; imported reminders must never be synthesized.
+        let local = cards.filter { AppleReminderMirror.reminderID(from: $0.id) == nil }
+        let existingIDs = Set(local.map(\.id))
+        let projected = createRecurringTodosForToday(local, calendar: calendar, now: day).cards
+            .filter { !existingIDs.contains($0.id) }
+            .map { card -> Card in
+                var copy = card
+                let seriesID = card.checklistItems[0].effectiveRecurrenceId
+                let encoded = Data(seriesID.utf8).base64EncodedString()
+                    .replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
+                copy.id = "calendar-repeat-\(FlutterDate.dateKey(day, calendar: calendar))-\(encoded)"
+                copy.checklistItems[0].id = "\(copy.id)-item-0"
+                return copy
+            }
+        return stored + projected
+    }
+
     /// Creates today's occurrence for any repeating todo that does not have one.
     public static func createRecurringTodosForToday(
         _ cards: [Card],
@@ -217,7 +251,7 @@ public enum CardMutations {
 
         var series: [String: [(card: Card, item: ChecklistItem)]] = [:]
         for card in cards where card.type == .checklist {
-            for item in card.checklistItems where item.recurrence != .none {
+            for item in card.checklistItems where item.hasRecurrence {
                 series[item.effectiveRecurrenceId, default: []].append((card, item))
             }
         }
@@ -233,8 +267,8 @@ public enum CardMutations {
 
             occurrences.sort { $0.card.day(calendar: calendar) < $1.card.day(calendar: calendar) }
             let seed = occurrences[0]
-            let seedDay = seed.card.day(calendar: calendar)
-            guard seed.item.recurrence.isDue(seedDate: seedDay, on: today, calendar: calendar) else { continue }
+            let seedDay = seed.item.recurrenceAnchorDate ?? seed.card.day(calendar: calendar)
+            guard seed.item.isRecurrenceDue(seedDate: seedDay, on: today, calendar: calendar) else { continue }
 
             let occurrenceId = idFactory(newCards.count)
             var occurrence = seed.card
@@ -243,6 +277,9 @@ public enum CardMutations {
             var item = seed.item.clearingCompletion()
             item.id = "\(occurrenceId)-item-0"
             item.recurrenceId = key
+            if let dueDate = item.dueDate {
+                item.dueDate = combine(day: today, time: dueDate, calendar: calendar)
+            }
             occurrence.checklistItems = [item]
             occurrence.targetDateTime = today
             occurrence.createdAt = now

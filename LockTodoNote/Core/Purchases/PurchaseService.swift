@@ -15,6 +15,7 @@ final class PurchaseService: ObservableObject, EntitlementProviding {
     @Published private(set) var isLoadingProducts = false
     @Published private(set) var productLoadFailed = false
     @Published private(set) var isPurchasing = false
+    @Published private(set) var hasResolvedEntitlement = false
     @Published private(set) var introOfferEligibleProductIds: Set<String> = []
 
     private let defaults: UserDefaults?
@@ -49,6 +50,17 @@ final class PurchaseService: ObservableObject, EntitlementProviding {
     // MARK: - Entitlement
 
     func refreshEntitlement() async {
+        #if DEBUG
+        if let pro = DeviceQASupport.proOverride {
+            let updated = Entitlement(isPro: pro, productId: pro ? ProductIdentifiers.lifetime : nil,
+                                      purchasedAt: nil, expirationDate: nil, source: "device_qa_debug")
+            entitlement = updated
+            if let json = updated.cachedJSON { defaults?.set(json, forKey: FlutterPreferenceKeys.purchaseState) }
+            hasResolvedEntitlement = true
+            onEntitlementChanged?(updated, nil)
+            return
+        }
+        #endif
         var best: StoreKit.Transaction?
         for await result in Transaction.currentEntitlements {
             guard case .verified(let transaction) = result else { continue }
@@ -65,6 +77,7 @@ final class PurchaseService: ObservableObject, EntitlementProviding {
             best = transaction
         }
         apply(best)
+        hasResolvedEntitlement = true
     }
 
     private func apply(_ transaction: StoreKit.Transaction?) {
@@ -165,6 +178,9 @@ final class PurchaseService: ObservableObject, EntitlementProviding {
     }
 
     func purchase(_ product: Product) async -> PurchaseOutcome {
+        #if DEBUG
+        if DeviceQASupport.isEnabled { return .failed("device_qa_no_real_payment") }
+        #endif
         guard !isPurchasing else { return .failed("purchase_in_progress") }
         isPurchasing = true
         defer { isPurchasing = false }

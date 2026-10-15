@@ -1,5 +1,6 @@
 import SwiftUI
 import StoreKit
+import UIKit
 import WidgetKit
 import LockTodoNoteShared
 #if canImport(Darwin)
@@ -19,10 +20,15 @@ final class AppEnvironment: ObservableObject {
     let liveActivity: LiveActivityService
     let purchases: PurchaseService
     let analytics: AnalyticsService
+    let ads: AdService
     let notifications: NotificationService
     let reviewCoordinator: ReviewRequestCoordinator
     let dashboard: DashboardCoordinator
     let links: LinkStore
+    let smartLockScreen: SmartLockScreenService
+    let lockScreenSchedule: SmartLockScreenStore
+    let layoutProfiles: LayoutProfileStore
+    let reminderSync: ReminderSyncService
     let appGroup: AppGroupStore
 
     @Published private(set) var migrationOutcome: FlutterDataMigrator.Outcome?
@@ -39,6 +45,7 @@ final class AppEnvironment: ObservableObject {
     @Published var memoEditorRequest: Card?
     @Published var deepLinkError: String?
     @Published var showReminderSuggestion = false
+    @Published var showProSuggestion = false
     @Published private(set) var isWidgetInstalled = false
     private(set) var pendingProPreview: ProPreviewDraft?
     private var pendingPurchaseContext: PendingPurchaseContext?
@@ -52,7 +59,13 @@ final class AppEnvironment: ObservableObject {
 
     init(appGroup: AppGroupStore = AppGroupStore()) {
         self.appGroup = appGroup
+        #if DEBUG
+        DeviceQASupport.prepare(store: appGroup)
+        #endif
         Self.resetForUITestsIfRequested(appGroup: appGroup)
+        #if DEBUG
+        DeviceQASupport.seedIfRequested(store: appGroup)
+        #endif
         let outcome = FlutterDataMigrator(store: appGroup)?.migrateIfNeeded()
         self.migrationOutcome = outcome
 
@@ -70,16 +83,24 @@ final class AppEnvironment: ObservableObject {
         self.liveActivity = liveActivity
         self.purchases = purchases
         self.analytics = analytics
+        self.ads = AdService(analytics: analytics)
         self.notifications = notifications
         self.reviewCoordinator = reviewCoordinator
         self.links = LinkStore(store: appGroup)
-        self.dashboard = DashboardCoordinator(
+        self.layoutProfiles = LayoutProfileStore(store: appGroup)
+        self.lockScreenSchedule = SmartLockScreenStore(store: appGroup)
+        self.reminderSync = ReminderSyncService(cardStore: cardStore, store: appGroup)
+        let dashboard = DashboardCoordinator(
             cardStore: cardStore,
             settingsStore: settingsStore,
             liveActivity: liveActivity,
             entitlements: purchases,
             store: appGroup
         )
+        self.dashboard = dashboard
+        self.smartLockScreen = SmartLockScreenService(dashboard: dashboard, store: appGroup)
+        lockScreenSchedule.onChange = { [weak self] in self?.smartLockScreen.refresh() }
+        layoutProfiles.onChange = { [weak self] in self?.smartLockScreen.refresh() }
         reviewCoordinator.attachAnalytics(analytics)
         analytics.reviewCoordinator = reviewCoordinator
         notifications.attachAnalytics(analytics)
@@ -90,10 +111,18 @@ final class AppEnvironment: ObservableObject {
             }
         }
 
+        cardStore.canConfigureAdvancedRepeat = { [weak purchases] in purchases?.isPro == true }
         cardStore.load()
         // Any edit anywhere republishes the Lock Screen.
         cardStore.onChange = { [weak self] in self?.dashboard.publish() }
         settingsStore.onChange = { [weak self] in self?.dashboard.publish() }
+        reminderSync.onSync = { [weak self] in
+            guard let self else { return }
+            await self.dashboard.updateLiveActivity()
+            if UIApplication.shared.applicationState == .active && !self.needsOnboarding {
+                await self.ensureLiveActivityStarted(reason: "apple_reminders_sync")
+            }
+        }
         analytics.record(migration: outcome)
 
         let defaults = appGroup.defaults
@@ -144,6 +173,7 @@ final class AppEnvironment: ObservableObject {
     }
 
     private static func resetForUITestsIfRequested(appGroup: AppGroupStore) {
+        #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         guard arguments.contains(uiTestResetArgument) else { return }
 
@@ -157,7 +187,11 @@ final class AppEnvironment: ObservableObject {
             if arguments.contains(uiTestSkipOnboardingArgument) {
                 defaults.set(true, forKey: FlutterPreferenceKeys.hasCompletedOnboarding)
             }
+            if DeviceQASupport.isEnabled {
+                defaults.set(FlutterDataMigrator.currentVersion, forKey: AppGroupKeys.migrationVersion)
+            }
         }
+        #endif
     }
 
     func completeOnboarding() {
@@ -176,6 +210,9 @@ final class AppEnvironment: ObservableObject {
         analytics.ensureInstallDate()
         reviewCoordinator.recordUsageDay()
         await purchases.refreshEntitlement()
+        reminderSync.updateEntitlement(isPro: purchases.isPro)
+        await reminderSync.synchronize()
+        ads.updateEntitlement(isPro: purchases.isPro, resolved: purchases.hasResolvedEntitlement)
         analytics.isPremium = purchases.isPro
         enforceTemplateEntitlement(purchases.entitlement)
         await purchases.loadProducts()
@@ -209,14 +246,29 @@ final class AppEnvironment: ObservableObject {
             requestReviewIfEarned()
             return
         }
-        requestPaywall(source: "first_lock_screen_success")
+        // Let the first successful result remain visible; upgrade is optional.
+        if triggers.allowsAutomaticPrompt() { showProSuggestion = true }
     }
 
     /// The 24-hour preview lapsed — the user just lost a template they used.
     func checkLapsedTrialPaywall() {
         purchases.refreshTrialState()
+        enforceTemplateEntitlement(purchases.entitlement)
+        guard triggers.allowsAutomaticPrompt(), paywallRequest == nil,
+              !needsOnboarding, !showReminderSuggestion, !showShortcutLimitPrompt,
+              !isProInfoPresented, quickAddRequest == nil, memoEditorRequest == nil,
+              !purchases.isPurchasing, !ads.isGatheringConsent else { return }
         guard !purchases.isPro, triggers.claimTrialExpired() else { return }
         requestPaywall(source: "trial_expired")
+    }
+
+    func recordPaywallDismissal() {
+        triggers.recordPaywallDismissal()
+    }
+
+    func dismissProSuggestion() {
+        showProSuggestion = false
+        triggers.recordPaywallDismissal()
     }
 
     /// Called when a Shortcut capture is refused by the free daily limit.
@@ -330,6 +382,8 @@ final class AppEnvironment: ObservableObject {
         latestEntrySource = "app"
         Task {
             await purchases.refreshEntitlement()
+            reminderSync.updateEntitlement(isPro: purchases.isPro)
+            await reminderSync.synchronize()
             liveActivity.refreshState()
             if liveActivity.state.recoveryRequired {
                 await ensureLiveActivityStarted(reason: "foreground_recovery")
@@ -432,9 +486,11 @@ final class AppEnvironment: ObservableObject {
         transaction: StoreKit.Transaction?
     ) async {
         analytics.isPremium = entitlement.isPro
+        reminderSync.updateEntitlement(isPro: entitlement.isPro)
+        ads.updateEntitlement(isPro: entitlement.isPro, resolved: purchases.hasResolvedEntitlement)
         analytics.trialType = entitlement.temporaryTrialActive ? "temporary_pro_24h" : "none"
         enforceTemplateEntitlement(entitlement)
-        dashboard.publish()
+        smartLockScreen.refresh()
         guard entitlement.isPro, let context = pendingPurchaseContext else { return }
         analytics.purchaseCompleted(
             productId: transaction?.productID ?? context.productId,
@@ -498,6 +554,7 @@ final class AppEnvironment: ObservableObject {
         }
         settingsStore.settings.template = resolved
         analytics.templateChanged(resolved.rawValue)
+        liveActivity.refreshState()
         dashboard.publish()
         var liveActivityResult = "already_active"
         if !liveActivity.state.isRunning {
@@ -508,7 +565,8 @@ final class AppEnvironment: ObservableObject {
                 liveActivityResult = "start_failed"
             }
         }
-        pendingProPreview = nil
+        analytics.proDisplayResult(template: resolved.rawValue, result: liveActivityResult)
+        if liveActivityResult != "start_failed" { pendingProPreview = nil }
         return .applied(liveActivityResult: liveActivityResult)
     }
 
@@ -606,9 +664,25 @@ enum ProValueApplicationResult: Equatable {
 
     var succeeded: Bool {
         switch self {
-        case .nothingToApply, .applied: true
+        case .nothingToApply: true
+        case .applied(let result): result != "start_failed"
         case .failed: false
         }
+    }
+
+    var displayNeedsRecovery: Bool {
+        if case .applied(let result) = self { return result == "start_failed" }
+        return false
+    }
+
+    var recoveryMessage: String {
+        if displayNeedsRecovery {
+            return bilingualString(
+                korean: "Pro와 구성이 저장되었습니다. 잠금화면을 시작하지 못했습니다. Live 및 위젯 설정에서 다시 시작하거나 위젯을 사용하세요.",
+                english: "Pro and your layout are saved, but the Live Activity could not start. Retry from Live & Widgets or use a widget."
+            )
+        }
+        return appString(localized: "purchase.applyFailed", defaultValue: "The preview could not be applied. Please try again from Settings.")
     }
 }
 

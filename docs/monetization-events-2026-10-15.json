@@ -1,0 +1,549 @@
+{
+  "app": "LockTodoNote",
+  "received_date": "2026-10-15",
+  "source": "User-provided event aggregate pasted in chat",
+  "reporting_period": {
+    "start_date": null,
+    "end_date": null,
+    "timezone": null
+  },
+  "summary": {
+    "event_count": 6707,
+    "total_users": 69,
+    "events_per_active_user_as_displayed": 97.2,
+    "total_revenue": 0,
+    "revenue_currency": "USD"
+  },
+  "notes": [
+    "The received date is not the event reporting date range.",
+    "User counts across events overlap and must not be summed.",
+    "Event totals are aggregates, not a sequenced user funnel.",
+    "The supplied total users and events per active user have different denominator definitions.",
+    "Displayed revenue is not independently verified App Store or AdMob proceeds.",
+    "Production, sandbox, internal test and app version splits were not supplied.",
+    "Percent-of-total columns were omitted; primary counts and displayed average were preserved."
+  ],
+  "events": [
+    {
+      "index": 1,
+      "name": "widget_timeline_requested",
+      "event_count": 2337,
+      "total_users": 9,
+      "events_per_active_user_as_displayed": 259.67,
+      "total_revenue": 0
+    },
+    {
+      "index": 2,
+      "name": "user_engagement",
+      "event_count": 612,
+      "total_users": 69,
+      "events_per_active_user_as_displayed": 8.87,
+      "total_revenue": 0
+    },
+    {
+      "index": 3,
+      "name": "lockscreen_preview_seen",
+      "event_count": 384,
+      "total_users": 69,
+      "events_per_active_user_as_displayed": 5.57,
+      "total_revenue": 0
+    },
+    {
+      "index": 4,
+      "name": "top_destination_selected",
+      "event_count": 363,
+      "total_users": 47,
+      "events_per_active_user_as_displayed": 7.72,
+      "total_revenue": 0
+    },
+    {
+      "index": 5,
+      "name": "lockscreen_activity_updated",
+      "event_count": 294,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 147,
+      "total_revenue": 0
+    },
+    {
+      "index": 6,
+      "name": "todo_completed",
+      "event_count": 238,
+      "total_users": 28,
+      "events_per_active_user_as_displayed": 8.5,
+      "total_revenue": 0
+    },
+    {
+      "index": 7,
+      "name": "session_start",
+      "event_count": 229,
+      "total_users": 69,
+      "events_per_active_user_as_displayed": 3.32,
+      "total_revenue": 0
+    },
+    {
+      "index": 8,
+      "name": "live_activity_start_attempt",
+      "event_count": 172,
+      "total_users": 53,
+      "events_per_active_user_as_displayed": 3.25,
+      "total_revenue": 0
+    },
+    {
+      "index": 9,
+      "name": "live_activity_start_success",
+      "event_count": 146,
+      "total_users": 55,
+      "events_per_active_user_as_displayed": 2.65,
+      "total_revenue": 0
+    },
+    {
+      "index": 10,
+      "name": "todo_created",
+      "event_count": 143,
+      "total_users": 43,
+      "events_per_active_user_as_displayed": 3.33,
+      "total_revenue": 0
+    },
+    {
+      "index": 11,
+      "name": "onboarding_step_view",
+      "event_count": 130,
+      "total_users": 56,
+      "events_per_active_user_as_displayed": 2.32,
+      "total_revenue": 0
+    },
+    {
+      "index": 12,
+      "name": "quick_capture_focused",
+      "event_count": 118,
+      "total_users": 33,
+      "events_per_active_user_as_displayed": 3.58,
+      "total_revenue": 0
+    },
+    {
+      "index": 13,
+      "name": "reminder_action",
+      "event_count": 111,
+      "total_users": 35,
+      "events_per_active_user_as_displayed": 3.17,
+      "total_revenue": 0
+    },
+    {
+      "index": 14,
+      "name": "settings_opened",
+      "event_count": 107,
+      "total_users": 41,
+      "events_per_active_user_as_displayed": 2.61,
+      "total_revenue": 0
+    },
+    {
+      "index": 15,
+      "name": "pro_info_sheet_viewed",
+      "event_count": 81,
+      "total_users": 31,
+      "events_per_active_user_as_displayed": 2.61,
+      "total_revenue": 0
+    },
+    {
+      "index": 16,
+      "name": "pro_preview_viewed",
+      "event_count": 81,
+      "total_users": 31,
+      "events_per_active_user_as_displayed": 2.61,
+      "total_revenue": 0
+    },
+    {
+      "index": 17,
+      "name": "pro_template_tapped",
+      "event_count": 81,
+      "total_users": 31,
+      "events_per_active_user_as_displayed": 2.61,
+      "total_revenue": 0
+    },
+    {
+      "index": 18,
+      "name": "app_returned",
+      "event_count": 70,
+      "total_users": 21,
+      "events_per_active_user_as_displayed": 3.33,
+      "total_revenue": 0
+    },
+    {
+      "index": 19,
+      "name": "display_mode_selected",
+      "event_count": 66,
+      "total_users": 12,
+      "events_per_active_user_as_displayed": 5.5,
+      "total_revenue": 0
+    },
+    {
+      "index": 20,
+      "name": "lock_screen_template_changed",
+      "event_count": 63,
+      "total_users": 12,
+      "events_per_active_user_as_displayed": 5.25,
+      "total_revenue": 0
+    },
+    {
+      "index": 21,
+      "name": "screen_view",
+      "event_count": 60,
+      "total_users": 36,
+      "events_per_active_user_as_displayed": 1.67,
+      "total_revenue": 0
+    },
+    {
+      "index": 22,
+      "name": "first_open",
+      "event_count": 58,
+      "total_users": 57,
+      "events_per_active_user_as_displayed": 1.02,
+      "total_revenue": 0
+    },
+    {
+      "index": 23,
+      "name": "onboarding_start",
+      "event_count": 56,
+      "total_users": 56,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 24,
+      "name": "live_activity_start_failed",
+      "event_count": 55,
+      "total_users": 12,
+      "events_per_active_user_as_displayed": 6.11,
+      "total_revenue": 0
+    },
+    {
+      "index": 25,
+      "name": "ad_impression_observed",
+      "event_count": 53,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 26.5,
+      "total_revenue": 0
+    },
+    {
+      "index": 26,
+      "name": "ad_loaded",
+      "event_count": 53,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 26.5,
+      "total_revenue": 0
+    },
+    {
+      "index": 27,
+      "name": "ad_test_revenue",
+      "event_count": 53,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 26.5,
+      "total_revenue": 0
+    },
+    {
+      "index": 28,
+      "name": "onboarding_complete",
+      "event_count": 51,
+      "total_users": 51,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 29,
+      "name": "paywall_seen",
+      "event_count": 47,
+      "total_users": 33,
+      "events_per_active_user_as_displayed": 1.47,
+      "total_revenue": 0
+    },
+    {
+      "index": 30,
+      "name": "plan_selected",
+      "event_count": 46,
+      "total_users": 32,
+      "events_per_active_user_as_displayed": 1.48,
+      "total_revenue": 0
+    },
+    {
+      "index": 31,
+      "name": "paywall_dismissed",
+      "event_count": 43,
+      "total_users": 30,
+      "events_per_active_user_as_displayed": 1.43,
+      "total_revenue": 0
+    },
+    {
+      "index": 32,
+      "name": "ad_requested",
+      "event_count": 41,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 20.5,
+      "total_revenue": 0
+    },
+    {
+      "index": 33,
+      "name": "lockscreen_interacted",
+      "event_count": 40,
+      "total_users": 9,
+      "events_per_active_user_as_displayed": 4.44,
+      "total_revenue": 0
+    },
+    {
+      "index": 34,
+      "name": "first_todo_created",
+      "event_count": 37,
+      "total_users": 36,
+      "events_per_active_user_as_displayed": 1.03,
+      "total_revenue": 0
+    },
+    {
+      "index": 35,
+      "name": "activation_complete",
+      "event_count": 35,
+      "total_users": 35,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 36,
+      "name": "widget_setup_started",
+      "event_count": 30,
+      "total_users": 11,
+      "events_per_active_user_as_displayed": 2.73,
+      "total_revenue": 0
+    },
+    {
+      "index": 37,
+      "name": "live_activity_started",
+      "event_count": 16,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 8,
+      "total_revenue": 0
+    },
+    {
+      "index": 38,
+      "name": "widget_open_app",
+      "event_count": 15,
+      "total_users": 5,
+      "events_per_active_user_as_displayed": 3,
+      "total_revenue": 0
+    },
+    {
+      "index": 39,
+      "name": "memo_created",
+      "event_count": 12,
+      "total_users": 6,
+      "events_per_active_user_as_displayed": 2,
+      "total_revenue": 0
+    },
+    {
+      "index": 40,
+      "name": "app_update",
+      "event_count": 8,
+      "total_users": 8,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 41,
+      "name": "widget_installed_confirmed",
+      "event_count": 8,
+      "total_users": 7,
+      "events_per_active_user_as_displayed": 1.14,
+      "total_revenue": 0
+    },
+    {
+      "index": 42,
+      "name": "multiline_todo_imported",
+      "event_count": 6,
+      "total_users": 4,
+      "events_per_active_user_as_displayed": 1.5,
+      "total_revenue": 0
+    },
+    {
+      "index": 43,
+      "name": "layout_profile_applied",
+      "event_count": 5,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 2.5,
+      "total_revenue": 0
+    },
+    {
+      "index": 44,
+      "name": "os_update",
+      "event_count": 5,
+      "total_users": 4,
+      "events_per_active_user_as_displayed": 1.67,
+      "total_revenue": 0
+    },
+    {
+      "index": 45,
+      "name": "quick_add_education_completed",
+      "event_count": 5,
+      "total_users": 1,
+      "events_per_active_user_as_displayed": 5,
+      "total_revenue": 0
+    },
+    {
+      "index": 46,
+      "name": "quick_add_invoked",
+      "event_count": 5,
+      "total_users": 1,
+      "events_per_active_user_as_displayed": 5,
+      "total_revenue": 0
+    },
+    {
+      "index": 47,
+      "name": "shortcut_quick_add",
+      "event_count": 5,
+      "total_users": 1,
+      "events_per_active_user_as_displayed": 5,
+      "total_revenue": 0
+    },
+    {
+      "index": 48,
+      "name": "app_exception",
+      "event_count": 4,
+      "total_users": 3,
+      "events_per_active_user_as_displayed": 1.33,
+      "total_revenue": 0
+    },
+    {
+      "index": 49,
+      "name": "restore_completed",
+      "event_count": 4,
+      "total_users": 1,
+      "events_per_active_user_as_displayed": 4,
+      "total_revenue": 0
+    },
+    {
+      "index": 50,
+      "name": "layout_profile_saved",
+      "event_count": 3,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 1.5,
+      "total_revenue": 0
+    },
+    {
+      "index": 51,
+      "name": "lockscreen_open_app",
+      "event_count": 2,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 52,
+      "name": "onboarding_started",
+      "event_count": 2,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 53,
+      "name": "purchase_completed",
+      "event_count": 2,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 54,
+      "name": "purchase_started",
+      "event_count": 2,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 55,
+      "name": "quick_add_tip_seen",
+      "event_count": 2,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 56,
+      "name": "temporary_pro_trial_started",
+      "event_count": 2,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 57,
+      "name": "trial_cta_tapped",
+      "event_count": 2,
+      "total_users": 2,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 58,
+      "name": "live_activity_restarted",
+      "event_count": 1,
+      "total_users": 1,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 59,
+      "name": "migration_completed",
+      "event_count": 1,
+      "total_users": 1,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 60,
+      "name": "pro_preview_interacted",
+      "event_count": 1,
+      "total_users": 1,
+      "events_per_active_user_as_displayed": 0,
+      "total_revenue": 0
+    },
+    {
+      "index": 61,
+      "name": "purchase_value_applied",
+      "event_count": 1,
+      "total_users": 1,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 62,
+      "name": "quick_add_failed",
+      "event_count": 1,
+      "total_users": 1,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 63,
+      "name": "quick_add_limit_reached",
+      "event_count": 1,
+      "total_users": 1,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 64,
+      "name": "quick_add_tip_tapped",
+      "event_count": 1,
+      "total_users": 1,
+      "events_per_active_user_as_displayed": 1,
+      "total_revenue": 0
+    },
+    {
+      "index": 65,
+      "name": "review_eligibility_reached",
+      "event_count": 1,
+      "total_users": 1,
+      "events_per_active_user_as_displayed": 0,
+      "total_revenue": 0
+    }
+  ]
+}
+

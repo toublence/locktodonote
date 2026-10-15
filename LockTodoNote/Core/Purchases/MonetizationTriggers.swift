@@ -4,6 +4,16 @@ import LockTodoNoteShared
 /// One-shot paywall and reward moments. Each `claim` returns true at most once per install.
 struct MonetizationTriggers {
     private let defaults: UserDefaults?
+    private static let dismissedAtKey = "locktodonote.paywall.dismissed_at.v1"
+
+    func allowsAutomaticPrompt(now: Date = Date()) -> Bool {
+        guard let dismissedAt = defaults?.object(forKey: Self.dismissedAtKey) as? Date else { return true }
+        return now.timeIntervalSince(dismissedAt) >= 7 * 24 * 60 * 60
+    }
+
+    func recordPaywallDismissal(now: Date = Date()) {
+        defaults?.set(now, forKey: Self.dismissedAtKey)
+    }
 
     init(store: AppGroupStore = AppGroupStore()) {
         self.defaults = store.defaults

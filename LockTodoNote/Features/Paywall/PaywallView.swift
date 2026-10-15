@@ -24,6 +24,8 @@ struct PaywallView: View {
     @State private var didCompletePurchase = false
     @State private var showingAppliedConfirmation = false
     @State private var isAwaitingApproval = false
+    @State private var showsLifetime = false
+    @State private var hasAppliedPreview = false
 
     private var preview: ProPreviewDraft? { environment.pendingProPreview }
 
@@ -39,15 +41,14 @@ struct PaywallView: View {
                             previewImageData: preview.imageData
                         )
                     }
-                    Label(
-                        bilingualString(
-                            korean: "광고 없음 · 내 할 일은 나만의 것",
-                            english: "No ads · Your tasks stay yours"
-                        ),
-                        systemImage: "hand.raised.fill"
-                    )
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(palette.textSecondary)
+                    if AdPolicy.isEnabled {
+                        Label(
+                            bilingualString(korean: "Pro에서는 광고 없이 사용", english: "Ad-free with Pro"),
+                            systemImage: "hand.raised.fill"
+                        )
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(palette.textSecondary)
+                    }
                     benefits
                     productList
                     footer
@@ -67,6 +68,7 @@ struct PaywallView: View {
                         Image(systemName: "xmark")
                     }
                     .accessibilityLabel(appString(localized: "common.close", defaultValue: "Close"))
+                    .accessibilityIdentifier("paywall.close")
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button(appString(localized: "paywall.restore", defaultValue: "Restore")) {
@@ -100,18 +102,20 @@ struct PaywallView: View {
             Button(appString(localized: "common.done", defaultValue: "Done")) { dismiss() }
         } message: {
             Text(bilingualString(
-                korean: "잠금화면에서 새 카드를 확인해보세요.",
-                english: "Check your new card on the Lock Screen."
+                korean: hasAppliedPreview ? "잠금화면에서 새 카드를 확인해보세요." : "이제 Pro 기능을 사용할 수 있습니다.",
+                english: hasAppliedPreview ? "Check your new card on the Lock Screen." : "Your Pro features are ready to use."
             ))
         }
+        .accessibilityIdentifier("paywall.root")
         .onDisappear {
             if !didCompletePurchase {
+                environment.recordPaywallDismissal()
                 analytics.paywallDismissed(
                     source: source,
                     previewTemplate: preview?.template.rawValue
                 )
             }
-            if !isAwaitingApproval { environment.clearPendingProPreview() }
+            if !isAwaitingApproval && !didCompletePurchase { environment.clearPendingProPreview() }
         }
     }
 
@@ -119,62 +123,130 @@ struct PaywallView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(preview == nil
-                ? appString(localized: "paywall.title", defaultValue: "Make your Lock Screen yours")
-                : bilingualString(korean: "이 잠금화면을 계속 사용하세요", english: "Keep this Lock Screen")
-            )
+            Text(purchaseContext.title)
                 .font(.largeTitle.weight(.heavy))
                 .foregroundStyle(palette.textPrimary)
-            Text(
-                preview == nil
-                    ? appString(localized: "paywall.subtitle",
-                        defaultValue: "Make your Lock Screen yours — photos, D-Day countdowns, and unlimited Shortcuts."
-                    )
-                    : bilingualString(
-                        korean: "사진, D-Day, 메모와 할 일을\n나만의 잠금화면으로 만들어보세요.",
-                        english: "Use photos, D-Day, notes, and todos\nto make your Lock Screen your own."
-                    )
-            )
+            Text(purchaseContext.detail)
             .font(.subheadline)
             .foregroundStyle(palette.textSecondary)
         }
     }
 
-    /// Ordered by how much each feature actually drives upgrades.
+    private var purchaseContext: (title: String, detail: String, icon: String) {
+        if source == "smart_lock_screen" {
+            return (
+                bilingualString(korean: "시간에 맞춰 잠금화면을 전환하세요", english: "Let your Lock Screen follow your day"),
+                bilingualString(korean: "아침·업무·저녁마다 저장 구성과 표시할 할 일·메모를 자동으로 전환하세요. Live Activity의 백그라운드 갱신은 iOS 실행 허용에 따라 지연될 수 있습니다.", english: "Switch saved layouts and selected tasks or notes by time of day. Live Activity background updates depend on iOS execution and may be delayed."),
+                "clock.arrow.2.circlepath"
+            )
+        }
+        if source == "smart_repeat" {
+            return (
+                bilingualString(korean: "복잡한 반복도 한 번만 설정하세요", english: "Set complex repeats once"),
+                bilingualString(
+                    korean: "월·수·금, 매월 마지막 금요일, 격주 화요일, 매 3일 간격까지 Pro로 관리하세요.",
+                    english: "Schedule selected weekdays, the last Friday of each month, alternate Tuesdays and every three days with Pro."
+                ),
+                "repeat"
+            )
+        }
+        if source == "apple_reminders_sync" {
+            return (
+                bilingualString(korean: "할 일을 두 번 입력하지 마세요", english: "Enter your tasks just once"),
+                bilingualString(
+                    korean: "Apple 미리알림의 할 일을 잠금화면으로 가져오고, 완료 상태를 원본에도 반영하세요.",
+                    english: "Bring Apple Reminders to your Lock Screen and sync completion back to the original."
+                ),
+                "checklist"
+            )
+        }
+        if source == "theme_color" {
+            return (
+                appString(localized: "paywall.benefit.themes", defaultValue: "All accent themes"),
+                bilingualString(korean: "원하는 색상으로 잠금화면과 앱을 꾸미세요.", english: "Use your preferred accent across the app and Lock Screen."),
+                "paintpalette"
+            )
+        }
+        if source == "layout_profile_limit" {
+            return (
+                bilingualString(korean: "업무와 개인 구성을 저장하고 바로 바꾸세요", english: "Save layouts and switch between work and life"),
+                bilingualString(korean: "여러 잠금화면 구성을 다시 만들 필요 없이 사용하세요.", english: "Keep multiple Lock Screen layouts ready without recreating them."),
+                "rectangle.stack"
+            )
+        }
+        if source == "shortcut_limit_reached" {
+            return (
+                bilingualString(korean: "하루 입력 제한 없이 빠르게 기록하세요", english: "Capture without a daily limit"),
+                appString(localized: "paywall.benefit.shortcutsDetail", defaultValue: "Free is five captures a day. Pro has no limit."),
+                "bolt"
+            )
+        }
+        if let template = preview?.template {
+            if template.usesImage {
+                return (
+                    bilingualString(korean: "내 사진과 기록을 잠금화면에 표시하세요", english: "Keep your photo and notes on the Lock Screen"),
+                    appString(localized: "paywall.benefit.imageDetail", defaultValue: "Put a photo beside your todos or memo."),
+                    "photo"
+                )
+            }
+            if template.usesDday {
+                return (
+                    bilingualString(korean: "중요한 날과 기억할 내용을 함께 확인하세요", english: "Keep the day that matters in view"),
+                    appString(localized: "paywall.benefit.ddayDetail", defaultValue: "Track the day that matters, right on the Lock Screen."),
+                    "calendar.badge.clock"
+                )
+            }
+            return (template.displayName, template.proDescription, template.symbolName)
+        }
+        return (
+            appString(localized: "paywall.title", defaultValue: "Make your Lock Screen yours"),
+            appString(localized: "paywall.subtitle", defaultValue: "Photos, D-Day countdowns, and unlimited Shortcuts."),
+            "sparkles"
+        )
+    }
+
     private var benefits: some View {
         VStack(alignment: .leading, spacing: 12) {
             BenefitRow(
-                icon: "photo",
-                title: appString(localized: "paywall.benefit.image", defaultValue: "Photo templates"),
-                detail: appString(localized: "paywall.benefit.imageDetail",
-                    defaultValue: "Put a photo beside your todos or memo."
-                )
+                icon: purchaseContext.icon,
+                title: purchaseContext.title,
+                detail: purchaseContext.detail
             )
             BenefitRow(
-                icon: "calendar.badge.clock",
-                title: appString(localized: "paywall.benefit.dday", defaultValue: "D-Day countdown"),
-                detail: appString(localized: "paywall.benefit.ddayDetail",
-                    defaultValue: "Track the day that matters, right on the Lock Screen."
-                )
+                icon: "rectangle.stack",
+                title: bilingualString(korean: "여러 잠금화면 구성 저장", english: "Multiple saved layouts"),
+                detail: bilingualString(korean: "무료는 1개, Pro는 여러 구성을 저장하고 전환합니다.", english: "Free saves one layout. Pro saves and switches between multiple layouts.")
             )
-            BenefitRow(
-                icon: "rectangle.split.2x1",
-                title: appString(localized: "paywall.benefit.memoTodo", defaultValue: "Memo + Todo layout"),
-                detail: appString(localized: "paywall.benefit.memoTodoDetail",
-                    defaultValue: "See both at once, switchable from the Lock Screen."
+            if source != "smart_lock_screen" {
+                BenefitRow(
+                    icon: "clock.arrow.2.circlepath",
+                    title: "Smart Lock Screen",
+                    detail: bilingualString(korean: "요일과 시간대에 따라 저장 구성과 표시 항목 전환", english: "Switch saved layouts and selected content by weekday and time")
                 )
-            )
+            }
+            if source != "smart_repeat" {
+                BenefitRow(
+                    icon: "repeat",
+                    title: "Smart Repeat",
+                    detail: bilingualString(korean: "요일 조합·매월 마지막 요일·격주·N일 간격 반복", english: "Selected weekdays, last weekday of the month, alternate weeks and N-day intervals")
+                )
+            }
+            if source != "apple_reminders_sync" {
+                BenefitRow(
+                    icon: "checklist",
+                    title: bilingualString(korean: "Apple 미리알림 연동", english: "Apple Reminders sync"),
+                    detail: bilingualString(
+                        korean: "할 일을 다시 입력하지 않고 잠금화면에서 확인하고 완료하세요.",
+                        english: "See and complete existing reminders without entering tasks twice."
+                    )
+                )
+            }
             BenefitRow(
                 icon: "bolt",
                 title: appString(localized: "paywall.benefit.shortcuts", defaultValue: "Unlimited Shortcuts"),
                 detail: appString(localized: "paywall.benefit.shortcutsDetail",
                     defaultValue: "Free is five captures a day. Pro has no limit."
                 )
-            )
-            BenefitRow(
-                icon: "paintpalette",
-                title: appString(localized: "paywall.benefit.themes", defaultValue: "All accent themes"),
-                detail: nil
             )
         }
         .padding(16)
@@ -226,6 +298,29 @@ struct PaywallView: View {
                         guard selectedProductId != product.id else { return }
                         selectedProductId = product.id
                         logPlanSelected(product, isDefault: false)
+                    }
+                }
+                if let product = purchases.lifetimeProduct {
+                    DisclosureGroup(isExpanded: $showsLifetime) {
+                        ProductCard(
+                            product: product,
+                            isSelected: selectedProductId == product.id,
+                            badge: nil, trialText: nil, savingsText: nil
+                        ) {
+                            guard selectedProductId != product.id else { return }
+                            selectedProductId = product.id
+                            logPlanSelected(product, isDefault: false)
+                        }
+                        .padding(.top, 8)
+                    } label: {
+                        Text(bilingualString(korean: "평생 이용권 보기", english: "See lifetime access"))
+                            .font(.subheadline)
+                    }
+                    .onChange(of: showsLifetime) { expanded in
+                        if !expanded && selectedProductId == product.id {
+                            selectedProductId = nil
+                            selectDefaultProduct()
+                        }
                     }
                 }
             }
@@ -296,13 +391,8 @@ struct PaywallView: View {
     }
 
     private var displayProducts: [Product] {
-        purchases.products.sorted { productRank($0) < productRank($1) }
-    }
-
-    private func productRank(_ product: Product) -> Int {
-        if ProductIdentifiers.isYearly(product.id) { return 0 }
-        if product.id == ProductIdentifiers.monthly { return 1 }
-        return 2
+        // Keep both legacy annual IDs valid for restoration, but sell one annual choice.
+        [purchases.yearlyProduct, purchases.monthlyProduct].compactMap { $0 }
     }
 
     /// Yearly first — the plan with the best value per month.
@@ -310,6 +400,7 @@ struct PaywallView: View {
         guard selectedProductId == nil else { return }
         guard let product = purchases.yearlyProduct ?? purchases.products.first else { return }
         selectedProductId = product.id
+        showsLifetime = product.id == ProductIdentifiers.lifetime
         logPlanSelected(product, isDefault: true)
     }
 
@@ -348,8 +439,9 @@ struct PaywallView: View {
             )
             didCompletePurchase = true
             let application = await environment.applyPendingProValue()
+            hasAppliedPreview = application.valueApplied
             if application.succeeded {
-                if previewTemplate != nil {
+                if application.valueApplied && previewTemplate != nil {
                     analytics.purchaseValueApplied(
                         productId: product.id,
                         source: source,
@@ -362,7 +454,7 @@ struct PaywallView: View {
                 }
                 showingAppliedConfirmation = true
             } else {
-                message = appString(localized: "purchase.applyFailed", defaultValue: "Pro was purchased, but the preview could not be applied. You can apply it again from Settings.")
+                message = application.recoveryMessage
             }
         case .cancelled:
             analytics.purchaseCancelled(
@@ -410,13 +502,11 @@ struct PaywallView: View {
             analytics.isPremium = purchases.isPro
             didCompletePurchase = true
             let application = await environment.applyPendingProValue()
+            hasAppliedPreview = application.valueApplied
             if application.succeeded {
                 showingAppliedConfirmation = true
             } else {
-                message = appString(
-                    localized: "purchase.applyFailed",
-                    defaultValue: "Pro was restored, but the preview could not be applied. Please try again."
-                )
+                message = application.recoveryMessage
             }
         case .noPurchases:
             message = appString(localized: "restore.empty",
@@ -507,9 +597,14 @@ struct PaywallView: View {
 
     private var ctaDetail: String? {
         guard let product = selectedProduct,
-              purchases.isEligibleForFreeTrial(product),
-              ProductIdentifiers.isYearly(product.id) else { return nil }
-        return bilingualString(korean: "이후 연 \(product.displayPrice)", english: "Then \(product.displayPrice)/year")
+              purchases.isEligibleForFreeTrial(product) else { return nil }
+        if ProductIdentifiers.isYearly(product.id) {
+            return bilingualString(korean: "이후 연 \(product.displayPrice)", english: "Then \(product.displayPrice)/year")
+        }
+        if product.id == ProductIdentifiers.monthly {
+            return bilingualString(korean: "이후 월 \(product.displayPrice)", english: "Then \(product.displayPrice)/month")
+        }
+        return nil
     }
 
     private func periodUnit(_ unit: Product.SubscriptionPeriod.Unit) -> String {

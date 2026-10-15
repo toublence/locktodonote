@@ -12,6 +12,8 @@ struct LockScreenTabView: View {
     @EnvironmentObject private var dashboard: DashboardCoordinator
     @EnvironmentObject private var analytics: AnalyticsService
     @EnvironmentObject private var purchases: PurchaseService
+    @EnvironmentObject private var ads: AdService
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.palette) private var palette
     @Environment(\.openURL) private var openURL
@@ -25,10 +27,12 @@ struct LockScreenTabView: View {
     @State private var captureMode: QuickAddMode = .todo
     @State private var captureText = ""
     @State private var captureRecurrence: TodoRecurrence = .none
+    @State private var captureAdvancedRepeat: AdvancedRepeatRule?
+    @State private var smartCaptureEnabled = true
+    @State private var hasManualCaptureRecurrence = false
     @State private var captureConfirmation: String?
     @State private var infoTemplate: LockScreenTemplate?
     @State private var showsCompletedTodos = false
-    @State private var isTemplatePreviewExpanded = true
     @State private var isTipDismissed = false
     @FocusState private var isCaptureFocused: Bool
 
@@ -36,6 +40,7 @@ struct LockScreenTabView: View {
     private var template: LockScreenTemplate { settingsStore.settings.template }
 
     var body: some View {
+        ScrollViewReader { scroll in
         ScrollView {
             VStack(alignment: .leading, spacing: horizontalSizeClass == .regular ? 24 : 16) {
                 if shouldShowQuickAddTip {
@@ -43,11 +48,18 @@ struct LockScreenTabView: View {
                 }
                 templateSection
                 quickCapture
+                if environment.showProSuggestion && !environment.showReminderSuggestion {
+                    proSuggestion
+                }
             }
             .padding(.horizontal, horizontalSizeClass == .regular ? 36 : 20)
             .padding(.bottom, horizontalSizeClass == .regular ? 36 : 20)
             .frame(maxWidth: horizontalSizeClass == .regular ? 1040 : 720)
             .frame(maxWidth: .infinity)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidShowNotification)) { _ in
+            guard isCaptureFocused else { return }
+            withAnimation { scroll.scrollTo("capture.input", anchor: .bottom) }
         }
         .accessibilityIdentifier("home.scroll")
         .scrollDismissesKeyboard(.interactively)
@@ -90,6 +102,19 @@ struct LockScreenTabView: View {
         ) {
             Button(appString(localized: "common.ok", defaultValue: "OK")) { errorMessage = nil }
         }
+        }
+        .preference(key: BannerEligibilityPreferenceKey.self, value: [.today: canShowBanner])
+    }
+
+    private var canShowBanner: Bool {
+        ads.isReady && scenePhase == .active && !purchases.isPro
+            && !isCaptureFocused && editingCard == nil && editingTodo == nil
+            && !isEditingDday && infoTemplate == nil && photoSelectionTemplate == nil
+            && errorMessage == nil
+            && environment.quickAddRequest == nil && environment.memoEditorRequest == nil
+            && environment.paywallRequest == nil && !environment.isProInfoPresented
+            && !environment.showReminderSuggestion && !environment.showShortcutLimitPrompt
+            && !purchases.isPurchasing && !ads.isGatheringConsent
     }
 
     private var shouldShowQuickAddTip: Bool {
@@ -167,42 +192,31 @@ struct LockScreenTabView: View {
         }
     }
 
-    private var templateSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .top, spacing: 8) {
-                templateControl
-
-                Spacer(minLength: 0)
-
-                Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        isTemplatePreviewExpanded.toggle()
-                    }
-                } label: {
-                    Image(systemName: isTemplatePreviewExpanded ? "chevron.up" : "chevron.down")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(palette.accent)
-                        .frame(width: 32, height: 32)
-                        .contentShape(Rectangle())
+    private var proSuggestion: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(bilingualString(korean: "원하는 잠금화면을 만들어보세요", english: "Make this Lock Screen yours"))
+                    .font(.subheadline.weight(.semibold))
+                Button(bilingualString(korean: "Pro 기능 보기", english: "Explore Pro")) {
+                    environment.showProSuggestion = false
+                    environment.requestPaywall(source: "first_lock_screen_success")
                 }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("home.templateSection.toggle")
+                .buttonStyle(.bordered)
             }
-
-            if isTemplatePreviewExpanded {
-                DashboardPreviewCard(snapshot: dashboard.currentSnapshot())
-                    .onAppear {
-                        let snapshot = dashboard.currentSnapshot()
-                        analytics.lockscreenPreviewSeen(
-                            templateId: snapshot.lockScreenLayout,
-                            todoCount: snapshot.todoItems.count
-                        )
-                    }
-                    .transition(.opacity.combined(with: .move(edge: .top)))
+            Spacer()
+            Button {
+                environment.dismissProSuggestion()
+            } label: {
+                Image(systemName: "xmark").padding(8)
             }
+            .accessibilityLabel(appString(localized: "common.close", defaultValue: "Close"))
+        }
+        .padding(16)
+        .background(palette.surface, in: RoundedRectangle(cornerRadius: 14))
+    }
 
-            Divider()
-
+    private var templateSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
             LiveActivityStatusRow(
                 state: liveActivity.state,
                 hasStartedBefore: environment.appGroup.defaults?.bool(
@@ -211,6 +225,19 @@ struct LockScreenTabView: View {
                 onStart: { await startLiveActivity() },
                 onUpdate: { await dashboard.updateLiveActivity() }
             )
+
+            Divider()
+
+            templateControl
+
+            DashboardPreviewCard(snapshot: dashboard.currentSnapshot())
+                .onAppear {
+                    let snapshot = dashboard.currentSnapshot()
+                    analytics.lockscreenPreviewSeen(
+                        templateId: snapshot.lockScreenLayout,
+                        todoCount: snapshot.todoItems.count
+                    )
+                }
 
             if template.usesImage {
                 ImageSlotCard(
@@ -229,7 +256,8 @@ struct LockScreenTabView: View {
                 }
             }
         }
-        .padding(16)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .background(palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
@@ -378,9 +406,10 @@ struct LockScreenTabView: View {
                         .stroke(palette.border, lineWidth: 1)
                 )
                 .padding(12)
+                .id("capture.input")
             }
             .frame(
-                height: horizontalSizeClass == .regular ? 360 : 300,
+                height: isCaptureFocused ? 220 : (horizontalSizeClass == .regular ? 360 : 300),
                 alignment: .topLeading
             )
             .background(palette.surfaceSoft, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
@@ -393,20 +422,30 @@ struct LockScreenTabView: View {
             }
 
             if captureMode == .todo {
-                HStack(spacing: 10) {
-                    Text(
-                        appString(localized: "quickAdd.repeat", defaultValue: "Show this todo")
-                    )
-                    .font(.caption)
-                    .foregroundStyle(palette.textSecondary)
-                    Spacer(minLength: 0)
-                    Picker("", selection: $captureRecurrence) {
-                        ForEach(TodoRecurrence.allCases, id: \.self) { option in
-                            Text(option.displayName).tag(option)
+                AdvancedRepeatPicker(rule: $captureAdvancedRepeat, startDate: smartCaptureTodos.first?.scheduledDate ?? today) {
+                    captureRecurrence = .none
+                    hasManualCaptureRecurrence = true
+                }
+                SmartQuickAddPreview(todos: smartCaptureTodos, isEnabled: $smartCaptureEnabled)
+                if captureAdvancedRepeat == nil {
+                    HStack(spacing: 10) {
+                        Text(
+                            appString(localized: "quickAdd.repeat", defaultValue: "Show this todo")
+                        )
+                        .font(.caption)
+                        .foregroundStyle(palette.textSecondary)
+                        Spacer(minLength: 0)
+                        Picker("", selection: Binding(
+                            get: { smartCaptureTodos.first?.recurrence ?? captureRecurrence },
+                            set: { captureRecurrence = $0; captureAdvancedRepeat = nil; hasManualCaptureRecurrence = true }
+                        )) {
+                            ForEach(TodoRecurrence.allCases, id: \.self) { option in
+                                Text(option.displayName).tag(option)
+                            }
                         }
+                        .labelsHidden()
+                        .pickerStyle(.menu)
                     }
-                    .labelsHidden()
-                    .pickerStyle(.menu)
                 }
             }
 
@@ -421,10 +460,9 @@ struct LockScreenTabView: View {
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
                 Button(appString(localized: "common.done", defaultValue: "Done")) {
-                    saveCapture()
+                    if !trimmedCaptureText.isEmpty { saveCapture() }
                     isCaptureFocused = false
                 }
-                .disabled(trimmedCaptureText.isEmpty)
             }
         }
         .onChange(of: isCaptureFocused) { focused in
@@ -540,6 +578,14 @@ struct LockScreenTabView: View {
 
     // MARK: - Actions
 
+    private var smartCaptureTodos: [SmartTodo] {
+        SmartQuickAddParser.parse(
+            captureText, defaultDate: today,
+            recurrenceOverride: hasManualCaptureRecurrence ? captureRecurrence : nil,
+            enabled: smartCaptureEnabled
+        )
+    }
+
     private func setCaptureMode(_ mode: QuickAddMode) {
         captureMode = mode
         settingsStore.settings.selectedContentSection = mode == .todo ? .todo : .memo
@@ -551,12 +597,12 @@ struct LockScreenTabView: View {
 
         switch captureMode {
         case .todo:
-            let lines = trimmedCaptureText
-                .components(separatedBy: .newlines)
-                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-                .filter { !$0.isEmpty }
+            let lines = QuickCaptureService.parseTodoLines(from: trimmedCaptureText)
             guard !lines.isEmpty else { return }
-            guard cardStore.addTodos(texts: lines, to: today, recurrence: captureRecurrence) else {
+            guard cardStore.addTodos(
+                texts: [trimmedCaptureText], to: today, recurrence: captureRecurrence, smartEnabled: smartCaptureEnabled,
+                recurrenceOverride: hasManualCaptureRecurrence ? captureRecurrence : nil, advancedRepeat: captureAdvancedRepeat
+            ) else {
                 reportSaveFailure(operation: "create_todo")
                 return
             }
@@ -566,7 +612,8 @@ struct LockScreenTabView: View {
                 remainingCount: allTodos.filter { !$0.isDone }.count,
                 hasMemo: !memoCards.isEmpty,
                 templateId: template.rawValue,
-                source: "inline"
+                source: "inline",
+                createdCount: lines.count
             )
             if lines.count > 1 { analytics.multilineTodoImported(count: lines.count) }
             captureConfirmation = String(
@@ -743,7 +790,7 @@ private struct LiveActivityStatusRow: View {
                 } label: {
                     if isWorking {
                         ProgressView()
-                            .frame(minWidth: 72, minHeight: 36)
+                            .frame(minWidth: 56, minHeight: 20)
                     } else if state.isRunning {
                         Label(
                             appString(localized: "liveActivity.update", defaultValue: "Apply Changes"),
@@ -752,16 +799,17 @@ private struct LiveActivityStatusRow: View {
                         .font(.caption.weight(.semibold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
-                        .frame(minWidth: 72, minHeight: 36)
+                        .frame(minWidth: 56, minHeight: 20)
                     } else {
                         Text(appString(localized: "liveActivity.startButton", defaultValue: "Start"))
                             .font(.caption.weight(.semibold))
                             .lineLimit(1)
                             .minimumScaleFactor(0.75)
-                            .frame(minWidth: 72, minHeight: 36)
+                            .frame(minWidth: 56, minHeight: 20)
                     }
                 }
                 .buttonStyle(.borderedProminent)
+                .controlSize(.small)
                 .tint(palette.accent)
                 .disabled(isUnsupported || isWorking)
             }
@@ -1008,12 +1056,12 @@ private struct TodoRowView: View {
                     Image(systemName: entry.item.isDone ? "checkmark.circle.fill" : "circle")
                         .foregroundStyle(entry.item.isDone ? palette.success : palette.textTertiary)
                         .imageScale(.large)
-                    Text(entry.item.text)
+                    Text(entry.item.displayText())
                         .foregroundStyle(entry.item.isDone ? palette.textTertiary : palette.textPrimary)
                         .strikethrough(entry.item.isDone)
                         .multilineTextAlignment(.leading)
                     Spacer(minLength: 0)
-                    if entry.item.recurrence != .none {
+                    if entry.item.hasRecurrence {
                         Image(systemName: "repeat")
                             .font(.caption)
                             .foregroundStyle(palette.textTertiary)
@@ -1022,20 +1070,28 @@ private struct TodoRowView: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .accessibilityLabel(entry.item.displayText())
+            .accessibilityIdentifier("todo.toggle.\(entry.card.id):\(entry.item.id)")
 
-            Button(action: onEdit) {
-                Image(systemName: "pencil")
+            if AppleReminderMirror.reminderID(from: entry.card.id) != nil {
+                Image(systemName: "checklist")
                     .foregroundStyle(palette.textTertiary)
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(appString(localized: "common.edit", defaultValue: "Edit"))
+                    .accessibilityLabel("Apple Reminders")
+            } else {
+                Button(action: onEdit) {
+                    Image(systemName: "pencil")
+                        .foregroundStyle(palette.textTertiary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(appString(localized: "common.edit", defaultValue: "Edit"))
 
-            Button(role: .destructive, action: onDelete) {
-                Image(systemName: "trash")
-                    .foregroundStyle(palette.textTertiary)
+                Button(role: .destructive, action: onDelete) {
+                    Image(systemName: "trash")
+                        .foregroundStyle(palette.textTertiary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(appString(localized: "common.delete", defaultValue: "Delete"))
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel(appString(localized: "common.delete", defaultValue: "Delete"))
         }
         .padding(.vertical, 10)
     }

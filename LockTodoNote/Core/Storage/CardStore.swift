@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import LockTodoNoteShared
 
@@ -31,6 +32,8 @@ final class CardStore: ObservableObject {
 
     /// Called after any change lands, so the Live Activity and widget can be
     /// re-published. Set by the app on launch.
+    var canConfigureAdvancedRepeat: (@MainActor () -> Bool) = { false }
+
     var onChange: (@MainActor () -> Void)?
 
     init(repository: CardRepository = CardRepository(), calendar: Calendar = .current) {
@@ -69,6 +72,18 @@ final class CardStore: ObservableObject {
         cards(on: date).filter { $0.type == .checklist }
     }
 
+    func calendarTodoCards(on date: Date) -> [Card] {
+        CardMutations.calendarTodos(cards, on: date, calendar: calendar)
+    }
+
+    /// Recompute from current storage rather than trusting a stale view snapshot.
+    @discardableResult
+    func materializeCalendarTodo(id: String, on date: Date) -> Bool {
+        if card(id: id) != nil { return true }
+        guard let occurrence = calendarTodoCards(on: date).first(where: { $0.id == id }) else { return false }
+        return commit(cards + [occurrence])
+    }
+
     func memoCards(on date: Date) -> [Card] {
         cards(on: date).filter { $0.type == .quickNote }
     }
@@ -93,7 +108,28 @@ final class CardStore: ObservableObject {
 
     @discardableResult
     func upsert(_ card: Card) -> Bool {
+        // The original reminder owns its title, date and recurrence.
+        guard AppleReminderMirror.reminderID(from: card.id) == nil else { return false }
+        let previous = cards.first { $0.id == card.id }
+        for item in card.checklistItems where item.advancedRepeat != nil {
+            let old = previous?.checklistItems.first { $0.id == item.id }
+            guard item.advancedRepeat?.isValid == true,
+                  old?.advancedRepeat == item.advancedRepeat || canConfigureAdvancedRepeat() else { return false }
+        }
         var updated = cards
+        // A series must share its rule, including when recurrence is turned off.
+        for item in card.checklistItems {
+            guard let old = previous?.checklistItems.first(where: { $0.id == item.id }),
+                  old.recurrence != item.recurrence || old.advancedRepeat != item.advancedRepeat else { continue }
+            for cardIndex in updated.indices {
+                for index in updated[cardIndex].checklistItems.indices
+                where updated[cardIndex].checklistItems[index].effectiveRecurrenceId == old.effectiveRecurrenceId {
+                    updated[cardIndex].checklistItems[index].recurrence = item.recurrence
+                    updated[cardIndex].checklistItems[index].advancedRepeat = item.advancedRepeat
+                    updated[cardIndex].checklistItems[index].recurrenceAnchorDate = item.recurrenceAnchorDate
+                }
+            }
+        }
         // Pinning a memo unpins whatever held the slot before.
         if card.isPinned {
             for index in updated.indices where updated[index].id != card.id {
@@ -111,7 +147,8 @@ final class CardStore: ObservableObject {
 
     @discardableResult
     func delete(id: String) -> Bool {
-        commit(cards.filter { $0.id != id })
+        guard AppleReminderMirror.reminderID(from: id) == nil else { return false }
+        return commit(cards.filter { $0.id != id })
     }
 
     @discardableResult
@@ -141,6 +178,16 @@ final class CardStore: ObservableObject {
         else { return false }
 
         let item = updated[cardIndex].checklistItems[itemIndex]
+        if let identifier = AppleReminderMirror.reminderID(from: cardId) {
+            do {
+                try AppleRemindersClient.setCompleted(
+                    identifier: identifier, isCompleted: isDone, store: repository.store
+                )
+            } catch {
+                storeError = .writeFailed(error.localizedDescription)
+                return false
+            }
+        }
         updated[cardIndex].checklistItems[itemIndex] = isDone
             ? item.markingDone(at: Date(), source: source, calendar: calendar)
             : item.clearingCompletion()
@@ -156,7 +203,14 @@ final class CardStore: ObservableObject {
     /// Adds a pasted multi-line list in one commit so storage, WidgetKit, and
     /// ActivityKit refresh only once.
     @discardableResult
-    func addTodos(texts: [String], to date: Date, recurrence: TodoRecurrence = .none) -> Bool {
+    func addTodos(
+        texts: [String], to date: Date, recurrence: TodoRecurrence = .none,
+        smartEnabled: Bool = true, recurrenceOverride: TodoRecurrence? = nil,
+        advancedRepeat: AdvancedRepeatRule? = nil
+    ) -> Bool {
+        if let advancedRepeat {
+            guard advancedRepeat.isValid, canConfigureAdvancedRepeat() else { return false }
+        }
         let values = texts
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
@@ -164,22 +218,27 @@ final class CardStore: ObservableObject {
 
         let now = Date()
         var updated = cards
-        for (index, value) in values.enumerated() {
+        let todos = SmartQuickAddParser.parse(
+            values.joined(separator: "\n"), referenceDate: now, defaultDate: date,
+            recurrenceOverride: recurrenceOverride ?? (recurrence == .none ? nil : recurrence),
+            enabled: smartEnabled, calendar: calendar
+        )
+        guard !todos.isEmpty else { return false }
+        for (index, todo) in todos.enumerated() {
             let id = "\(Self.newIdentifier())-\(index)"
-            updated.append(
-                Card(
-                    id: id,
-                    title: value,
-                    type: .checklist,
-                    checklistItems: [
-                        ChecklistItem(id: "\(id)-item-0", text: value, recurrence: recurrence)
-                    ],
-                    showOnLockScreen: true,
-                    targetDateTime: CardMutations.combine(day: date, time: now, calendar: calendar),
-                    createdAt: now,
-                    updatedAt: now
-                )
-            )
+            var card = todo.card(id: id, createdAt: now)
+            if let advancedRepeat {
+                guard let first = advancedRepeat.firstOccurrence(onOrAfter: todo.scheduledDate, calendar: calendar)
+                else { return false }
+                card.targetDateTime = first
+                card.checklistItems[0].recurrence = .none
+                card.checklistItems[0].advancedRepeat = advancedRepeat
+                card.checklistItems[0].recurrenceAnchorDate = first
+                if let dueDate = card.checklistItems[0].dueDate {
+                    card.checklistItems[0].dueDate = CardMutations.combine(day: first, time: dueDate, calendar: calendar)
+                }
+            }
+            updated.append(card)
         }
         return commit(updated)
     }
@@ -201,6 +260,15 @@ final class CardStore: ObservableObject {
             updatedAt: now
         )
         return upsert(card)
+    }
+
+    @discardableResult
+    func replaceReminderCopies(with records: [AppleReminderRecord]) -> Bool {
+        // A failed read must never be replaced with only the imported items.
+        if case .readFailed? = storeError { return false }
+        let updated = AppleReminderMirror.reconcile(records, with: cards, calendar: calendar)
+        if updated == cards { return true }
+        return commit(updated)
     }
 
     private func commit(_ updated: [Card]) -> Bool {

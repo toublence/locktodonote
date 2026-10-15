@@ -31,7 +31,7 @@ knownRegions:
 settings:
   base:
     DEVELOPMENT_TEAM: 2CZQR7Q423
-    MARKETING_VERSION: "1.1.4"
+    MARKETING_VERSION: "1.1.5"
     CURRENT_PROJECT_VERSION: "14"
     SWIFT_VERSION: "6.0"
     SWIFT_STRICT_CONCURRENCY: complete
@@ -49,6 +49,12 @@ packages:
   Firebase:
     url: https://github.com/firebase/firebase-ios-sdk
     from: "12.0.0"
+  GoogleMobileAds:
+    url: https://github.com/googleads/swift-package-manager-google-mobile-ads.git
+    from: "13.11.0"
+  GoogleUserMessagingPlatform:
+    url: https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git
+    from: "3.1.0"
 
 targets:
   LockTodoNote:
@@ -60,6 +66,9 @@ targets:
           - "Resources/GoogleService-Info.plist"
       - path: LockTodoNote/Resources/GoogleService-Info.plist
         buildPhase: resources
+      # LiveActivityIntent must also be compiled into the host app process.
+      - path: Extensions/WidgetExtension/GlanceCardAppIntents.swift
+      - path: Extensions/WidgetExtension/WidgetLocalization.swift
     dependencies:
       - package: LockTodoNoteShared
       # Firebase stays on the app target only — extensions report through the
@@ -68,6 +77,12 @@ targets:
         product: FirebaseAnalytics
       - package: Firebase
         product: FirebaseCrashlytics
+      - package: GoogleMobileAds
+        product: GoogleMobileAds
+      - package: GoogleUserMessagingPlatform
+        product: GoogleUserMessagingPlatform
+      - sdk: EventKit.framework
+      - sdk: BackgroundTasks.framework
       - target: LockTodoNoteWidgetExtension
       - target: LockTodoNoteShareExtension
     settings:
@@ -79,6 +94,7 @@ targets:
         TARGETED_DEVICE_FAMILY: "1,2"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_PREVIEWS: YES
+        OTHER_LDFLAGS: "$(inherited) -ObjC"
     postBuildScripts:
       # Uploads symbols so Crashlytics reports arrive readable instead of as
       # raw addresses.
@@ -105,6 +121,7 @@ targets:
       - Extensions/WidgetExtension
     dependencies:
       - package: LockTodoNoteShared
+      - sdk: EventKit.framework
     settings:
       base:
         # Renamed target, unchanged bundle id: installed widgets keep working.

@@ -272,22 +272,22 @@ struct AnalyticsServiceTests {
         let (service, backend, suite) = makeService()
         defer { cleanUp(suite) }
 
-        service.quickAddInvoked(entryPoint: "action_button")
-        service.quickAddTypeSelected(target: "todo", entryPoint: "action_button")
-        service.shortcutQuickAdd(type: "todo", itemCount: 3, source: "intent")
-        service.quickAddFailed(reason: "storage_error", entryPoint: "intent")
-        service.quickAddLimitReached(entryPoint: "intent")
+        service.quickAddInvoked(source: "action_button", selectedTemplate: "calendarItems", isPro: false)
+        service.quickAddTypeSelected(type: "todo", source: "action_button")
+        service.shortcutQuickAdd(type: "todo", itemCount: 3, source: "intent", selectedTemplate: "calendarItems", isPro: false)
+        service.quickAddFailed(reason: "storage_error", source: "intent")
+        service.quickAddLimitReached(dailyCount: 5, source: "intent")
         service.quickAddOnboardingSeen()
-        service.quickAddOnboardingCta()
+        service.quickAddOnboardingCTA()
         service.quickAddTipSeen()
         service.quickAddTipTapped()
         service.quickAddEducationCompleted()
 
         #expect(backend.names().contains("quick_add_invoked"))
-        #expect(backend.parameters(for: "quick_add_invoked")?["entry_point"] as? String == "action_button")
+        #expect(backend.parameters(for: "quick_add_invoked")?["source"] as? String == "action_button")
 
         #expect(backend.names().contains("quick_add_type_selected"))
-        #expect(backend.parameters(for: "quick_add_type_selected")?["target"] as? String == "todo")
+        #expect(backend.parameters(for: "quick_add_type_selected")?["type"] as? String == "todo")
 
         #expect(backend.names().contains("shortcut_quick_add"))
         #expect(backend.parameters(for: "shortcut_quick_add")?["type"] as? String == "todo")
@@ -297,7 +297,7 @@ struct AnalyticsServiceTests {
         #expect(backend.parameters(for: "quick_add_failed")?["reason"] as? String == "storage_error")
 
         #expect(backend.names().contains("quick_add_limit_reached"))
-        #expect(backend.parameters(for: "quick_add_limit_reached")?["entry_point"] as? String == "intent")
+        #expect(backend.parameters(for: "quick_add_limit_reached")?["source"] as? String == "intent")
 
         #expect(backend.names().contains("quick_add_onboarding_seen"))
         #expect(backend.names().contains("quick_add_onboarding_cta"))

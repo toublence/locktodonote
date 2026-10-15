@@ -244,7 +244,7 @@ public struct DashboardComposer: Sendable {
                     todoItems.append(
                         DashboardTodoItem(
                             id: "\(card.id):\(item.id)",
-                            text: shortText(item.text) ?? item.text,
+                            text: shortText(item.displayText(calendar: calendar)) ?? item.text,
                             isDone: item.isDone
                         )
                     )
@@ -288,7 +288,7 @@ public struct DashboardComposer: Sendable {
         var representedSeries: Set<String> = []
 
         for card in cards where card.type == .checklist && card.day(calendar: calendar) == targetDay {
-            for item in card.checklistItems where item.recurrence != .none {
+            for item in card.checklistItems where item.hasRecurrence {
                 representedSeries.insert(item.effectiveRecurrenceId)
             }
         }
@@ -299,9 +299,9 @@ public struct DashboardComposer: Sendable {
                 let id = "\(card.id):\(item.id)"
                 guard seen.insert(id).inserted else { continue }
                 projected.append(
-                    DashboardTodoItem(id: id, text: shortText(item.text) ?? item.text)
+                    DashboardTodoItem(id: id, text: shortText(item.displayText(calendar: calendar)) ?? item.text)
                 )
-                if item.recurrence != .none {
+                if item.hasRecurrence {
                     representedSeries.insert(item.effectiveRecurrenceId)
                 }
             }
@@ -310,7 +310,7 @@ public struct DashboardComposer: Sendable {
         var seeds: [String: (item: ChecklistItem, day: Date)] = [:]
         for card in cards where card.type == .checklist {
             let day = card.day(calendar: calendar)
-            for item in card.checklistItems where item.recurrence != .none {
+            for item in card.checklistItems where item.hasRecurrence {
                 let key = item.effectiveRecurrenceId
                 if seeds[key] == nil || day < seeds[key]!.day {
                     seeds[key] = (item, day)
@@ -321,12 +321,12 @@ public struct DashboardComposer: Sendable {
             guard
                 let seed = seeds[key],
                 !representedSeries.contains(key),
-                seed.item.recurrence.isDue(seedDate: seed.day, on: targetDay, calendar: calendar)
+                seed.item.isRecurrenceDue(seedDate: seed.item.recurrenceAnchorDate ?? seed.day, on: targetDay, calendar: calendar)
             else { continue }
             projected.append(
                 DashboardTodoItem(
                     id: "projected:\(key):\(FlutterDate.dateKey(targetDay, calendar: calendar))",
-                    text: shortText(seed.item.text) ?? seed.item.text
+                    text: shortText(seed.item.displayText(calendar: calendar)) ?? seed.item.text
                 )
             )
         }

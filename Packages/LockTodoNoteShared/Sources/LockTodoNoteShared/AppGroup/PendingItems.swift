@@ -49,19 +49,22 @@ public struct PendingQuickAdd: Hashable, Sendable {
     /// `yyyy-MM-dd` key of the day the item belongs to.
     public let dateKey: String
     public let createdAt: Date
+    public let smartTodos: [SmartTodo]?
 
     public init(
         id: String,
         text: String,
         target: ShortcutInsertPriority,
         dateKey: String,
-        createdAt: Date
+        createdAt: Date,
+        smartTodos: [SmartTodo]? = nil
     ) {
         self.id = id
         self.text = text
         self.target = target
         self.dateKey = dateKey
         self.createdAt = createdAt
+        self.smartTodos = smartTodos
     }
 
     public init?(dictionary: [String: Any]) {
@@ -77,16 +80,22 @@ public struct PendingQuickAdd: Hashable, Sendable {
         let createdAt = FlutterDate.parse(dictionary["createdAt"] as? String) ?? Date()
         self.createdAt = createdAt
         self.dateKey = dictionary["date"] as? String ?? FlutterDate.dateKey(createdAt)
+        self.smartTodos = (dictionary["smart_todos_v1"] as? Data)
+            .flatMap { try? JSONDecoder().decode([SmartTodo].self, from: $0) }
     }
 
     public var dictionary: [String: Any] {
-        [
+        var result: [String: Any] = [
             "id": id,
             "text": text,
             "target": target.rawValue,
             "date": dateKey,
             "createdAt": FlutterDate.utcString(from: createdAt),
         ]
+        if let smartTodos, let data = try? JSONEncoder().encode(smartTodos) {
+            result["smart_todos_v1"] = data
+        }
+        return result
     }
 }
 

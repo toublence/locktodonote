@@ -1,0 +1,22 @@
+{
+  "deleted_cache_directories": [
+    "/Users/nam/Library/Developer/Xcode/DerivedData/ModuleCache.noindex",
+    "/Users/nam/Library/Developer/Xcode/DerivedData/Dayflow-fcqqkfkgtysuznejhbnppljoabpe/Build/Intermediates.noindex",
+    "/Users/nam/Library/Developer/Xcode/DerivedData/NamslabIOSBase-gwgdepftvbdxrjagymnzwjplqrgq/Build/Intermediates.noindex",
+    "/Users/nam/Library/Developer/Xcode/DerivedData/NamslabIOSBase-hirpxrnepmtypshfapskccityhwn/Build/Intermediates.noindex",
+    "/Users/nam/Library/Developer/Xcode/DerivedData/Steady-ftxhpybqrrqnoohbuarmukqqvuos/Build/Intermediates.noindex"
+  ],
+  "deleted_diagnostic_reports": 124,
+  "errors": [],
+  "preserved": [
+    "project sources",
+    "Xcode Archives",
+    "SourcePackages",
+    "Build/Products",
+    "LockTodoNote build intermediates",
+    "Unsaved_Xcode_Document",
+    "simulator app data",
+    "personal files",
+    "credentials"
+  ]
+}

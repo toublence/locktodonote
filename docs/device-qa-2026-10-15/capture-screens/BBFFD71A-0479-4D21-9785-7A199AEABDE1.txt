@@ -1,0 +1,85 @@
+Attributes: StaticText, 0x14dd19b80, {{0.0, 791.0}, {136.0, 20.0}}, identifier: 'qa.dashboard', label: 'QA FREE · calendarItems · '
+Element subtree:
+ →StaticText, 0x14dd19b80, {{0.0, 791.0}, {136.0, 20.0}}, identifier: 'qa.dashboard', label: 'QA FREE · calendarItems · '
+Path to element:
+ →Application, 0x14dd192c0, pid: 12545, label: 'LockTodoNote'
+  ↳Window (Main), 0x14dd19400, {{0.0, 0.0}, {820.0, 1180.0}}
+   ↳Other, 0x14dd19540, {{0.0, 0.0}, {820.0, 1180.0}}
+    ↳Other, 0x14dd19680, {{0.0, 0.0}, {820.0, 1180.0}}
+     ↳Other, 0x14dd197c0, {{0.0, 0.0}, {820.0, 1180.0}}
+      ↳Other, 0x14dd19900, {{0.0, 0.0}, {820.0, 1180.0}}
+       ↳Other, 0x14dd19a40, {{0.0, 0.0}, {820.0, 1180.0}}
+        ↳StaticText, 0x14dd19b80, {{0.0, 791.0}, {136.0, 20.0}}, identifier: 'qa.dashboard', label: 'QA FREE · calendarItems · '
+Query chain:
+ →Find: Target Application 'com.namslab.glancecard'
+  Output: {
+    Application, 0x14ddcbac0, pid: 12545, label: 'LockTodoNote'
+  }
+  ↪︎Find: Descendants matching type StaticText
+    Output: {
+      StaticText, 0x14ddc4280, {{0.0, 791.0}, {136.0, 20.0}}, identifier: 'qa.dashboard', label: 'QA FREE · calendarItems · '
+      StaticText, 0x14ddc43c0, {{-0.0, 813.0}, {88.0, 11.0}}, identifier: 'qa.storage', label: 'QA storage: 0 cards', value: []
+      StaticText, 0x14ddb8280, {{72.0, 175.9}, {173.5, 18.0}}, label: 'No Lock Screen card yet'
+      StaticText, 0x14ddb83c0, {{72.0, 195.9}, {204.5, 14.5}}, label: 'Start to see today without unlocking'
+      StaticText, 0x14ddc3700, {{78.5, 984.6}, {97.5, 14.5}}, label: 'QA Appointment'
+      StaticText, 0x14ddc3840, {{78.5, 1001.1}, {137.0, 14.5}}, label: 'Oct 15, 2026 at 3:00 PM'
+      StaticText, 0x14ddc3980, {{52.0, 1037.6}, {84.5, 14.5}}, label: 'Show this todo'
+      StaticText, 0x14dd93e80, {{77.5, 108.9}, {401.0, 18.0}}, label: 'Add todos directly from Lock Screen — Set up Shortcuts'
+      StaticText, 0x14ddb88c0, {{96.4, 260.1}, {49.5, 13.5}}, label: 'Calendar'
+      StaticText, 0x14ddb8c80, {{232.1, 260.6}, {67.0, 13.5}}, label: 'Memo+Todo'
+      StaticText, 0x14ddb9040, {{397.2, 260.6}, {25.5, 13.5}}, label: 'Date'
+      StaticText, 0x14ddb9400, {{537.6, 260.6}, {33.5, 13.5}}, label: 'Image'
+      StaticText, 0x14ddb97c0, {{681.6, 260.6}, {34.5, 13.5}}, label: 'D-Day'
+      StaticText, 0x14ddb9a40, {{64.0, 302.9}, {48.5, 14.5}}, label: 'October'
+      StaticText, 0x14ddc1040, {{314.0, 302.9}, {59.6, 14.5}}, label: 'Todos'
+      StaticText, 0x14ddc1180, {{312.6, 323.4}, {72.5, 14.5}}, label: 'No todos yet'
+      StaticText, 0x14ddc30c0, {{54.0, 911.9}, {171.0, 20.5}}, label: 'Smart Repeat · Pro'
+      StaticText, 0x14ddc3200, {{672.0, 914.9}, {96.0, 14.5}}, label: 'Advanced repeat'
+      StaticText, 0x14ddc3480, {{52.0, 951.1}, {95.5, 14.5}}, label: 'Smart Quick Add'
+      StaticText, 0x14ddc3c00, {{658.0, 1034.5}, {82.0, 20.5}}, label: 'Today only'
+      StaticText, 0x14ddb9cc0, {{77.1, 320.4}, {5.5, 10.0}}, label: 'S'
+      StaticText, 0x14ddb9e00, {{108.9, 320.4}, {7.5, 10.0}}, label: 'M'
+      StaticText, 0x14ddb9f40, {{142.6, 320.4}, {5.5, 10.0}}, label: 'T'
+      StaticText, 0x14ddba080, {{173.8, 320.4}, {8.5, 10.0}}, label: 'W'
+      StaticText, 0x14ddba1c0, {{241.0, 320.4}, {5.0, 10.0}}, label: 'F'
+      StaticText, 0x14ddba300, {{74.4, 333.1}, {11.0, 10.5}}, label: '27'
+      StaticText, 0x14ddba440, {{106.9, 333.1}, {11.5, 10.5}}, label: '28'
+      StaticText, 0x14ddba580, {{139.6, 333.1}, {11.5, 10.5}}, label: '29'
+      StaticText, 0x14ddba6c0, {{172.3, 333.1}, {11.5, 10.5}}, label: '30'
+      StaticText, 0x14ddba800, {{208.6, 333.1}, {4.5, 10.5}}, label: '1'
+      StaticText, 0x14ddba940, {{240.8, 333.1}, {5.5, 10.5}}, label: '2'
+      StaticText, 0x14ddbaa80, {{273.3, 333.1}, {6.0, 10.5}}, label: '3'
+      StaticText, 0x14ddbabc0, {{76.9, 348.1}, {6.0, 10.5}}, label: '4'
+      StaticText, 0x14ddbad00, {{109.6, 348.1}, {6.0, 10.5}}, label: '5'
+      StaticText, 0x14ddbae40, {{142.3, 348.1}, {6.0, 10.5}}, label: '6'
+      StaticText, 0x14ddbaf80, {{175.3, 348.1}, {5.5, 10.5}}, label: '7'
+      StaticText, 0x14ddbb0c0, {{207.8, 348.1}, {6.0, 10.5}}, label: '8'
+      StaticText, 0x14ddbb200, {{240.5, 348.1}, {6.0, 10.5}}, label: '9'
+      StaticText, 0x14ddbb340, {{271.3, 348.1}, {10.0, 10.5}}, label: '10'
+      StaticText, 0x14ddbb480, {{75.4, 363.1}, {9.0, 10.5}}, label: '11'
+      StaticText, 0x14ddbb5c0, {{107.6, 363.1}, {10.0, 10.5}}, label: '12'
+      StaticText, 0x14ddbb700, {{140.3, 363.1}, {10.0, 10.5}}, label: '13'
+      StaticText, 0x14ddbb840, {{172.8, 363.1}, {10.5, 10.5}}, label: '14'
+      StaticText, 0x14ddbb980, {{205.6, 363.1}, {10.5, 10.5}}, label: '15'
+      StaticText, 0x14ddbbac0, {{238.3, 363.1}, {10.5, 10.5}}, label: '16'
+      StaticText, 0x14ddbbc00, {{271.5, 363.1}, {9.5, 10.5}}, label: '17'
+      StaticText, 0x14ddbbd40, {{74.6, 378.1}, {10.5, 10.5}}, label: '18'
+      StaticText, 0x14ddbbe80, {{107.4, 378.1}, {10.5, 10.5}}, label: '19'
+      StaticText, 0x14ddc0000, {{139.6, 378.1}, {11.5, 10.5}}, label: '20'
+      StaticText, 0x14ddc0140, {{173.1, 378.1}, {10.0, 10.5}}, label: '21'
+      StaticText, 0x14ddc0280, {{205.3, 378.1}, {11.0, 10.5}}, label: '22'
+      StaticText, 0x14ddc03c0, {{237.8, 378.1}, {11.5, 10.5}}, label: '23'
+      StaticText, 0x14ddc0500, {{270.5, 378.1}, {11.5, 10.5}}, label: '24'
+      StaticText, 0x14ddc0640, {{74.1, 393.1}, {11.5, 10.5}}, label: '25'
+      StaticText, 0x14ddc0780, {{106.9, 393.1}, {11.5, 10.5}}, label: '26'
+      StaticText, 0x14ddc08c0, {{139.8, 393.1}, {11.0, 10.5}}, label: '27'
+      StaticText, 0x14ddc0a00, {{172.3, 393.1}, {11.5, 10.5}}, label: '28'
+      StaticText, 0x14ddc0b40, {{205.1, 393.1}, {11.5, 10.5}}, label: '29'
+      StaticText, 0x14ddc0c80, {{237.8, 393.1}, {11.5, 10.5}}, label: '30'
+      StaticText, 0x14ddc0dc0, {{271.3, 393.1}, {10.0, 10.5}}, label: '31'
+      StaticText, 0x14ddc1a40, {{66.0, 566.0}, {128.0, 18.0}}, label: 'No todos for today'
+    }
+    ↪︎Find: Elements matching predicate '"qa.dashboard" IN identifiers'
+      Output: {
+        StaticText, 0x14dd8b340, {{0.0, 791.0}, {136.0, 20.0}}, identifier: 'qa.dashboard', label: 'QA FREE · calendarItems · '
+      }

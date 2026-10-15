@@ -242,7 +242,7 @@ struct OnboardingView: View {
                 Task { await activate() }
             }
         case .quickAdd:
-            analytics.quickAddOnboardingCta()
+            analytics.quickAddOnboardingCTA()
             analytics.quickAddEducationCompleted()
             environment.appGroup.markQuickAddEducationCompleted()
             if let url = URL(string: "shortcuts://") {

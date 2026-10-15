@@ -25,5 +25,9 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.widgetkit-extension</string>
 	</dict>
+	<key>NSRemindersUsageDescription</key>
+	<string>LockTodoNote saves completed Lock Screen tasks back to your selected Apple Reminders lists.</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>LockTodoNote saves completed Lock Screen tasks back to your selected Apple Reminders lists.</string>
 </dict>
 </plist>

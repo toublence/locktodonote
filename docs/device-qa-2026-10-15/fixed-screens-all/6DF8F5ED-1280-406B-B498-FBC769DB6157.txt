@@ -1,0 +1,221 @@
+Application, 0x11615e440, pid: 12550, label: 'LockTodoNote' <App element pid: 12550>
+  Window (Main), 0x11615e6c0, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12550, elementOrHash.elementID: 4327476976.4>
+    Other, 0x11615e800, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12550, elementOrHash.elementID: 4670833664.6>
+      Other, 0x11615e940, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12550, elementOrHash.elementID: 4671605248.8>
+        Other, 0x11615ea80, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12550, elementOrHash.elementID: 4670820288.10>
+          Other, 0x11615ebc0, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12550, elementOrHash.elementID: 4327478512.11>
+            Other, 0x11615ed00, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12550, elementOrHash.elementID: 4695826752.12>
+              SegmentedControl, 0x11615ee40, {{280.0, 40.0}, {260.0, 48.0}} <AX element pid: 12550, elementOrHash.elementID: 4671266304.13>
+                Button, 0x11615ef80, {{280.0, 40.0}, {130.0, 49.0}}, identifier: 'navigation.today', label: 'Today', Selected <AX element pid: 12550, elementOrHash.elementID: 4693803008.18>
+                Button, 0x11615f0c0, {{410.0, 40.0}, {130.0, 49.0}}, identifier: 'navigation.calendar', label: 'Calendar' <AX element pid: 12550, elementOrHash.elementID: 4693803776.19>
+              Button, 0x11615f200, {{768.0, 42.0}, {44.0, 44.0}}, identifier: 'navigation.settings', label: 'Settings' <AX element pid: 12550, elementOrHash.elementID: 4695475520.14>
+              ScrollView, 0x11615f340, {{0.0, 96.0}, {820.0, 1084.0}}, identifier: 'home.scroll' <AX element pid: 12550, elementOrHash.elementID: 4681848832.15>
+                Other, 0x11615f480, {{0.0, 96.0}, {820.0, 884.0}} <AX element pid: 12550, elementOrHash.elementID: 4690647040.20>
+                  Image, 0x11615f5c0, {{52.0, 108.0}, {11.5, 20.0}}, identifier: 'lightbulb.fill', label: 'Lightbulb' <AX element pid: 12550, elementOrHash.elementID: 4695475968.22>
+                  Button, 0x11615f700, {{77.5, 109.0}, {413.0, 18.0}}, label: 'Add todos directly from Lock Screen — Set up Shortcuts' <AX element pid: 12550, elementOrHash.elementID: 4695477312.23>
+                    StaticText, 0x11615f840, {{77.5, 109.0}, {401.0, 18.0}}, label: 'Add todos directly from Lock Screen — Set up Shortcuts' <AX element pid: 12550, elementOrHash.elementID: 4695476416.44>
+                    Image, 0x11615f980, {{484.5, 113.0}, {6.0, 10.0}}, identifier: 'chevron.right', label: 'Forward' <AX element pid: 12550, elementOrHash.elementID: 4695476864.45>
+                  Button, 0x11615fac0, {{745.0, 106.0}, {25.0, 24.0}}, identifier: 'xmark', label: 'Close' <AX element pid: 12550, elementOrHash.elementID: 4695477760.24>
+                  StaticText, 0x11615fc00, {{72.0, 176.0}, {173.5, 18.0}}, label: 'No Lock Screen card yet' <AX element pid: 12550, elementOrHash.elementID: 4695478208.25>
+                  StaticText, 0x11615fd40, {{72.0, 196.0}, {204.5, 14.5}}, label: 'Start to see today without unlocking' <AX element pid: 12550, elementOrHash.elementID: 4695478656.26>
+                  Button, 0x11615fe80, {{692.0, 178.5}, {76.0, 30.0}}, label: 'Start' <AX element pid: 12550, elementOrHash.elementID: 4695479104.27>
+                  Button, 0x1161c8000, {{52.0, 227.0}, {138.5, 58.0}}, identifier: 'template.calendarItems', label: 'Calendar + Todo · Memo', Selected <AX element pid: 12550, elementOrHash.elementID: 4695480448.28>
+                    Image, 0x1161c8140, {{113.5, 240.0}, {15.5, 14.0}}, identifier: 'calendar', label: 'Calendar' <AX element pid: 12550, elementOrHash.elementID: 4695479552.46>
+                    StaticText, 0x1161c8280, {{96.4, 260.2}, {49.5, 13.5}}, label: 'Calendar' <AX element pid: 12550, elementOrHash.elementID: 4695480000.47>
+                  Button, 0x1161c83c0, {{196.5, 227.0}, {138.5, 58.0}}, identifier: 'template.memoTodo', label: 'Memo + Todo' <AX element pid: 12550, elementOrHash.elementID: 4695481792.29>
+                    Image, 0x1161c8500, {{260.5, 239.5}, {10.5, 15.0}}, identifier: 'lock.fill', label: 'Lock' <AX element pid: 12550, elementOrHash.elementID: 4695480896.48>
+                    StaticText, 0x1161c8640, {{232.1, 260.8}, {67.0, 13.5}}, label: 'Memo+Todo' <AX element pid: 12550, elementOrHash.elementID: 4695481344.49>
+                  Button, 0x1161c8780, {{341.0, 227.0}, {138.0, 58.0}}, identifier: 'template.dateTodo', label: 'Date + Todo · Memo' <AX element pid: 12550, elementOrHash.elementID: 4695483136.30>
+                    Image, 0x1161c88c0, {{404.5, 239.5}, {10.5, 15.0}}, identifier: 'lock.fill', label: 'Lock' <AX element pid: 12550, elementOrHash.elementID: 4695482240.50>
+                    StaticText, 0x1161c8a00, {{397.2, 260.8}, {25.5, 13.5}}, label: 'Date' <AX element pid: 12550, elementOrHash.elementID: 4695482688.51>
+                  Button, 0x1161c8b40, {{485.0, 227.0}, {138.5, 58.0}}, identifier: 'template.imageTodo', label: 'Image + Todo · Memo' <AX element pid: 12550, elementOrHash.elementID: 4695484480.31>
+                    Image, 0x1161c8c80, {{549.0, 239.5}, {10.5, 15.0}}, identifier: 'lock.fill', label: 'Lock' <AX element pid: 12550, elementOrHash.elementID: 4695483584.52>
+                    StaticText, 0x1161c8dc0, {{537.6, 260.8}, {33.5, 13.5}}, label: 'Image' <AX element pid: 12550, elementOrHash.elementID: 4695484032.53>
+                  Button, 0x1161c8f00, {{629.5, 227.0}, {138.5, 58.0}}, identifier: 'template.ddayMemo', label: 'D-Day + Memo' <AX element pid: 12550, elementOrHash.elementID: 4695485824.32>
+                    Image, 0x1161c9040, {{693.5, 239.5}, {10.5, 15.0}}, identifier: 'lock.fill', label: 'Lock' <AX element pid: 12550, elementOrHash.elementID: 4695484928.54>
+                    StaticText, 0x1161c9180, {{681.6, 260.8}, {34.5, 13.5}}, label: 'D-Day' <AX element pid: 12550, elementOrHash.elementID: 4695485376.55>
+                  Other, 0x1161c92c0, {{51.5, 292.5}, {717.0, 153.0}}, label: 'Current Lock Screen preview' <AX element pid: 12550, elementOrHash.elementID: 4695768384.33>
+                    StaticText, 0x1161c9400, {{64.0, 303.0}, {48.5, 14.5}}, label: 'October' <AX element pid: 12550, elementOrHash.elementID: 4695486272.56>
+                    Other, 0x1161c9540, {{74.1, 320.5}, {207.9, 83.2}} <AX element pid: 12550, elementOrHash.elementID: 4695766592.57>
+                      StaticText, 0x1161c9680, {{77.1, 320.5}, {5.5, 10.0}}, label: 'S' <AX element pid: 12550, elementOrHash.elementID: 4695486720.72>
+                      StaticText, 0x1161c97c0, {{108.9, 320.5}, {7.5, 10.0}}, label: 'M' <AX element pid: 12550, elementOrHash.elementID: 4695487168.73>
+                      StaticText, 0x1161c9900, {{142.6, 320.5}, {5.5, 10.0}}, label: 'T' <AX element pid: 12550, elementOrHash.elementID: 4695487616.74>
+                      StaticText, 0x1161c9a40, {{173.8, 320.5}, {8.5, 10.0}}, label: 'W' <AX element pid: 12550, elementOrHash.elementID: 4695488064.75>
+                      StaticText, 0x1161c9b80, {{241.0, 320.5}, {5.0, 10.0}}, label: 'F' <AX element pid: 12550, elementOrHash.elementID: 4695488512.76>
+                      StaticText, 0x1161c9cc0, {{74.4, 333.2}, {11.0, 10.5}}, label: '27' <AX element pid: 12550, elementOrHash.elementID: 4695488960.77>
+                      StaticText, 0x1161c9e00, {{106.9, 333.2}, {11.5, 10.5}}, label: '28' <AX element pid: 12550, elementOrHash.elementID: 4695489408.78>
+                      StaticText, 0x1161c9f40, {{139.6, 333.2}, {11.5, 10.5}}, label: '29' <AX element pid: 12550, elementOrHash.elementID: 4695489856.79>
+                      StaticText, 0x1161ca080, {{172.3, 333.2}, {11.5, 10.5}}, label: '30' <AX element pid: 12550, elementOrHash.elementID: 4688576512.80>
+                      StaticText, 0x1161ca1c0, {{208.6, 333.2}, {4.5, 10.5}}, label: '1' <AX element pid: 12550, elementOrHash.elementID: 4695752704.81>
+                      StaticText, 0x1161ca300, {{240.8, 333.2}, {5.5, 10.5}}, label: '2' <AX element pid: 12550, elementOrHash.elementID: 4695753152.82>
+                      StaticText, 0x1161ca440, {{273.3, 333.2}, {6.0, 10.5}}, label: '3' <AX element pid: 12550, elementOrHash.elementID: 4695753600.83>
+                      StaticText, 0x1161ca580, {{76.9, 348.2}, {6.0, 10.5}}, label: '4' <AX element pid: 12550, elementOrHash.elementID: 4695754048.84>
+                      StaticText, 0x1161ca6c0, {{109.6, 348.2}, {6.0, 10.5}}, label: '5' <AX element pid: 12550, elementOrHash.elementID: 4695754496.85>
+                      StaticText, 0x1161ca800, {{142.3, 348.2}, {6.0, 10.5}}, label: '6' <AX element pid: 12550, elementOrHash.elementID: 4695754944.86>
+                      StaticText, 0x1161ca940, {{175.3, 348.2}, {5.5, 10.5}}, label: '7' <AX element pid: 12550, elementOrHash.elementID: 4695755392.87>
+                      StaticText, 0x1161caa80, {{207.8, 348.2}, {6.0, 10.5}}, label: '8' <AX element pid: 12550, elementOrHash.elementID: 4695755840.88>
+                      StaticText, 0x1161cabc0, {{240.5, 348.2}, {6.0, 10.5}}, label: '9' <AX element pid: 12550, elementOrHash.elementID: 4695756288.89>
+                      StaticText, 0x1161cad00, {{271.3, 348.2}, {10.0, 10.5}}, label: '10' <AX element pid: 12550, elementOrHash.elementID: 4695756736.90>
+                      StaticText, 0x1161cae40, {{75.4, 363.2}, {9.0, 10.5}}, label: '11' <AX element pid: 12550, elementOrHash.elementID: 4695757184.91>
+                      StaticText, 0x1161caf80, {{107.6, 363.2}, {10.0, 10.5}}, label: '12' <AX element pid: 12550, elementOrHash.elementID: 4695757632.92>
+                      StaticText, 0x1161cb0c0, {{140.3, 363.2}, {10.0, 10.5}}, label: '13' <AX element pid: 12550, elementOrHash.elementID: 4695758080.93>
+                      StaticText, 0x1161cb200, {{172.8, 363.2}, {10.5, 10.5}}, label: '14' <AX element pid: 12550, elementOrHash.elementID: 4695758528.94>
+                      StaticText, 0x1161cb340, {{205.6, 363.2}, {10.5, 10.5}}, label: '15' <AX element pid: 12550, elementOrHash.elementID: 4695758976.95>
+                      StaticText, 0x1161cb480, {{238.3, 363.2}, {10.5, 10.5}}, label: '16' <AX element pid: 12550, elementOrHash.elementID: 4695759424.96>
+                      StaticText, 0x1161cb5c0, {{271.5, 363.2}, {9.5, 10.5}}, label: '17' <AX element pid: 12550, elementOrHash.elementID: 4695759872.97>
+                      StaticText, 0x1161cb700, {{74.6, 378.2}, {10.5, 10.5}}, label: '18' <AX element pid: 12550, elementOrHash.elementID: 4695760320.98>
+                      StaticText, 0x1161cb840, {{107.4, 378.2}, {10.5, 10.5}}, label: '19' <AX element pid: 12550, elementOrHash.elementID: 4695760768.99>
+                      StaticText, 0x1161cb980, {{139.6, 378.2}, {11.5, 10.5}}, label: '20' <AX element pid: 12550, elementOrHash.elementID: 4695761216.100>
+                      StaticText, 0x1161cbac0, {{173.1, 378.2}, {10.0, 10.5}}, label: '21' <AX element pid: 12550, elementOrHash.elementID: 4695761664.101>
+                      StaticText, 0x1161cbc00, {{205.3, 378.2}, {11.0, 10.5}}, label: '22' <AX element pid: 12550, elementOrHash.elementID: 4695762112.102>
+                      StaticText, 0x1161cbd40, {{237.8, 378.2}, {11.5, 10.5}}, label: '23' <AX element pid: 12550, elementOrHash.elementID: 4695762560.103>
+                      StaticText, 0x1161cbe80, {{270.5, 378.2}, {11.5, 10.5}}, label: '24' <AX element pid: 12550, elementOrHash.elementID: 4695763008.104>
+                      StaticText, 0x1161cc000, {{74.1, 393.2}, {11.5, 10.5}}, label: '25' <AX element pid: 12550, elementOrHash.elementID: 4695763456.105>
+                      StaticText, 0x1161cc140, {{106.9, 393.2}, {11.5, 10.5}}, label: '26' <AX element pid: 12550, elementOrHash.elementID: 4695763904.106>
+                      StaticText, 0x1161cc280, {{139.8, 393.2}, {11.0, 10.5}}, label: '27' <AX element pid: 12550, elementOrHash.elementID: 4695764352.107>
+                      StaticText, 0x1161cc3c0, {{172.3, 393.2}, {11.5, 10.5}}, label: '28' <AX element pid: 12550, elementOrHash.elementID: 4695764800.108>
+                      StaticText, 0x1161cc500, {{205.1, 393.2}, {11.5, 10.5}}, label: '29' <AX element pid: 12550, elementOrHash.elementID: 4695765248.109>
+                      StaticText, 0x1161cc640, {{237.8, 393.2}, {11.5, 10.5}}, label: '30' <AX element pid: 12550, elementOrHash.elementID: 4695765696.110>
+                      StaticText, 0x1161cc780, {{271.3, 393.2}, {10.0, 10.5}}, label: '31' <AX element pid: 12550, elementOrHash.elementID: 4695766144.111>
+                    Image, 0x1161cc8c0, {{314.0, 304.0}, {14.0, 12.5}}, identifier: 'checklist', label: 'checklist' <AX element pid: 12550, elementOrHash.elementID: 4695767040.58>
+                    StaticText, 0x1161cca00, {{314.0, 303.0}, {59.6, 14.5}}, label: 'Todos' <AX element pid: 12550, elementOrHash.elementID: 4695767488.59>
+                    Image, 0x1161ccb40, {{313.5, 325.0}, {12.0, 12.0}}, identifier: 'circle', label: 'circle' <AX element pid: 12550, elementOrHash.elementID: 4781043520.221>
+                    StaticText, 0x1161ccc80, {{331.6, 323.5}, {128.5, 14.5}}, label: '15:00 QA Appointment' <AX element pid: 12550, elementOrHash.elementID: 4781043968.222>
+                  SegmentedControl, 0x1161ccdc0, {{52.0, 497.0}, {716.0, 31.0}} <AX element pid: 12550, elementOrHash.elementID: 4671259392.34>
+                    Button, 0x1161ccf00, {{52.0, 497.0}, {358.0, 32.0}}, identifier: 'checklist', label: 'Todo', Selected <AX element pid: 12550, elementOrHash.elementID: 4693805312.61>
+                    Button, 0x1161cd040, {{410.0, 497.0}, {358.0, 32.0}}, identifier: 'square.and.pencil', label: 'Memo' <AX element pid: 12550, elementOrHash.elementID: 4693806080.62>
+                  ScrollView, 0x1161cd180, {{52.0, 540.0}, {716.0, 66.0}} <AX element pid: 12550, elementOrHash.elementID: 4681845760.35>
+                    Other, 0x1161cd2c0, {{52.0, 540.0}, {716.0, 62.0}} <AX element pid: 12550, elementOrHash.elementID: 4689798144.63>
+                      Other, 0x1161cd400, {{66.0, 558.0}, {686.5, 26.0}} <AX element pid: 12550, elementOrHash.elementID: 4695819136.112>
+                        Button, 0x1161cd540, {{66.0, 558.0}, {627.0, 26.0}}, identifier: 'todo.toggle.1792043149990282-0:1792043149990282-0-item-0', label: '15:00 QA Appointment' <AX element pid: 12550, elementOrHash.elementID: 4781046208.223>
+                          Image, 0x1161cd680, {{68.0, 560.0}, {22.0, 22.0}}, identifier: 'circle', label: 'circle' <AX element pid: 12550, elementOrHash.elementID: 4781045312.226>
+                          StaticText, 0x1161cd7c0, {{104.0, 560.8}, {173.0, 20.5}}, label: '15:00 QA Appointment' <AX element pid: 12550, elementOrHash.elementID: 4781045760.227>
+                        Button, 0x1161cd900, {{707.0, 564.5}, {13.5, 13.5}}, identifier: 'pencil', label: 'Edit' <AX element pid: 12550, elementOrHash.elementID: 4781046656.224>
+                        Button, 0x1161cda40, {{736.0, 562.0}, {16.5, 18.5}}, identifier: 'trash', label: 'Delete' <AX element pid: 12550, elementOrHash.elementID: 4781047104.225>
+                    Other, 0x1161cdb80, {{735.0, 540.0}, {30.0, 66.0}}, label: 'Vertical scroll bar, 1 page', value: 0% <AX element pid: 12550, elementOrHash.elementID: 4691220480.64>
+                      Other, 0x1161cdcc0, {{762.0, 736.0}, {3.0, 7.0}} <AX element pid: 12550, elementOrHash.elementID: 4688589504.113>
+                    Other, 0x1161cde00, {{735.0, 540.0}, {30.0, 66.0}}, label: 'Vertical scroll bar, 1 page', value: 0% <AX element pid: 12550, elementOrHash.elementID: 4691220480.64>
+                      Other, 0x1161cdf40, {{762.0, 736.0}, {3.0, 7.0}} <AX element pid: 12550, elementOrHash.elementID: 4688589504.113>
+                  TextField, 0x1161ce080, {{78.0, 652.0}, {610.0, 42.5}}, identifier: 'today.quickCapture', placeholderValue: 'What would you like to add?', Keyboard Focused <AX element pid: 12550, elementOrHash.elementID: 4681842688.36>
+                    Other, 0x1161ce1c0, {{78.0, 652.0}, {0.0, 0.0}}, identifier: '_UITextSelectionRangeAdjustmentContainerView' <AX element pid: 12550, elementOrHash.elementID: 4688163328.194>
+                      Other, 0x1161ce300, {{78.0, 652.0}, {0.0, 0.0}}, identifier: 'com.apple.text.grabber.leading' <AX element pid: 12550, elementOrHash.elementID: 4688163840.200>
+                        Other, 0x1161ce440, {{70.8, 638.5}, {16.5, 16.5}} <AX element pid: 12550, elementOrHash.elementID: 4695828544.206>
+                        Other, 0x1161ce580, {{78.0, 652.0}, {2.0, 0.0}} <AX element pid: 12550, elementOrHash.elementID: 4695828096.207>
+                      Other, 0x1161ce6c0, {{78.0, 652.0}, {0.0, 0.0}}, identifier: 'com.apple.text.grabber.leading' <AX element pid: 12550, elementOrHash.elementID: 4688162816.201>
+                        Other, 0x1161ce800, {{70.8, 638.5}, {16.5, 16.5}} <AX element pid: 12550, elementOrHash.elementID: 4695829440.208>
+                        Other, 0x1161ce940, {{78.0, 652.0}, {2.0, 0.0}} <AX element pid: 12550, elementOrHash.elementID: 4695828992.209>
+                    Other, 0x1161cea80, {{78.0, 670.2}, {610.0, 21.2}}, label: 'Horizontal scroll bar, 1 page', value: 0% <AX element pid: 12550, elementOrHash.elementID: 4691221504.65>
+                      Other, 0x1161cebc0, {{81.0, 688.5}, {604.0, 3.0}} <AX element pid: 12550, elementOrHash.elementID: 4688589952.114>
+                  Button, 0x1161ced00, {{698.0, 690.0}, {44.0, 44.0}}, identifier: 'today.quickCapture.save', label: 'Save', Disabled <AX element pid: 12550, elementOrHash.elementID: 4695820480.37>
+                  StaticText, 0x1161cee40, {{53.0, 772.0}, {101.5, 14.5}}, label: '1 todos added' <AX element pid: 12550, elementOrHash.elementID: 4695818688.219>
+                  Button, 0x1161cef80, {{52.0, 798.5}, {716.0, 20.5}}, identifier: 'smartRepeat.open', label: 'Smart Repeat · Pro, Advanced repeat' <AX element pid: 12550, elementOrHash.elementID: 4695822272.38>
+                    Image, 0x1161cf0c0, {{54.0, 801.0}, {18.0, 15.0}}, identifier: 'repeat', label: 'Repeat 1' <AX element pid: 12550, elementOrHash.elementID: 4695820928.66>
+                    StaticText, 0x1161cf200, {{54.0, 798.5}, {171.0, 20.5}}, label: 'Smart Repeat · Pro' <AX element pid: 12550, elementOrHash.elementID: 4695821376.67>
+                    StaticText, 0x1161cf340, {{672.0, 801.5}, {96.0, 14.5}}, label: 'Advanced repeat' <AX element pid: 12550, elementOrHash.elementID: 4695821824.68>
+                  Switch, 0x1161cf480, {{52.0, 831.0}, {716.0, 28.0}}, label: 'Smart Quick Add', value: 1 <AX element pid: 12550, elementOrHash.elementID: 4695823616.39>
+                    StaticText, 0x1161cf5c0, {{52.0, 837.8}, {95.5, 14.5}}, label: 'Smart Quick Add' <AX element pid: 12550, elementOrHash.elementID: 4695822720.69>
+                    Switch, 0x1161cf700, {{707.0, 831.0}, {63.0, 28.0}}, value: 1 <AX element pid: 12550, elementOrHash.elementID: 4671612288.70>
+                  StaticText, 0x1161cf840, {{52.0, 867.0}, {322.0, 14.5}}, label: 'Try: tomorrow 3pm appointment · every Monday exercise' <AX element pid: 12550, elementOrHash.elementID: 4695767936.220>
+                  StaticText, 0x1161cf980, {{52.0, 903.5}, {84.5, 14.5}}, label: 'Show this todo' <AX element pid: 12550, elementOrHash.elementID: 4695824512.41>
+                  Button, 0x1161cfac0, {{646.0, 893.5}, {122.0, 34.5}}, label: 'Today only' <AX element pid: 12550, elementOrHash.elementID: 4671262464.42>
+                    StaticText, 0x1161cfc00, {{658.0, 900.5}, {82.0, 20.5}}, label: 'Today only' <AX element pid: 12550, elementOrHash.elementID: 4327473136.71>
+                Other, 0x1161cfd40, {{787.0, 102.0}, {30.0, 722.0}}, label: 'Vertical scroll bar, 2 pages', value: 0% <AX element pid: 12550, elementOrHash.elementID: 4691219456.21>
+                  Other, 0x1161cfe80, {{814.0, 105.0}, {3.0, 639.5}} <AX element pid: 12550, elementOrHash.elementID: 4688589056.43>
+                Other, 0x1161d0000, {{787.0, 102.0}, {30.0, 722.0}}, label: 'Vertical scroll bar, 2 pages', value: 0% <AX element pid: 12550, elementOrHash.elementID: 4691219456.21>
+                  Other, 0x1161d0140, {{814.0, 105.0}, {3.0, 639.5}} <AX element pid: 12550, elementOrHash.elementID: 4688589056.43>
+              StaticText, 0x1161d0280, {{0.0, 791.0}, {245.5, 20.0}}, identifier: 'qa.dashboard', label: 'QA FREE · calendarItems · 15:00 QA Appointment' <AX element pid: 12550, elementOrHash.elementID: 4695825856.16>
+              StaticText, 0x1161d03c0, {{-0.0, 813.0}, {86.5, 11.0}}, identifier: 'qa.storage', label: 'QA storage: 1 cards', value: [{"lastActivatedAt... <AX element pid: 12550, elementOrHash.elementID: 4695826304.17>
+  Window, 0x1161d0500, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12550, elementOrHash.elementID: 4671835904.5>
+    Other, 0x1161d0640, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12550, elementOrHash.elementID: 4691849920.7>
+      Other, 0x1161d0780, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12550, elementOrHash.elementID: 4691849472.9>
+      Other, 0x1161d08c0, {{0.0, 799.0}, {820.0, 381.0}} <AX element pid: 12550, elementOrHash.elementID: 4691850368.121>
+        Other, 0x1161d0a00, {{0.0, 799.0}, {820.0, 44.0}} <AX element pid: 12550, elementOrHash.elementID: 4691851264.124>
+          Other, 0x1161d0b40, {{0.0, 799.0}, {820.0, 44.0}} <AX element pid: 12550, elementOrHash.elementID: 4688925056.129>
+            Other, 0x1161d0c80, {{0.0, 799.0}, {820.0, 44.0}} <AX element pid: 12550, elementOrHash.elementID: 4781041280.133>
+              Toolbar, 0x1161d0dc0, {{0.0, 799.0}, {820.0, 44.0}}, identifier: 'Toolbar', label: 'Toolbar' <AX element pid: 12550, elementOrHash.elementID: 4778759808.139>
+                Other, 0x1161d0f00, {{0.0, 799.0}, {820.0, 44.0}} <AX element pid: 12550, elementOrHash.elementID: 4778684224.145>
+                  Other, 0x1161d1040, {{20.0, 799.0}, {780.0, 44.0}} <AX element pid: 12550, elementOrHash.elementID: 4779501632.189>
+                    Other, 0x1161d1180, {{20.0, 799.0}, {780.0, 44.0}} <AX element pid: 12550, elementOrHash.elementID: 4779502080.195>
+                      Other, 0x1161d12c0, {{20.0, 799.0}, {0.0, 0.0}} <AX element pid: 12550, elementOrHash.elementID: 4779502528.202>
+                        Other, 0x1161d1400, {{727.5, 799.0}, {72.5, 44.0}} <AX element pid: 12550, elementOrHash.elementID: 4779501184.210>
+                          Other, 0x1161d1540, {{727.5, 799.0}, {72.5, 44.0}} <AX element pid: 12550, elementOrHash.elementID: 4779502976.211>
+                            Other, 0x1161d1680, {{731.5, 803.0}, {64.5, 36.0}} <AX element pid: 12550, elementOrHash.elementID: 4778768128.212>
+                              Other, 0x1161d17c0, {{731.5, 803.0}, {64.5, 36.0}} <AX element pid: 12550, elementOrHash.elementID: 4779102208.213>
+                                Other, 0x1161d1900, {{731.5, 803.0}, {64.5, 36.0}}, label: 'Done' <AX element pid: 12550, elementOrHash.elementID: 4671834624.214>
+                                  Other, 0x1161d1a40, {{731.5, 803.0}, {64.5, 36.0}} <AX element pid: 12550, elementOrHash.elementID: 4688588608.215>
+                                    Button, 0x1161d1b80, {{731.5, 803.0}, {64.5, 36.0}}, label: 'Done', Disabled <AX element pid: 12550, elementOrHash.elementID: 4688588160.216>
+        Other, 0x1161d1cc0, {{0.0, 843.0}, {820.0, 337.0}}, identifier: 'inputView' <AX element pid: 12550, elementOrHash.elementID: 4691673600.125>
+  Window, 0x1161d1e00, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12550, elementOrHash.elementID: 4671843584.119>
+    Other, 0x1161d1f40, {{0.0, 0.0}, {820.0, 1180.0}} <AX element pid: 12550, elementOrHash.elementID: 4691683328.120>
+      Other, 0x1161d2080, {{0.0, 843.0}, {820.0, 337.0}} <AX element pid: 12550, elementOrHash.elementID: 4778685120.122>
+        Other, 0x1161d21c0, {{0.0, 843.0}, {820.0, 55.0}}, identifier: 'SystemInputAssistantView' <AX element pid: 12550, elementOrHash.elementID: 4693806848.126>
+          Other, 0x1161d2300, {{0.0, 843.0}, {820.0, 55.0}} <AX element pid: 12550, elementOrHash.elementID: 4695833472.130>
+            Other, 0x1161d2440, {{0.0, 843.0}, {152.0, 49.0}}, identifier: 'LeftButtonBar' <AX element pid: 12550, elementOrHash.elementID: 4778761088.134>
+              Other, 0x1161d2580, {{28.0, 843.0}, {124.0, 49.0}} <AX element pid: 12550, elementOrHash.elementID: 4779496704.140>
+                Other, 0x1161d26c0, {{28.0, 844.0}, {114.0, 49.0}} <AX element pid: 12550, elementOrHash.elementID: 4690656768.146>
+                  Other, 0x1161d2800, {{28.0, 844.0}, {22.0, 49.0}} <AX element pid: 12550, elementOrHash.elementID: 4779106304.190>
+                    Button, 0x1161d2940, {{28.0, 844.0}, {22.0, 49.0}}, identifier: 'assistantUndo', label: 'undo', Disabled <AX element pid: 12550, elementOrHash.elementID: 4781018880.196>
+                  Other, 0x1161d2a80, {{74.0, 844.0}, {22.0, 49.0}} <AX element pid: 12550, elementOrHash.elementID: 4779106816.191>
+                    Button, 0x1161d2bc0, {{74.0, 844.0}, {22.0, 49.0}}, identifier: 'assistantRedo', label: 'Redo', Disabled <AX element pid: 12550, elementOrHash.elementID: 4781019520.197>
+                  Other, 0x1161d2d00, {{120.0, 844.0}, {22.0, 49.0}} <AX element pid: 12550, elementOrHash.elementID: 4779107328.192>
+                    Button, 0x1161d2e40, {{120.0, 844.0}, {22.0, 49.0}}, identifier: 'assistantPaste:forEvent:', label: 'Paste', Disabled <AX element pid: 12550, elementOrHash.elementID: 4781020160.198>
+            Other, 0x1161d2f80, {{152.0, 849.0}, {516.0, 49.0}}, identifier: 'CenterPageView' <AX element pid: 12550, elementOrHash.elementID: 4688152576.135>
+              Other, 0x1161d30c0, {{152.0, 249.0}, {516.0, 1249.0}} <AX element pid: 12550, elementOrHash.elementID: 4695833920.141>
+                ScrollView, 0x1161d3200, {{152.0, 849.0}, {516.0, 49.0}} <AX element pid: 12550, elementOrHash.elementID: 4682486784.147>
+              Other, 0x1161d3340, {{152.0, 849.0}, {516.0, 49.0}} <AX element pid: 12550, elementOrHash.elementID: 4695474624.142>
+                Other, 0x1161d3480, {{152.0, 849.0}, {516.0, 49.0}}, label: 'Typing Predictions' <AX element pid: 12550, elementOrHash.elementID: 4692075264.148>
+                  Other, 0x1161d35c0, {{152.0, 849.0}, {516.0, 49.0}} <AX element pid: 12550, elementOrHash.elementID: 4690655232.193>
+                    Other, 0x1161d3700, {{152.0, 849.0}, {516.0, 49.0}} <AX element pid: 12550, elementOrHash.elementID: 4696590080.199>
+                      Other, 0x1161d3840, {{152.0, 849.0}, {172.0, 49.0}}, label: '나' <AX element pid: 12550, elementOrHash.elementID: 4693809152.203>
+                      Other, 0x1161d3980, {{324.0, 849.0}, {172.0, 49.0}}, label: '아' <AX element pid: 12550, elementOrHash.elementID: 4693808384.204>
+                      Other, 0x1161d3ac0, {{496.0, 849.0}, {172.0, 49.0}}, label: '나는' <AX element pid: 12550, elementOrHash.elementID: 4693809920.205>
+            Other, 0x1161d3c00, {{668.0, 843.0}, {152.0, 49.0}}, identifier: 'RightButtonBar' <AX element pid: 12550, elementOrHash.elementID: 4778761728.136>
+              Other, 0x1161d3d40, {{668.0, 843.0}, {124.0, 49.0}} <AX element pid: 12550, elementOrHash.elementID: 4779497152.143>
+        Other, 0x1161d3e80, {{0.0, 843.0}, {820.0, 337.0}} <AX element pid: 12550, elementOrHash.elementID: 4695832576.127>
+          Other, 0x1161d4000, {{0.0, 843.0}, {820.0, 337.0}} <AX element pid: 12550, elementOrHash.elementID: 4693812992.131>
+            Other, 0x1161d4140, {{0.0, 843.0}, {820.0, 337.0}} <AX element pid: 12550, elementOrHash.elementID: 4778760448.137>
+        Other, 0x1161d4280, {{0.0, 898.0}, {820.0, 279.0}} <AX element pid: 12550, elementOrHash.elementID: 4696593216.128>
+          Keyboard, 0x1161d43c0, {{0.0, 898.0}, {820.0, 279.0}} <AX element pid: 12550, elementOrHash.elementID: 4692075904.132>
+            Other, 0x1161d4500, {{0.0, 898.0}, {820.0, 279.0}} <AX element pid: 12550, elementOrHash.elementID: 4688125952.138>
+              Other, 0x1161d4640, {{0.0, 898.0}, {820.0, 279.0}}, identifier: 'UIKeyboardLayoutStar Preview' <AX element pid: 12550, elementOrHash.elementID: 4682425344.144>
+                Button, 0x1161d4780, {{6.0, 905.0}, {81.0, 64.0}}, identifier: 'tab', label: 'Tab' <AX element pid: 12550, elementOrHash.elementID: 4778796896.149>
+                Key, 0x1161d48c0, {{87.0, 905.0}, {65.0, 64.0}}, label: 'ㅂ' <AX element pid: 12550, elementOrHash.elementID: 4778797056.150>
+                Key, 0x1161d4a00, {{152.0, 905.0}, {65.0, 64.0}}, label: 'ㅈ' <AX element pid: 12550, elementOrHash.elementID: 4778797216.151>
+                Key, 0x1161d4b40, {{217.0, 905.0}, {65.0, 64.0}}, label: 'ㄷ' <AX element pid: 12550, elementOrHash.elementID: 4778797296.152>
+                Key, 0x1161d4c80, {{282.0, 905.0}, {65.0, 64.0}}, label: 'ㄱ' <AX element pid: 12550, elementOrHash.elementID: 4778798896.153>
+                Key, 0x1161d4dc0, {{347.0, 905.0}, {65.0, 64.0}}, label: 'ㅅ' <AX element pid: 12550, elementOrHash.elementID: 4778799056.154>
+                Key, 0x1161d4f00, {{412.0, 905.0}, {65.0, 64.0}}, label: 'ㅛ' <AX element pid: 12550, elementOrHash.elementID: 4778799136.155>
+                Key, 0x1161d5040, {{477.0, 905.0}, {65.0, 64.0}}, label: 'ㅕ' <AX element pid: 12550, elementOrHash.elementID: 4778799216.156>
+                Key, 0x1161d5180, {{542.0, 905.0}, {65.0, 64.0}}, label: 'ㅑ' <AX element pid: 12550, elementOrHash.elementID: 4778799856.157>
+                Key, 0x1161d52c0, {{607.0, 905.0}, {65.0, 64.0}}, label: 'ㅐ' <AX element pid: 12550, elementOrHash.elementID: 4778799936.158>
+                Key, 0x1161d5400, {{672.0, 905.0}, {65.0, 64.0}}, label: 'ㅔ' <AX element pid: 12550, elementOrHash.elementID: 4778800016.159>
+                Key, 0x1161d5540, {{737.0, 905.0}, {81.0, 64.0}}, identifier: 'delete', label: '삭제' <AX element pid: 12550, elementOrHash.elementID: 4778800096.160>
+                Key, 0x1161d5680, {{6.0, 969.0}, {100.5, 63.5}}, label: 'Switch from Roman keys' <AX element pid: 12550, elementOrHash.elementID: 4778800176.161>
+                Key, 0x1161d57c0, {{106.5, 969.0}, {65.0, 63.5}}, label: 'ㅁ' <AX element pid: 12550, elementOrHash.elementID: 4778800256.162>
+                Key, 0x1161d5900, {{171.5, 969.0}, {65.0, 63.5}}, label: 'ㄴ' <AX element pid: 12550, elementOrHash.elementID: 4778800336.163>
+                Key, 0x1161d5a40, {{236.5, 969.0}, {65.0, 63.5}}, label: 'ㅇ' <AX element pid: 12550, elementOrHash.elementID: 4778800416.164>
+                Key, 0x1161d5b80, {{301.5, 969.0}, {65.0, 63.5}}, label: 'ㄹ' <AX element pid: 12550, elementOrHash.elementID: 4778800496.165>
+                Key, 0x1161d5cc0, {{366.5, 969.0}, {65.0, 63.5}}, label: 'ㅎ' <AX element pid: 12550, elementOrHash.elementID: 4778800576.166>
+                Key, 0x1161d5e00, {{431.5, 969.0}, {65.0, 63.5}}, label: 'ㅗ' <AX element pid: 12550, elementOrHash.elementID: 4778800656.167>
+                Key, 0x1161d5f40, {{496.5, 969.0}, {65.0, 63.5}}, label: 'ㅓ' <AX element pid: 12550, elementOrHash.elementID: 4778800736.168>
+                Key, 0x1161d6080, {{561.5, 969.0}, {65.0, 63.5}}, label: 'ㅏ' <AX element pid: 12550, elementOrHash.elementID: 4778800816.169>
+                Key, 0x1161d61c0, {{626.5, 969.0}, {65.0, 63.5}}, label: 'ㅣ' <AX element pid: 12550, elementOrHash.elementID: 4778800896.170>
+                Button, 0x1161d6300, {{691.5, 969.0}, {126.5, 63.5}}, identifier: 'Return', label: 'Return 키' <AX element pid: 12550, elementOrHash.elementID: 4778800976.171>
+                Button, 0x1161d6440, {{6.0, 1032.5}, {130.0, 64.0}}, identifier: 'shift', label: 'shift' <AX element pid: 12550, elementOrHash.elementID: 4778801056.172>
+                Key, 0x1161d6580, {{136.0, 1032.5}, {65.0, 64.0}}, label: 'ㅋ' <AX element pid: 12550, elementOrHash.elementID: 4778801216.173>
+                Key, 0x1161d66c0, {{201.0, 1032.5}, {65.0, 64.0}}, label: 'ㅌ' <AX element pid: 12550, elementOrHash.elementID: 4778801296.174>
+                Key, 0x1161d6800, {{266.0, 1032.5}, {65.0, 64.0}}, label: 'ㅊ' <AX element pid: 12550, elementOrHash.elementID: 4778801376.175>
+                Key, 0x1161d6940, {{331.0, 1032.5}, {65.0, 64.0}}, label: 'ㅍ' <AX element pid: 12550, elementOrHash.elementID: 4778801456.176>
+                Key, 0x1161d6a80, {{396.0, 1032.5}, {64.5, 64.0}}, label: 'ㅠ' <AX element pid: 12550, elementOrHash.elementID: 4778801536.177>
+                Key, 0x1161d6bc0, {{460.5, 1032.5}, {65.0, 64.0}}, label: 'ㅜ' <AX element pid: 12550, elementOrHash.elementID: 4778801616.178>
+                Key, 0x1161d6d00, {{525.5, 1032.5}, {65.0, 64.0}}, label: 'ㅡ' <AX element pid: 12550, elementOrHash.elementID: 4778801696.179>
+                Key, 0x1161d6e40, {{590.5, 1032.5}, {65.0, 64.0}}, label: ',' <AX element pid: 12550, elementOrHash.elementID: 4778801776.180>
+                Key, 0x1161d6f80, {{655.5, 1032.5}, {65.0, 64.0}}, label: '.' <AX element pid: 12550, elementOrHash.elementID: 4778801856.181>
+                Key, 0x1161d70c0, {{720.5, 1032.5}, {97.5, 64.0}}, label: 'shift' <AX element pid: 12550, elementOrHash.elementID: 4778801936.182>
+                Button, 0x1161d7200, {{6.0, 1096.5}, {69.0, 63.5}}, identifier: 'emoji', label: '이모지' <AX element pid: 12550, elementOrHash.elementID: 4778802016.183>
+                Key, 0x1161d7340, {{75.0, 1096.5}, {68.5, 63.5}}, identifier: 'more', label: '숫자' <AX element pid: 12550, elementOrHash.elementID: 4778802176.184>
+                Button, 0x1161d7480, {{143.5, 1096.5}, {69.0, 63.5}}, identifier: 'dictation', label: '받아쓰기' <AX element pid: 12550, elementOrHash.elementID: 4778802336.185>
+                Key, 0x1161d75c0, {{212.5, 1096.5}, {410.0, 63.5}}, label: ' ' <AX element pid: 12550, elementOrHash.elementID: 4778802416.186>
+                Key, 0x1161d7700, {{622.5, 1096.5}, {97.5, 63.5}}, identifier: 'more', label: '숫자' <AX element pid: 12550, elementOrHash.elementID: 4778802496.187>
+                Button, 0x1161d7840, {{720.0, 1096.5}, {98.0, 63.5}}, label: 'Hide keyboard' <AX element pid: 12550, elementOrHash.elementID: 4778802576.188>
+      Other, 0x1161d7980, {{820.0, 1180.0}, {1.0, 1.0}} <AX element pid: 12550, elementOrHash.elementID: 4781040384.123>

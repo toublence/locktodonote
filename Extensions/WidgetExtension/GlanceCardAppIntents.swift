@@ -24,7 +24,7 @@ public enum QuickAddTarget: String, AppEnum {
 
 /// The core Quick Add intent users run from Shortcuts, Siri, Action Button, and Lock Screen.
 @available(iOS 16.2, iOSApplicationExtension 16.2, *)
-struct AddToLockTodoNoteIntent: AppIntent {
+struct AddToLockTodoNoteIntent: LiveActivityIntent {
     static let title: LocalizedStringResource = LocalizedStringResource(
         "intent.addToLockTodoNote.title",
         defaultValue: "Add to LockTodoNote"
@@ -44,8 +44,11 @@ struct AddToLockTodoNoteIntent: AppIntent {
     @Parameter(title: "Type", default: nil)
     var target: QuickAddTarget?
 
-    @Parameter(title: "Date", default: nil)
+    @Parameter(title: "Date")
     var date: Date?
+
+    @Parameter(title: "Smart date recognition", default: true)
+    var smartRecognition: Bool
 
     @Parameter(title: "Source", default: "unknown")
     var source: String
@@ -136,9 +139,15 @@ struct AddToLockTodoNoteIntent: AppIntent {
             return Self.reply(.emptyText)
         }
 
-        let effectiveDate = date ?? Date()
-        let dateKey = FlutterDate.dateKey(effectiveDate)
-        let id = "shortcut-\(Int(Date().timeIntervalSince1970 * 1_000_000))"
+        let capturedAt = Date()
+        let effectiveDate = date ?? capturedAt
+        let smartTodos: [SmartTodo]? = resolvedTarget == .todo
+            ? SmartQuickAddParser.parse(
+                content, referenceDate: capturedAt, defaultDate: effectiveDate,
+                explicitDate: date, enabled: smartRecognition
+            ) : nil
+        let dateKey = FlutterDate.dateKey(smartTodos?.first?.scheduledDate ?? effectiveDate)
+        let id = "shortcut-\(Int(capturedAt.timeIntervalSince1970 * 1_000_000))"
 
         let itemCount: Int
         if resolvedTarget == .todo {
@@ -161,7 +170,8 @@ struct AddToLockTodoNoteIntent: AppIntent {
                 text: content,
                 target: resolvedTarget,
                 dateKey: dateKey,
-                createdAt: Date()
+                createdAt: capturedAt,
+                smartTodos: smartTodos
             )
         )
         if !isPro { store.recordShortcutUsage() }
@@ -171,6 +181,7 @@ struct AddToLockTodoNoteIntent: AppIntent {
             text: content,
             target: resolvedTarget,
             dateKey: dateKey,
+            smartTodos: smartTodos,
             store: store
         )
 
@@ -219,9 +230,9 @@ struct AddToLockTodoNoteIntent: AppIntent {
         var message: String {
             switch self {
             case .emptyText:
-                localized("intent.emptyText", defaultValue: "Text is empty")
+                return localized("intent.emptyText", defaultValue: "Text is empty")
             case .limitReached:
-                localized(
+                return localized(
                     "intent.limitReached",
                     defaultValue: "You've used all free Quick Adds for today. LockTodoNote Pro includes unlimited Quick Add."
                 )
@@ -233,9 +244,9 @@ struct AddToLockTodoNoteIntent: AppIntent {
                     return String(format: format, count)
                 }
             case .addedToMemo:
-                localized("intent.addedToMemo", defaultValue: "Note added.")
+                return localized("intent.addedToMemo", defaultValue: "Note added.")
             case .failed:
-                localized("intent.failed", defaultValue: "Could not save that.")
+                return localized("intent.failed", defaultValue: "Could not save that.")
             }
         }
     }
@@ -249,16 +260,15 @@ struct AddToLockTodoNoteIntent: AppIntent {
 
 /// Restarts the Live Activity after iOS has let it go stale.
 @available(iOS 16.2, iOSApplicationExtension 16.2, *)
-struct RefreshLockScreenIntent: AppIntent {
+struct RefreshLockScreenIntent: LiveActivityIntent {
     static let title: LocalizedStringResource = "Refresh Lock Screen"
     static let description = IntentDescription("Restart the LockTodoNote Live Activity.")
-    static let isDiscoverable: Bool = false
+    static let isDiscoverable: Bool = true
     static let openAppWhenRun = false
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let store = AppGroupStore()
         let requestId = UUID().uuidString
-        store.defaults?.set(false, forKey: FlutterPreferenceKeys.explicitlyStoppedLiveActivity)
         let refreshed: Bool
         do {
             refreshed = try await ShortcutSupport.restartActivity(store: store, requestId: requestId)
@@ -337,10 +347,19 @@ struct ToggleTodoIntent: LiveActivityIntent {
 
     func perform() async throws -> some IntentResult {
         let store = AppGroupStore()
-        guard var payload = store.dashboardState() else { return .result() }
+        guard !todoId.hasPrefix("projected:") else { return .result() }
+        let scheduled = (try? SmartLockScreenSchedule.load(store: store))?.isEnabled == true
+        guard var payload = (scheduled ? ShortcutSupport.rebuiltDashboardPayload(store: store, previewOnly: true) : nil)
+            ?? store.dashboardState() else { return .result() }
         let occurredAt = Date()
         let eventId = UUID().uuidString
 
+        if let cardID = todoId.split(separator: ":", maxSplits: 1).first,
+           let identifier = AppleReminderMirror.reminderID(from: String(cardID)) {
+            try await MainActor.run {
+                try AppleRemindersClient.setCompleted(identifier: identifier, isCompleted: true, store: store)
+            }
+        }
         store.appendPendingCompletedTodo(
             PendingCompletedTodo(
                 id: todoId,
@@ -352,6 +371,7 @@ struct ToggleTodoIntent: LiveActivityIntent {
         ShortcutSupport.completeTodo(todoId, in: &payload)
         store.saveDashboardState(payload)
         await ShortcutSupport.updateActivities(with: payload)
+        store.postDataChangedNotification()
 
         ReviewEligibilityRecorder(store: store).record(
             .todoCompleted(lockScreenInteraction: true),
@@ -450,27 +470,58 @@ enum ShortcutSupport {
         text: String,
         target: ShortcutInsertPriority,
         dateKey: String,
+        smartTodos: [SmartTodo]? = nil,
         store: AppGroupStore
     ) {
+        let scheduled = (try? SmartLockScreenSchedule.load(store: store))?.isEnabled == true
+        if scheduled {
+            if let rebuilt = rebuiltDashboardPayload(store: store, previewOnly: true) { store.saveDashboardState(rebuilt) }
+            return
+        }
+        if target == .todo, smartTodos != nil,
+           let rebuilt = rebuiltDashboardPayload(
+               store: store, selectedDateOverride: smartTodos?.first?.scheduledDate
+           ) {
+            store.saveDashboardState(rebuilt)
+            return
+        }
         var payload = store.dashboardState() ?? [:]
+        let previousDate = payload["selectedDate"] as? String
         payload["selectedDate"] = dateKey
         payload["selectedDateText"] = dateKey
 
         switch target {
         case .todo:
-            let lines = QuickCaptureService.parseTodoLines(from: text)
-            guard !lines.isEmpty else { return }
-            var todos = payload["todoItems"] as? [[String: Any]] ?? []
-            for (index, line) in lines.enumerated().reversed() {
-                let cardId = lines.count == 1 ? id : "\(id)-\(index)"
+            let rows = smartTodos ?? SmartQuickAddParser.parse(
+                text, defaultDate: FlutterDate.date(fromKey: dateKey), enabled: false
+            )
+            guard !rows.isEmpty else { return }
+            let days = payload["calendarDays"] as? [[String: Any]] ?? []
+            var todos = previousDate == dateKey
+                ? (payload["todoItems"] as? [[String: Any]] ?? [])
+                : (days.first { $0["id"] as? String == dateKey }?["todoItems"] as? [[String: Any]] ?? [])
+            var addedOnSelectedDay = 0
+            for (index, row) in rows.enumerated().reversed() {
+                let cardId = rows.count == 1 ? id : "\(id)-\(index)"
                 let itemId = "\(cardId)-item-0"
                 let compositeId = "\(cardId):\(itemId)"
-                let item: [String: Any] = ["id": compositeId, "text": line, "isDone": false]
-                todos.insert(item, at: 0)
-                insertCalendarItem(item, key: "todoItems", dateKey: dateKey, in: &payload)
+                let title = ChecklistItem(
+                    id: itemId, text: row.text, dueDate: row.dueDate, hasDueTime: row.hasDueTime
+                ).displayText()
+                let item: [String: Any] = ["id": compositeId, "text": title, "isDone": false]
+                let itemDay = FlutterDate.dateKey(row.scheduledDate)
+                if itemDay == dateKey {
+                    todos.insert(item, at: 0)
+                    addedOnSelectedDay += 1
+                }
+                insertCalendarItem(item, key: "todoItems", dateKey: itemDay, in: &payload)
             }
             payload["todoItems"] = Array(todos.prefix(5))
-            payload["totalCount"] = ((payload["totalCount"] as? NSNumber)?.intValue ?? 0) + lines.count
+            payload["totalCount"] = previousDate == dateKey
+                ? ((payload["totalCount"] as? NSNumber)?.intValue ?? 0) + addedOnSelectedDay : todos.count
+            if previousDate != dateKey {
+                payload["doneCount"] = todos.filter { $0["isDone"] as? Bool == true }.count
+            }
         case .memo:
             let cleaned = QuickCaptureService.cleanMemoText(from: text)
             guard !cleaned.isEmpty else { return }
@@ -584,7 +635,10 @@ enum ShortcutSupport {
 
     @discardableResult
     static func refreshActivities(store: AppGroupStore, source: String) async -> Bool {
-        guard let payload = store.dashboardState() else { return false }
+        let scheduled = (try? SmartLockScreenSchedule.load(store: store))?.isEnabled == true
+        guard let payload = (scheduled ? rebuiltDashboardPayload(store: store, previewOnly: true) : nil)
+            ?? store.dashboardState() else { return false }
+        store.saveDashboardState(payload)
         await updateActivities(with: payload)
         store.enqueueAnalyticsEvent(
             name: "lockscreen_activity_updated",
@@ -596,7 +650,7 @@ enum ShortcutSupport {
     /// Ends and restarts the activity, which is the only way to clear a stale
     /// one without opening the app.
     static func restartActivity(store: AppGroupStore, requestId: String) async throws -> Bool {
-        guard let payload = rebuiltDashboardPayload(store: store) else { return false }
+        guard let payload = rebuiltDashboardPayload(store: store, previewOnly: true) else { return false }
         store.saveDashboardState(payload)
 
         var attemptParameters = analyticsParameters(from: payload, source: "shortcut")
@@ -607,9 +661,8 @@ enum ShortcutSupport {
             parameters: attemptParameters
         )
 
-        for activity in Activity<GlanceDashboardAttributes>.activities {
-            await activity.end(nil, dismissalPolicy: .immediate)
-        }
+        // Keep the existing card if requesting its replacement fails.
+        let previousActivities = Activity<GlanceDashboardAttributes>.activities
         let snapshot = DashboardSnapshot(dictionary: payload)
         _ = try Activity.request(
             attributes: GlanceDashboardAttributes(
@@ -621,6 +674,13 @@ enum ShortcutSupport {
             ),
             pushType: nil
         )
+        for activity in previousActivities {
+            await activity.end(nil, dismissalPolicy: .immediate)
+        }
+        store.defaults?.set(false, forKey: FlutterPreferenceKeys.explicitlyStoppedLiveActivity)
+        store.defaults?.set(true, forKey: FlutterPreferenceKeys.liveActivityStarted)
+        store.defaults?.set(Date().timeIntervalSince1970, forKey: AppGroupKeys.liveActivityStartedAt)
+        store.defaults?.removeObject(forKey: AppGroupKeys.liveActivityStaleLogged)
         store.enqueueAnalyticsEvent(
             name: "lockscreen_activity_updated",
             parameters: analyticsParameters(from: payload, source: "shortcut")
@@ -642,25 +702,33 @@ enum ShortcutSupport {
 
     /// Rebuilds from durable cards plus unacknowledged extension work. A stale
     /// dashboard payload is never used as the source of a new activity.
-    private static func rebuiltDashboardPayload(store: AppGroupStore, now: Date = Date()) -> [String: Any]? {
+    static func rebuiltDashboardPayload(
+        store: AppGroupStore, now: Date = Date(), selectedDateOverride: Date? = nil, previewOnly: Bool = false
+    ) -> [String: Any]? {
         guard let url = store.cardStoreURL,
               let data = try? Data(contentsOf: url),
               var cards = try? JSONDecoder().decode([Card].self, from: data)
         else { return nil }
 
-        cards = CardMutations.applyCompletions(
-            store.pendingCompletedTodos(), to: cards, now: now
-        ).cards
-        cards = CardMutations.applyQuickAdds(
-            store.pendingQuickAdds(), to: cards
-        ).cards
+        cards = CardMutations.applyQuickAdds(store.pendingQuickAdds(), to: cards).cards
+        cards = CardMutations.applyCompletions(store.pendingCompletedTodos(), to: cards, now: now).cards
+        let existingIDs = Set(cards.map(\.id))
         cards = CardMutations.rollOverIncompleteTodos(cards, now: now).cards
         cards = CardMutations.createRecurringTodosForToday(cards, now: now).cards
+        if previewOnly {
+            // Read-only future occurrences do not have durable completion IDs yet.
+            // Tapping them opens the app, which materializes the real occurrence.
+            cards = cards.map { card in
+                var copy = card
+                if !existingIDs.contains(card.id) { copy.id = "projected:\(card.id)" }
+                return copy
+            }
+        }
 
         let defaults = store.defaults
         let followsToday = defaults?.object(forKey: FlutterPreferenceKeys.followToday) as? Bool ?? true
         let explicitDate = store.dashboardState()?["selectedDate"] as? String
-        let selectedDate = followsToday ? now : explicitDate.flatMap { FlutterDate.parse($0) }
+        let selectedDate = selectedDateOverride ?? (followsToday ? now : explicitDate.flatMap { FlutterDate.parse($0) })
         let strings = DashboardStrings(
             noEvents: localized("noEvents"),
             hiddenContent: localized("hiddenContent"),
@@ -671,14 +739,19 @@ enum ShortcutSupport {
             hoursMinutesRemaining: localized("remaining", defaultValue: "left"),
             remainingTasks: localized("remaining", defaultValue: "Remaining")
         )
+        let entitlement = Entitlement(cachedJSON: defaults?.string(forKey: FlutterPreferenceKeys.purchaseState))
+        let isPro = entitlement.isPro && (entitlement.expirationDate.map { $0 > now } ?? true)
+        let resolved = SmartLockScreenSchedule.resolve(
+            cards: cards, settings: defaults.map(LockScreenSettings.load(from:)) ?? LockScreenSettings(),
+            store: store, at: now, isPro: isPro
+        )
         let snapshot = DashboardComposer(strings: strings).compose(
-            cards: cards,
-            selectedDate: selectedDate,
-            settings: defaults.map(LockScreenSettings.load(from:)) ?? LockScreenSettings(),
+            cards: resolved.cards,
+            selectedDate: resolved.ruleID == nil ? selectedDate : now,
+            settings: resolved.settings,
             privacyMode: PrivacyMode(fromStored: defaults?.string(forKey: FlutterPreferenceKeys.defaultPrivacyMode)),
             now: now
         )
-        let isPro = store.dashboardState()?["isPro"] as? Bool ?? false
         return snapshot.dictionary(isPro: isPro)
     }
 

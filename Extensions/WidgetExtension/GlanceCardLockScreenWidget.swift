@@ -66,13 +66,14 @@ struct GlanceCardTimelineProvider: TimelineProvider {
       name: "widget_timeline_requested",
       parameters: analyticsParameters(from: dashboard, source: "widget", result: "success")
     )
-    let entries = [
-      GlanceCardWidgetEntry(date: now, dashboard: dashboard),
-      GlanceCardWidgetEntry(
-        date: startOfTomorrow,
-        dashboard: loadDashboard(for: startOfTomorrow)
-      ),
-    ]
+    let store = AppGroupStore()
+    let schedule = (try? SmartLockScreenSchedule.load(store: store)) ?? SmartLockScreenSchedule()
+    var dates = Set(schedule.transitionDates(after: now))
+    dates.insert(startOfTomorrow)
+    if let expiry = Entitlement(cachedJSON: store.defaults?.string(forKey: FlutterPreferenceKeys.purchaseState)).expirationDate,
+       expiry > now { dates.insert(expiry) }
+    let entries = [GlanceCardWidgetEntry(date: now, dashboard: dashboard)]
+      + dates.sorted().prefix(63).map { GlanceCardWidgetEntry(date: $0, dashboard: loadDashboard(for: $0)) }
     completion(
       Timeline(
         entries: entries,
@@ -83,7 +84,13 @@ struct GlanceCardTimelineProvider: TimelineProvider {
 
   private func loadDashboard(for date: Date = Date()) -> SharedDashboardSnapshot {
     let defaults = UserDefaults(suiteName: appGroupId)
-    if let payload = defaults?.dictionary(forKey: dashboardStateKey) {
+    let store = AppGroupStore()
+    let scheduled = (try? SmartLockScreenSchedule.load(store: store))?.isEnabled == true
+    var scheduledPayload: [String: Any]?
+    if #available(iOSApplicationExtension 16.2, *), scheduled {
+      scheduledPayload = ShortcutSupport.rebuiltDashboardPayload(store: store, now: date, previewOnly: true)
+    }
+    if let payload = scheduledPayload ?? defaults?.dictionary(forKey: dashboardStateKey) {
       let day = calendarDay(in: payload, for: date)
       let updatedAt = (payload["updatedAt"] as? TimeInterval).map(Date.init(timeIntervalSince1970:))
       let needsRefresh = day == nil && !(updatedAt.map {
@@ -348,7 +355,9 @@ private struct MediumDashboardWidget: View {
 
   @ViewBuilder
   private func todoRow(_ item: GlanceTodoState) -> some View {
-    if #available(iOSApplicationExtension 17.0, *) {
+    if item.id.hasPrefix("projected:") {
+      Link(destination: URL(string: "glancecard://dashboard?source=widget")!) { rowLabel(item) }
+    } else if #available(iOSApplicationExtension 17.0, *) {
       Button(intent: ToggleTodoIntent(todoId: item.id, source: "widget")) {
         rowLabel(item)
       }

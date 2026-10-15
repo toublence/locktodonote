@@ -60,10 +60,14 @@ final class DashboardCoordinator: ObservableObject {
 
     func currentSnapshot(now: Date = Date()) -> DashboardSnapshot {
         let effectiveDate = dateSelectionMode == .followToday ? now : selectedDate
+        let resolved = SmartLockScreenSchedule.resolve(
+            cards: cardStore.cards, settings: settingsStore.settings, store: store,
+            at: now, isPro: entitlements.isPro, calendar: calendar
+        )
         return composer.compose(
-            cards: cardStore.cards,
-            selectedDate: effectiveDate,
-            settings: settingsStore.settings,
+            cards: resolved.cards,
+            selectedDate: resolved.ruleID == nil ? effectiveDate : now,
+            settings: resolved.settings,
             privacyMode: settingsStore.defaultPrivacyMode,
             now: now
         )

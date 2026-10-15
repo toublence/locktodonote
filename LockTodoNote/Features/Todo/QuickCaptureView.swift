@@ -19,6 +19,9 @@ struct QuickCaptureView: View {
     @State private var text = ""
     @State private var confirmation: String?
     @State private var recurrence: TodoRecurrence = .none
+    @State private var advancedRepeat: AdvancedRepeatRule?
+    @State private var smartEnabled = true
+    @State private var hasManualRecurrence = false
     @State private var saveError: String?
     @FocusState private var isFocused: Bool
 
@@ -37,12 +40,15 @@ struct QuickCaptureView: View {
                 .pickerStyle(.segmented)
             }
 
-            if mode == .todo {
+            if mode == .todo && advancedRepeat == nil {
                 HStack {
                     Text(appString(localized: "quickAdd.repeat", defaultValue: "Show this todo"))
                         .foregroundStyle(palette.textSecondary)
                     Spacer(minLength: 0)
-                    Picker("", selection: $recurrence) {
+                    Picker("", selection: Binding(
+                        get: { smartTodos.first?.recurrence ?? recurrence },
+                        set: { recurrence = $0; advancedRepeat = nil; hasManualRecurrence = true }
+                    )) {
                         ForEach(TodoRecurrence.allCases, id: \.self) { option in
                             Text(option.displayName).tag(option)
                         }
@@ -80,6 +86,13 @@ struct QuickCaptureView: View {
             .background(palette.surfaceSoft, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
             .animation(reduceMotion ? nil : .snappy(duration: 0.25), value: isFocused)
 
+            if mode == .todo {
+                AdvancedRepeatPicker(rule: $advancedRepeat, startDate: smartTodos.first?.scheduledDate ?? date) {
+                    recurrence = .none
+                    hasManualRecurrence = true
+                }
+                SmartQuickAddPreview(todos: smartTodos, isEnabled: $smartEnabled)
+            }
             if let confirmation {
                 Label(confirmation, systemImage: "checkmark.circle.fill")
                     .font(.caption)
@@ -129,6 +142,13 @@ struct QuickCaptureView: View {
         text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    private var smartTodos: [SmartTodo] {
+        SmartQuickAddParser.parse(
+            text, defaultDate: date,
+            recurrenceOverride: hasManualRecurrence ? recurrence : nil, enabled: smartEnabled
+        )
+    }
+
     private func save() {
         guard !trimmedText.isEmpty else { return }
 
@@ -136,7 +156,10 @@ struct QuickCaptureView: View {
         case .todo:
             let lines = QuickCaptureService.parseTodoLines(from: trimmedText)
             guard !lines.isEmpty else { return }
-            guard cardStore.addTodos(texts: lines, to: date, recurrence: recurrence) else {
+            guard cardStore.addTodos(
+                texts: [trimmedText], to: date, recurrence: recurrence, smartEnabled: smartEnabled,
+                recurrenceOverride: hasManualRecurrence ? recurrence : nil, advancedRepeat: advancedRepeat
+            ) else {
                 recordSaveFailure(operation: "create_todo")
                 return
             }

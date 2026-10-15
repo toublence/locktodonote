@@ -16,8 +16,19 @@ struct QuickAddSheet: View {
 
     @State private var text: String = ""
     @State private var recurrence: TodoRecurrence = .none
+    @State private var advancedRepeat: AdvancedRepeatRule?
+    @State private var smartEnabled = true
+    @State private var hasManualRecurrence = false
     @State private var saveError: String?
     @FocusState private var isFocused: Bool
+
+    init(mode: QuickAddMode, date: Date = Date(), source: String = "app", initialRecurrence: TodoRecurrence = .none) {
+        self.mode = mode
+        self.date = date
+        self.source = source
+        _recurrence = State(initialValue: initialRecurrence)
+        _hasManualRecurrence = State(initialValue: initialRecurrence != .none)
+    }
 
     var body: some View {
         NavigationStack {
@@ -31,16 +42,28 @@ struct QuickAddSheet: View {
                 }
 
                 if mode == .todo {
+                    Section {
+                        SmartQuickAddPreview(todos: smartTodos, isEnabled: $smartEnabled)
+                    }
                     Section(appString(localized: "quickAdd.repeat", defaultValue: "Repeat")) {
-                        Picker(
-                            appString(localized: "quickAdd.repeat", defaultValue: "Repeat"),
-                            selection: $recurrence
-                        ) {
-                            ForEach(TodoRecurrence.allCases, id: \.self) { option in
-                                Text(option.displayName).tag(option)
+                        if advancedRepeat == nil {
+                            Picker(
+                                appString(localized: "quickAdd.repeat", defaultValue: "Repeat"),
+                                selection: Binding(
+                                    get: { smartTodos.first?.recurrence ?? recurrence },
+                                    set: { recurrence = $0; advancedRepeat = nil; hasManualRecurrence = true }
+                                )
+                            ) {
+                                ForEach(TodoRecurrence.allCases, id: \.self) { option in
+                                    Text(option.displayName).tag(option)
+                                }
                             }
+                            .pickerStyle(.menu)
                         }
-                        .pickerStyle(.menu)
+                        AdvancedRepeatPicker(rule: $advancedRepeat, startDate: smartTodos.first?.scheduledDate ?? date) {
+                            recurrence = .none
+                            hasManualRecurrence = true
+                        }
                     }
                 }
             }
@@ -81,12 +104,22 @@ struct QuickAddSheet: View {
         text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    private var smartTodos: [SmartTodo] {
+        SmartQuickAddParser.parse(
+            text, defaultDate: date,
+            recurrenceOverride: hasManualRecurrence ? recurrence : nil, enabled: smartEnabled
+        )
+    }
+
     private func save() {
         guard !trimmed.isEmpty else { return }
         switch mode {
         case .todo:
             let lines = QuickCaptureService.parseTodoLines(from: trimmed)
-            guard cardStore.addTodos(texts: lines, to: date, recurrence: recurrence) else {
+            guard cardStore.addTodos(
+                texts: [trimmed], to: date, recurrence: recurrence, smartEnabled: smartEnabled,
+                recurrenceOverride: hasManualRecurrence ? recurrence : nil, advancedRepeat: advancedRepeat
+            ) else {
                 failSave(operation: "create_todo")
                 return
             }
@@ -221,19 +254,25 @@ struct TodoEditorSheet: View {
 
     @State private var text = ""
     @State private var recurrence: TodoRecurrence = .none
+    @State private var advancedRepeat: AdvancedRepeatRule?
     @State private var saveError: String?
 
     var body: some View {
         NavigationStack {
             Form {
                 TextField(appString(localized: "home.todos", defaultValue: "Todo"), text: $text)
-                Picker(
-                    appString(localized: "quickAdd.repeat", defaultValue: "Repeat"),
-                    selection: $recurrence
-                ) {
-                    ForEach(TodoRecurrence.allCases, id: \.self) { option in
-                        Text(option.displayName).tag(option)
+                if advancedRepeat == nil {
+                    Picker(
+                        appString(localized: "quickAdd.repeat", defaultValue: "Repeat"),
+                        selection: Binding(get: { recurrence }, set: { recurrence = $0; advancedRepeat = nil })
+                    ) {
+                        ForEach(TodoRecurrence.allCases, id: \.self) { option in
+                            Text(option.displayName).tag(option)
+                        }
                     }
+                }
+                AdvancedRepeatPicker(rule: $advancedRepeat, startDate: entry.card.day()) {
+                    recurrence = .none
                 }
             }
             .navigationTitle(appString(localized: "common.edit", defaultValue: "Edit"))
@@ -250,6 +289,7 @@ struct TodoEditorSheet: View {
         .onAppear {
             text = entry.item.text
             recurrence = entry.item.recurrence
+            advancedRepeat = entry.item.advancedRepeat
         }
         .alert(
             saveError ?? "",
@@ -270,6 +310,10 @@ struct TodoEditorSheet: View {
         }
         var card = entry.card
         card.checklistItems[itemIndex].text = trimmed
+        if card.checklistItems[itemIndex].recurrence != recurrence || card.checklistItems[itemIndex].advancedRepeat != advancedRepeat {
+            card.checklistItems[itemIndex].recurrenceAnchorDate = card.targetDateTime ?? card.createdAt
+        }
+        card.checklistItems[itemIndex].advancedRepeat = advancedRepeat
         card.checklistItems[itemIndex].recurrence = recurrence
         if itemIndex == 0 { card.title = trimmed }
         card.updatedAt = Date()

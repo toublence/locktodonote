@@ -1,0 +1,4 @@
+Query chain:
+ →Find: Target Application 'com.namslab.glancecard'
+  ↪︎Find: Descendants matching type Button
+    ↪︎Find: Elements matching predicate '"QA Apple Reminder" IN identifiers'

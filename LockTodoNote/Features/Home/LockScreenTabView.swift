@@ -19,6 +19,7 @@ struct LockScreenTabView: View {
     @Environment(\.openURL) private var openURL
 
     @State private var editingCard: Card?
+    @State private var showsWidgetGuide = false
     @State private var editingTodo: TodoEntry?
     @State private var isEditingDday = false
     @State private var photoItem: PhotosPickerItem?
@@ -48,6 +49,18 @@ struct LockScreenTabView: View {
                 }
                 templateSection
                 quickCapture
+                if environment.widgetConfigurationKnown && !environment.isLockScreenWidgetInstalled {
+                    Button {
+                        showsWidgetGuide = true
+                    } label: {
+                        Label(
+                            bilingualString(korean: "잠금화면에 위젯 추가하기", english: "Add a Lock Screen widget"),
+                            systemImage: "lock.iphone"
+                        )
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .buttonStyle(.bordered)
+                }
                 if environment.showProSuggestion && !environment.showReminderSuggestion {
                     proSuggestion
                 }
@@ -64,6 +77,17 @@ struct LockScreenTabView: View {
         .accessibilityIdentifier("home.scroll")
         .scrollDismissesKeyboard(.interactively)
         .background(palette.background)
+        .sheet(isPresented: $showsWidgetGuide) {
+            NavigationStack {
+                DisplayContinuityView()
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button(appString(localized: "common.done", defaultValue: "Done")) { showsWidgetGuide = false }
+                        }
+                    }
+            }
+            .environment(\.palette, palette)
+        }
         .sheet(item: $editingCard) { card in
             MemoEditorSheet(card: card)
                 .environment(\.palette, palette)
@@ -1084,6 +1108,7 @@ private struct TodoRowView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(appString(localized: "common.edit", defaultValue: "Edit"))
+                .accessibilityIdentifier("todo.edit.\(entry.card.id):\(entry.item.id)")
 
                 Button(role: .destructive, action: onDelete) {
                     Image(systemName: "trash")
@@ -1091,6 +1116,7 @@ private struct TodoRowView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(appString(localized: "common.delete", defaultValue: "Delete"))
+                .accessibilityIdentifier("todo.delete.\(entry.card.id):\(entry.item.id)")
             }
         }
         .padding(.vertical, 10)

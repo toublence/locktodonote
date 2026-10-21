@@ -99,6 +99,7 @@ struct DeviceQADiagnosticsView: View {
     @EnvironmentObject private var cards: CardStore
     @EnvironmentObject private var activity: LiveActivityService
     @EnvironmentObject private var ads: AdService
+    @EnvironmentObject private var environment: AppEnvironment
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
         Text("QA \(purchases.isPro ? "PRO" : "FREE") · \(dashboard.snapshot?.lockScreenLayout ?? "pending") · "
@@ -109,6 +110,9 @@ struct DeviceQADiagnosticsView: View {
             .font(.system(size: 9)).accessibilityIdentifier("qa.ads")
         Text("QA Activity: \(activity.state.analyticsName)")
             .font(.system(size: 9)).accessibilityIdentifier("qa.activity")
+        Text("QA Widget: known=\(environment.widgetConfigurationKnown) any=\(environment.isWidgetInstalled) lock=\(environment.isLockScreenWidgetInstalled)")
+            .font(.system(size: 9)).accessibilityIdentifier("qa.widget")
+            .accessibilityValue(dashboard.snapshot?.todoItems.first(where: { !$0.isDone })?.text ?? "")
         Text("QA storage: \(cards.cards.count) cards")
             .font(.system(size: 9))
             .accessibilityIdentifier("qa.storage")

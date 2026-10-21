@@ -11,7 +11,7 @@ struct DisplayContinuityView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.palette) private var palette
 
-    @State private var selection: DisplayMode = .liveActivity
+    @State private var selection: DisplayMode = .widget
     @State private var widgetMessage: String?
 
     var body: some View {
@@ -139,55 +139,59 @@ struct DisplayContinuityView: View {
             )
 
             WidgetPreviewCard(snapshot: dashboard.currentSnapshot())
+                .accessibilityIdentifier("widget.setup.preview")
 
             Label(
-                environment.isWidgetInstalled
+                environment.widgetConfigurationKnown && environment.isLockScreenWidgetInstalled
                     ? appString(localized: "display.widget.installed", defaultValue: "Widget installed")
                     : appString(localized: "display.widget.notVerified", defaultValue: "Widget installation not verified"),
-                systemImage: environment.isWidgetInstalled ? "checkmark.circle.fill" : "circle.dashed"
+                systemImage: environment.widgetConfigurationKnown && environment.isLockScreenWidgetInstalled ? "checkmark.circle.fill" : "circle.dashed"
             )
             .font(.subheadline.weight(.semibold))
-            .foregroundStyle(environment.isWidgetInstalled ? palette.accent : palette.textSecondary)
+            .foregroundStyle(environment.widgetConfigurationKnown && environment.isLockScreenWidgetInstalled ? palette.accent : palette.textSecondary)
 
-            VStack(alignment: .leading, spacing: 14) {
-                Label(
-                    appString(localized: "display.widget.step1", defaultValue: "Touch and hold the Home Screen."),
-                    systemImage: "1.circle.fill"
-                )
-                Label(
-                    appString(localized: "display.widget.step2", defaultValue: "Tap Edit, then Add Widget."),
-                    systemImage: "2.circle.fill"
-                )
-                Label(
-                    appString(localized: "display.widget.step3", defaultValue: "Choose LockTodoNote and the medium size."),
-                    systemImage: "3.circle.fill"
+            if !environment.isLockScreenWidgetInstalled {
+                VStack(alignment: .leading, spacing: 14) {
+                    Label(
+                        bilingualString(korean: "잠금 해제 후 잠금화면을 길게 누르세요.", english: "Unlock, then touch and hold the Lock Screen."),
+                        systemImage: "1.circle.fill"
+                    )
+                    Label(
+                        bilingualString(korean: "사용자화 → 잠금화면 → 위젯 추가를 누르세요.", english: "Tap Customize → Lock Screen → Add Widgets."),
+                        systemImage: "2.circle.fill"
+                    )
+                    Label(
+                        bilingualString(korean: "LockTodoNote의 직사각형 위젯을 선택하고 완료하세요. 날짜 영역에는 한 줄 위젯을 추가할 수 있어요.", english: "Choose LockTodoNote's rectangular widget and finish. You can also add its inline widget above the clock."),
+                        systemImage: "3.circle.fill"
+                    )
+                }
+                .font(.subheadline)
+                .foregroundStyle(palette.textPrimary)
+                .padding(16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .stroke(palette.border, lineWidth: 1)
                 )
             }
-            .font(.subheadline)
-            .foregroundStyle(palette.textPrimary)
-            .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .stroke(palette.border, lineWidth: 1)
-            )
+
+            Text(bilingualString(
+                korean: "홈 화면에는 길게 누르기 → 편집 또는 + → 위젯 추가 → LockTodoNote로 중간 크기 위젯을 추가할 수 있어요. 변경 내용은 iOS가 허용하는 시점에 갱신됩니다.",
+                english: "For the Home Screen, touch and hold → Edit or + → Add Widget → LockTodoNote, medium size. iOS controls when changes refresh."
+            ))
+            .font(.caption)
+            .foregroundStyle(palette.textSecondary)
 
             Button {
-                let alreadySelfReported = environment.appGroup.defaults?.bool(
-                    forKey: AppGroupKeys.widgetConfirmationPending
-                ) ?? false
-                environment.appGroup.defaults?.set(
-                    true,
-                    forKey: AppGroupKeys.widgetConfirmationPending
-                )
                 environment.appGroup.reloadWidgetTimelines()
                 Task {
-                    let installed = await environment.verifyWidgetInstallation()
-                    if !installed, !alreadySelfReported {
-                        analytics.widgetInstalledConfirmed(method: "self_report")
+                    _ = await environment.verifyWidgetInstallation()
+                    guard environment.widgetConfigurationKnown else {
+                        widgetMessage = bilingualString(korean: "위젯 구성을 확인하지 못했어요. 잠시 후 다시 확인해 주세요.", english: "Couldn't check widget configurations. Please try again later.")
+                        return
                     }
-                    widgetMessage = installed
+                    widgetMessage = environment.isLockScreenWidgetInstalled
                         ? appString(localized: "display.widget.verified", defaultValue: "Widget installation verified.")
                         : appString(localized: "display.widget.verifyFailed", defaultValue: "We couldn't find the widget yet. Add it, then try again.")
                 }
@@ -198,6 +202,7 @@ struct DisplayContinuityView: View {
                     .frame(height: 48)
             }
             .buttonStyle(.borderedProminent)
+            .accessibilityIdentifier("widget.setup.confirm")
         }
         .onAppear {
             analytics.widgetSetupStarted()
@@ -419,48 +424,28 @@ private struct WidgetPreviewCard: View {
     @Environment(\.palette) private var palette
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(snapshot.calendarTitle ?? snapshot.selectedDateText ?? "")
-                .font(.headline)
-                .foregroundStyle(palette.textPrimary)
-
-            ForEach(snapshot.todoItems.filter { !$0.isDone }.prefix(3), id: \.id) { todo in
-                HStack(spacing: 8) {
-                    Image(systemName: "circle")
-                        .foregroundStyle(palette.accent)
-                    Text(todo.text)
-                        .lineLimit(1)
-                        .foregroundStyle(palette.textPrimary)
-                }
-                .font(.subheadline)
-            }
-
-            if snapshot.todoItems.isEmpty {
+        VStack(alignment: .leading, spacing: 2) {
+            if snapshot.privacyMode == "hidden" {
+                Label(appString(localized: "privacy.hidden", defaultValue: "Hidden"), systemImage: "lock.fill")
+            } else if snapshot.privacyMode == "countOnly" {
+                Text("# \(max(snapshot.totalCount - snapshot.doneCount, 0))")
+            } else if snapshot.privacyMode == "titleOnly" {
+                Text(appString(localized: "todo.title", defaultValue: "Todos"))
+            } else if snapshot.todoItems.filter({ !$0.isDone }).isEmpty {
                 Text(appString(localized: "home.noTodos", defaultValue: "No todos yet"))
-                    .font(.subheadline)
-                    .foregroundStyle(palette.textTertiary)
-            }
-
-            if !snapshot.memoItems.isEmpty {
-                Text(
-                    String(
-                        format: appString(localized: "display.memoCount", defaultValue: "%d memos"),
-                        snapshot.memoItems.count
-                    )
-                )
-                .font(.caption)
-                .foregroundStyle(palette.textSecondary)
+            } else {
+                ForEach(Array(snapshot.todoItems.filter { !$0.isDone }.prefix(2)), id: \.id) { todo in
+                    Text("○ \(todo.text)")
+                        .lineLimit(todo.id == snapshot.todoItems.first(where: { !$0.isDone })?.id ? 2 : 1)
+                }
             }
         }
-        .padding(18)
-        .frame(maxWidth: 420, minHeight: 170, alignment: .topLeading)
-        .background(palette.surface, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(palette.border, lineWidth: 1)
-        )
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(appString(localized: "display.widget.preview", defaultValue: "Current medium Widget preview"))
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(palette.textPrimary)
+        .frame(width: 170, height: 72, alignment: .topLeading)
+        .padding(12)
+        .background(palette.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .accessibilityLabel(bilingualString(korean: "잠금화면 직사각형 위젯 미리보기", english: "Rectangular Lock Screen widget preview"))
     }
 }
 
@@ -487,7 +472,7 @@ private enum DisplayMode: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .liveActivity: appString(localized: "display.live.title", defaultValue: "Live Activity")
-        case .widget: appString(localized: "display.widget.title", defaultValue: "Home Widget")
+        case .widget: bilingualString(korean: "위젯", english: "Widget")
         case .dynamicIsland: appString(localized: "display.island.title", defaultValue: "Dynamic Island")
         }
     }

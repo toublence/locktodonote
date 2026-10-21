@@ -5,7 +5,6 @@ import WidgetKit
 private let appGroupId = "group.com.namslab.glancecard"
 private let representativeCardKey = "representativeCard"
 private let dashboardStateKey = "dashboard_state"
-private let queuedAnalyticsEventsKey = "queued_analytics_events"
 
 struct GlanceCardWidgetEntry: TimelineEntry {
   let date: Date
@@ -62,7 +61,7 @@ struct GlanceCardTimelineProvider: TimelineProvider {
       to: Calendar.current.startOfDay(for: now)
     ) ?? now.addingTimeInterval(24 * 60 * 60)
     let dashboard = loadDashboard(for: now)
-    enqueueAnalyticsEvent(
+    AppGroupStore().enqueueAnalyticsEvent(
       name: "widget_timeline_requested",
       parameters: analyticsParameters(from: dashboard, source: "widget", result: "success")
     )
@@ -85,18 +84,21 @@ struct GlanceCardTimelineProvider: TimelineProvider {
   private func loadDashboard(for date: Date = Date()) -> SharedDashboardSnapshot {
     let defaults = UserDefaults(suiteName: appGroupId)
     let store = AppGroupStore()
-    let scheduled = (try? SmartLockScreenSchedule.load(store: store))?.isEnabled == true
     var scheduledPayload: [String: Any]?
-    if #available(iOSApplicationExtension 16.2, *), scheduled {
+    if #available(iOSApplicationExtension 16.2, *) {
+      // Recompose from durable cards and pending intents even without schedules.
+      // Cached calendar days otherwise lose recurrence/rollover after midnight.
       scheduledPayload = ShortcutSupport.rebuiltDashboardPayload(store: store, now: date, previewOnly: true)
     }
     if let payload = scheduledPayload ?? defaults?.dictionary(forKey: dashboardStateKey) {
-      let day = calendarDay(in: payload, for: date)
+      let followsToday = defaults?.object(forKey: FlutterPreferenceKeys.followToday) as? Bool ?? true
+      let day = followsToday ? calendarDay(in: payload, for: date) : nil
       let updatedAt = (payload["updatedAt"] as? TimeInterval).map(Date.init(timeIntervalSince1970:))
-      let needsRefresh = day == nil && !(updatedAt.map {
+      let needsRefresh = followsToday && day == nil && !(updatedAt.map {
         Calendar.current.isDate($0, inSameDayAs: date)
       } ?? false)
       let dayTodos = todoItems(from: day?["todoItems"])
+      let hidesTodoText = (payload["privacyMode"] as? String ?? "full") != "full"
       let dayDoneCount = dayTodos.filter(\.isDone).count
       let dayMemos = day?["memoItems"] as? [[String: Any]] ?? []
       let firstMemoTitle = dayMemos.first?["title"] as? String
@@ -122,10 +124,10 @@ struct GlanceCardTimelineProvider: TimelineProvider {
           : day == nil ? todoItems(from: payload["todoItems"]) : dayTodos,
         doneCount: needsRefresh
           ? 0
-          : (day == nil ? (payload["doneCount"] as? Int ?? 0) : dayDoneCount),
+          : (day == nil || hidesTodoText ? (payload["doneCount"] as? Int ?? 0) : dayDoneCount),
         totalCount: needsRefresh
           ? 0
-          : (day == nil ? (payload["totalCount"] as? Int ?? 0) : dayTodos.count),
+          : (day == nil || hidesTodoText ? (payload["totalCount"] as? Int ?? 0) : dayTodos.count),
         privacyMode: payload["privacyMode"] as? String ?? "full",
         templateId: payload["lockScreenLayout"] as? String ?? "",
         hasMemo: day == nil
@@ -188,6 +190,7 @@ struct GlanceCardLockScreenWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "GlanceCardLockScreenWidget", provider: GlanceCardTimelineProvider()) { entry in
       GlanceCardWidgetView(dashboard: entry.dashboard)
+        .privacySensitive()
         .widgetURL(URL(string: "glancecard://dashboard?source=widget"))
     }
     .configurationDisplayName("LockTodoNote")
@@ -205,34 +208,32 @@ struct GlanceCardWidgetView: View {
   var body: some View {
     if family == .systemMedium {
       MediumDashboardWidget(dashboard: dashboard)
+    } else if family == .accessoryInline {
+      Text(todoLine)
+        .lineLimit(1)
     } else {
       accessoryContent
     }
   }
 
   private var accessoryContent: some View {
-    HStack(alignment: .top, spacing: 8) {
-      VStack(alignment: .leading, spacing: 2) {
-        Text(localized("calendar"))
-          .font(.caption2)
-          .foregroundStyle(.secondary)
-        Text(dashboard.calendarTitle)
-          .font(.caption.bold())
-          .lineLimit(1)
-        Text(dashboard.calendarText)
-          .font(.caption2)
-          .lineLimit(1)
-      }
-      Divider().opacity(0.35)
-      VStack(alignment: .leading, spacing: 2) {
+    VStack(alignment: .leading, spacing: 2) {
         Text(todoLine)
           .font(.caption.bold())
-          .lineLimit(1)
-        Text(memoLine)
+          .lineLimit(2)
+        Text(secondaryLine)
           .font(.caption2)
           .lineLimit(1)
-      }
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
+  }
+
+  private var secondaryLine: String {
+    if dashboard.privacyMode == "full", !dashboard.needsRefresh,
+       let next = dashboard.todoItems.filter({ !$0.isDone }).dropFirst().first {
+      return "○ \(next.text)"
+    }
+    return memoLine
   }
 
   private var todoLine: String {
@@ -248,8 +249,8 @@ struct GlanceCardWidgetView: View {
     if dashboard.privacyMode == "titleOnly" {
       return localized("todo")
     }
-    if let first = dashboard.todoItems.first {
-      return "\(first.isDone ? "●" : "○") \(first.text)"
+    if let first = dashboard.todoItems.first(where: { !$0.isDone }) {
+      return "○ \(first.text)"
     }
     return localized("noTasks")
   }
@@ -397,18 +398,6 @@ private func todoItems(from value: Any?) -> [GlanceTodoState] {
 }
 
 
-private func enqueueAnalyticsEvent(name: String, parameters: [String: Any]) {
-  let defaults = UserDefaults(suiteName: appGroupId)
-  var rows = defaults?.array(forKey: queuedAnalyticsEventsKey) as? [[String: Any]] ?? []
-  rows.append([
-    "name": name,
-    "parameters": parameters,
-    "created_at": Date().timeIntervalSince1970
-  ])
-  defaults?.set(rows.suffix(100).map { $0 }, forKey: queuedAnalyticsEventsKey)
-  defaults?.synchronize()
-}
-
 private func analyticsParameters(
   from dashboard: SharedDashboardSnapshot,
   source: String,
@@ -423,7 +412,7 @@ private func analyticsParameters(
     "has_memo": dashboard.hasMemo,
     "template_id": dashboard.templateId,
     "setup_type": "widget",
-    "widget_type": "lock_screen",
+    "widget_type": "unspecified",
     "ios_version": ProcessInfo.processInfo.operatingSystemVersionString,
     "device_family": "ios_widget_extension",
     "is_premium": dashboard.isPremium,

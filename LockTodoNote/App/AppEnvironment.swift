@@ -47,6 +47,9 @@ final class AppEnvironment: ObservableObject {
     @Published var showReminderSuggestion = false
     @Published var showProSuggestion = false
     @Published private(set) var isWidgetInstalled = false
+    @Published private(set) var isLockScreenWidgetInstalled = false
+    @Published private(set) var widgetConfigurationKnown = false
+    private var isCheckingWidgetConfiguration = false
     private(set) var pendingProPreview: ProPreviewDraft?
     private var pendingPurchaseContext: PendingPurchaseContext?
     private var latestEntrySource = "app"
@@ -210,6 +213,7 @@ final class AppEnvironment: ObservableObject {
         analytics.ensureInstallDate()
         reviewCoordinator.recordUsageDay()
         await purchases.refreshEntitlement()
+        _ = await verifyWidgetInstallation()
         reminderSync.updateEntitlement(isPro: purchases.isPro)
         await reminderSync.synchronize()
         ads.updateEntitlement(isPro: purchases.isPro, resolved: purchases.hasResolvedEntitlement)
@@ -339,18 +343,36 @@ final class AppEnvironment: ObservableObject {
 
     @discardableResult
     func verifyWidgetInstallation() async -> Bool {
-        let installed = await withCheckedContinuation { continuation in
+        guard !isCheckingWidgetConfiguration else { return isWidgetInstalled }
+        isCheckingWidgetConfiguration = true
+        defer { isCheckingWidgetConfiguration = false }
+        let result = await withCheckedContinuation { continuation in
             WidgetCenter.shared.getCurrentConfigurations { result in
-                let found = (try? result.get())?.contains { $0.kind == AppGroupKeys.widgetKind } ?? false
-                continuation.resume(returning: found)
+                continuation.resume(returning: result)
             }
         }
+        let configurations: [WidgetInfo]
+        switch result {
+        case .success(let widgets): configurations = widgets.filter { $0.kind == AppGroupKeys.widgetKind }
+        case .failure(let error):
+            widgetConfigurationKnown = false
+            analytics.widgetConfigurationCheckFailed(code: (error as NSError).code)
+            return isWidgetInstalled
+        }
+        let home = configurations.filter { $0.family == .systemMedium }.count
+        let rectangular = configurations.filter { $0.family == .accessoryRectangular }.count
+        let inline = configurations.filter { $0.family == .accessoryInline }.count
+        let installed = !configurations.isEmpty
+        widgetConfigurationKnown = true
+        isLockScreenWidgetInstalled = rectangular + inline > 0
+        analytics.widgetConfigurationsChecked(home: home, rectangular: rectangular, inline: inline)
         isWidgetInstalled = installed
         guard installed else { return false }
-        let wasConfirmed = appGroup.defaults?.bool(forKey: AppGroupKeys.widgetInstallationConfirmed) ?? false
+        let wasLockScreenConfirmed = appGroup.defaults?.bool(forKey: "widget.lock_screen.confirmed") ?? false
         appGroup.defaults?.set(true, forKey: AppGroupKeys.widgetInstallationConfirmed)
         appGroup.defaults?.removeObject(forKey: AppGroupKeys.widgetConfirmationPending)
-        if !wasConfirmed {
+        if isLockScreenWidgetInstalled && !wasLockScreenConfirmed {
+            appGroup.defaults?.set(true, forKey: "widget.lock_screen.confirmed")
             analytics.widgetInstalledConfirmed(method: "os_configuration")
         }
         grantWidgetInstallRewardIfNeeded()
@@ -381,6 +403,7 @@ final class AppEnvironment: ObservableObject {
         )
         latestEntrySource = "app"
         Task {
+            _ = await verifyWidgetInstallation()
             await purchases.refreshEntitlement()
             reminderSync.updateEntitlement(isPro: purchases.isPro)
             await reminderSync.synchronize()

@@ -19,6 +19,7 @@ struct OnboardingView: View {
     @State private var todoText = ""
     @State private var startError: String?
     @State private var isStarting = false
+    @State private var showsWidgetGuide = false
     @State private var activationSucceeded = false
     @FocusState private var isTodoFieldFocused: Bool
 
@@ -47,6 +48,17 @@ struct OnboardingView: View {
             footer
         }
         .background(palette.background)
+        .sheet(isPresented: $showsWidgetGuide) {
+            NavigationStack {
+                DisplayContinuityView()
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button(appString(localized: "common.done", defaultValue: "Done")) { showsWidgetGuide = false }
+                        }
+                    }
+            }
+            .environment(\.palette, palette)
+        }
         .onAppear {
             analytics.onboardingStart()
             analytics.onboardingStepViewed(step: step.analyticsName, index: step.rawValue + 1)
@@ -152,6 +164,10 @@ struct OnboardingView: View {
             ) {
                 DashboardPreviewCard(snapshot: dashboard.currentSnapshot())
                     .padding(.horizontal, 24)
+                Button(bilingualString(korean: "잠금화면 위젯 설치 방법", english: "How to add a Lock Screen widget")) {
+                    showsWidgetGuide = true
+                }
+                .font(.subheadline)
             }
 
         case .quickAdd:

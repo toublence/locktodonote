@@ -1,0 +1,14 @@
+{
+  "release_build": "PASS (unsigned iOS device build)",
+  "bundle_id": "com.namslab.glancecard",
+  "version": "1.1.8",
+  "skadnetwork_count": 50,
+  "official_list_match": true,
+  "widget_extension_packaged": true,
+  "git_diff_check": true,
+  "git_diff_check_output": "",
+  "shared_tests": "FAIL: 132 tests, 3 unchanged contract assertion failures",
+  "new_queue_tests": "PASS: 2 tests",
+  "ios_analytics_and_onboarding_tests": "BLOCKED: simulator compilation ran out of disk before test execution",
+  "physical_device_tests": "NOT RUN"
+}

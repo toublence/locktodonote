@@ -1,11 +1,24 @@
 import Foundation
 
 enum AdPolicy {
+    static let productionBannerUnitID = "ca-app-pub-6169297934919363/8606002846"
+    static var isMetaQA: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.arguments.contains("-device-qa-meta")
+            && ProcessInfo.processInfo.arguments.contains("-device-qa")
+        #else
+        false
+        #endif
+    }
     #if DEBUG
+    static let isTest = true
     /// Google's official adaptive banner test unit keeps development traffic out of production.
-    static let bannerUnitID = "ca-app-pub-3940256099942544/2435281174"
+    static var bannerUnitID: String {
+        isMetaQA ? productionBannerUnitID : "ca-app-pub-3940256099942544/2435281174"
+    }
     #else
-    static let bannerUnitID = "ca-app-pub-6169297934919363/8606002846"
+    static let isTest = false
+    static let bannerUnitID = productionBannerUnitID
     #endif
     static let placement = "today_footer"
 

@@ -11,6 +11,7 @@ struct AdaptiveBannerView: View {
     @State private var isVisible = false
     @State private var isLoaded = false
     @State private var didFail = false
+    @State private var retryCount = 0
 
     var body: some View {
         GeometryReader { geometry in
@@ -19,7 +20,7 @@ struct AdaptiveBannerView: View {
             VStack(spacing: 0) {
                 if ads.isReady && isVisible && scenePhase == .active && !didFail {
                     BannerContainer(adSize: size, ads: ads, placement: placement, isLoaded: $isLoaded, didFail: $didFail)
-                        .id(width)
+                        .id("\(width)_\(ads.eligibilityRevision)")
                         .frame(width: width, height: bannerHeight)
                 }
             }
@@ -34,6 +35,13 @@ struct AdaptiveBannerView: View {
         .onChange(of: ads.isReady) { _ in isLoaded = false }
         .onChange(of: isVisible) { _ in isLoaded = false }
         .onChange(of: scenePhase) { _ in isLoaded = false }
+        .task(id: "\(didFail)_\(scenePhase)_\(isVisible)_\(ads.isReady)") {
+            guard didFail, retryCount < 2, isVisible, ads.isReady, scenePhase == .active else { return }
+            do { try await Task.sleep(for: .seconds(60)) } catch { return }
+            guard !Task.isCancelled else { return }
+            retryCount += 1
+            didFail = false
+        }
         .accessibilityIdentifier("ads.\(placement.replacingOccurrences(of: "_footer", with: ""))Banner")
     }
 
@@ -59,6 +67,9 @@ private struct BannerContainer: UIViewRepresentable {
     func makeUIView(context: Context) -> BannerView {
         let banner = BannerView(adSize: adSize)
         banner.adUnitID = AdPolicy.bannerUnitID
+        banner.rootViewController = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap(\.windows).first(where: \.isKeyWindow)?.rootViewController
         banner.delegate = context.coordinator
         let placement = placement
         banner.paidEventHandler = { [weak ads] value in
@@ -68,11 +79,9 @@ private struct BannerContainer: UIViewRepresentable {
             Task { @MainActor in ads?.recordRevenue(value: amount, currency: currency, precision: precision, placement: placement) }
         }
         ads.record("ad_requested", placement: placement)
-        let request = Request()
-        let extras = Extras()
-        extras.additionalParameters = ["npa": "1"]
-        request.register(extras)
-        banner.load(request)
+        ads.refreshMetaPrivacy()
+        // UMP's stored choices and OS ATT status govern this request.
+        banner.load(Request())
         return banner
     }
 
@@ -95,12 +104,18 @@ private struct BannerContainer: UIViewRepresentable {
 
         func bannerViewDidReceiveAd(_ bannerView: BannerView) {
             parent.isLoaded = true
+            #if DEBUG
+            parent.ads.recordResponse(bannerView.responseInfo)
+            #endif
             parent.ads.record("ad_loaded", placement: parent.placement)
         }
 
         func bannerView(_ bannerView: BannerView, didFailToReceiveAdWithError error: Error) {
             parent.isLoaded = false
             parent.didFail = true
+            #if DEBUG
+            parent.ads.recordResponse((error as NSError).userInfo[GADErrorUserInfoKeyResponseInfo] as? ResponseInfo)
+            #endif
             parent.ads.record("ad_failed", errorCode: (error as NSError).code, placement: parent.placement)
         }
 

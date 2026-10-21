@@ -261,6 +261,7 @@ struct TodoEditorSheet: View {
         NavigationStack {
             Form {
                 TextField(appString(localized: "home.todos", defaultValue: "Todo"), text: $text)
+                    .accessibilityIdentifier("todo.editor.text")
                 if advancedRepeat == nil {
                     Picker(
                         appString(localized: "quickAdd.repeat", defaultValue: "Repeat"),
@@ -283,6 +284,7 @@ struct TodoEditorSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(appString(localized: "common.save", defaultValue: "Save")) { save() }
                         .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        .accessibilityIdentifier("todo.editor.save")
                 }
             }
         }

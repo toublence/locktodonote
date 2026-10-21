@@ -114,6 +114,7 @@ struct SettingsTabView: View {
                     systemImage: "lock.rectangle"
                 )
             }
+            .accessibilityIdentifier("settings.liveWidgets")
 
             NavigationLink {
                 ShortcutsSettingsView()

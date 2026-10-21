@@ -31,8 +31,8 @@ knownRegions:
 settings:
   base:
     DEVELOPMENT_TEAM: 2CZQR7Q423
-    MARKETING_VERSION: "1.1.5"
-    CURRENT_PROJECT_VERSION: "14"
+    MARKETING_VERSION: "1.1.8"
+    CURRENT_PROJECT_VERSION: "18"
     SWIFT_VERSION: "6.0"
     SWIFT_STRICT_CONCURRENCY: complete
     # Crashlytics' dSYM upload script reads the build's dSYM and Info.plist,
@@ -55,6 +55,12 @@ packages:
   GoogleUserMessagingPlatform:
     url: https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git
     from: "3.1.0"
+  MetaAdapter:
+    url: https://github.com/googleads/googleads-mobile-ios-mediation-meta.git
+    revision: 0a3d0597402162334fb5e11816ca612478180095
+  MetaAudienceNetwork:
+    url: https://github.com/facebook/FBAudienceNetwork.git
+    exactVersion: "6.22.0"
 
 targets:
   LockTodoNote:
@@ -81,6 +87,10 @@ targets:
         product: GoogleMobileAds
       - package: GoogleUserMessagingPlatform
         product: GoogleUserMessagingPlatform
+      - package: MetaAdapter
+        product: MetaAdapterTarget
+      - package: MetaAudienceNetwork
+        product: FBAudienceNetwork
       - sdk: EventKit.framework
       - sdk: BackgroundTasks.framework
       - target: LockTodoNoteWidgetExtension

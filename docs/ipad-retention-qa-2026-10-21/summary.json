@@ -1,0 +1,18 @@
+{
+  "device": "iPad Air 11-inch (M2)",
+  "os_version": "26.6.2",
+  "app_version": "1.1.8",
+  "app_build": "18",
+  "analytics_contract_tests_passed": 17,
+  "core_ui_tests_passed": 1,
+  "official_google_test_banner_impression": true,
+  "pro_qa_banner_suppression": true,
+  "original_card_count": 5,
+  "original_content_and_completion_preserved": true,
+  "widget_observed_home_count": 1,
+  "widget_observed_lock_rectangular_count": 0,
+  "widget_observed_lock_inline_count": 0,
+  "lock_widget_render_refresh_open_test": "BLOCKED: Mac disk full before execution",
+  "production_ad_revenue_verified": false,
+  "att_consent_automatically_granted": false
+}

@@ -1,0 +1,19 @@
+{
+  "releaseBuild": "succeeded",
+  "bundleVersions": {
+    "Info.plist": "18",
+    "PlugIns/LockTodoNoteWidgetExtension.appex/Info.plist": "18",
+    "PlugIns/LockTodoNoteShareExtension.appex/Info.plist": "18"
+  },
+  "embeddedFrameworks": [
+    "GoogleAppMeasurement.framework",
+    "FirebaseAnalytics.framework",
+    "GoogleAdsOnDeviceConversion.framework",
+    "GoogleMobileAds.framework",
+    "FBAudienceNetwork.framework",
+    "UserMessagingPlatform.framework",
+    "MetaAdapter.framework",
+    "GoogleAppMeasurementIdentitySupport.framework"
+  ],
+  "metaQAScreenInRelease": false
+}

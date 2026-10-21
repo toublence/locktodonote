@@ -41,6 +41,7 @@ final class AnalyticsService: ObservableObject {
             "device_family": "ios",
         ]
         parameters["language"] = locale.language.languageCode?.identifier ?? "unknown"
+        parameters["widget_configuration_state"] = defaults?.string(forKey: "analytics.widget.configuration.state") ?? "unknown"
         if let region = locale.region?.identifier {
             parameters["country"] = region
         }
@@ -332,7 +333,7 @@ final class AnalyticsService: ObservableObject {
     func ddaySet() { log("dday_set", ["source": "app", "result": "success"]) }
 
     func openedApp(from source: String) {
-        log(source == "widget" ? "widget_open_app" : "lockscreen_open_app", [
+        log(source == "widget" ? "widget_opened" : "lockscreen_open_app", [
             "source": source, "result": "success",
         ])
     }
@@ -384,7 +385,30 @@ final class AnalyticsService: ObservableObject {
     }
 
     func widgetSetupStarted() {
-        log("widget_setup_started", ["source": "display", "result": "success"])
+        log("widget_setup_guide_viewed", ["source": "display", "result": "success"])
+    }
+
+    /// Observed configurations, never a count of Lock Screen impressions.
+    func widgetConfigurationsChecked(home: Int, rectangular: Int, inline: Int) {
+        let total = home + rectangular + inline
+        let state = rectangular + inline > 0 ? "lock_screen" : (home > 0 ? "home_only" : "none")
+        let signature = "\(home):\(rectangular):\(inline)"
+        let previous = defaults?.string(forKey: "analytics.widget.configuration.signature")
+        defaults?.set(state, forKey: "analytics.widget.configuration.state")
+        defaults?.set(signature, forKey: "analytics.widget.configuration.signature")
+        let parameters: [String: Any] = [
+            "home_count": home, "rectangular_count": rectangular, "inline_count": inline,
+            "widget_count": total, "configuration_changed": previous != signature,
+            "source": "os_configuration", "result": "success",
+        ]
+        log("widget_configuration_checked", parameters)
+        if total > 0 && previous != signature {
+            log("widget_configured_detected", parameters)
+        }
+    }
+
+    func widgetConfigurationCheckFailed(code: Int) {
+        log("widget_configuration_check_failed", ["error_code": code, "result": "fail"])
     }
 
     func widgetInstalledConfirmed(method: String = "os_configuration") {
@@ -405,7 +429,7 @@ final class AnalyticsService: ObservableObject {
             "placement": placement,
             "ad_format": "banner",
             "ad_unit": AdPolicy.bannerUnitID,
-            "ad_is_test": 1,
+            "ad_is_test": AdPolicy.isTest ? 1 : 0,
         ]
         if let errorCode { parameters["error_code"] = errorCode }
         if let consentState { parameters["consent_state"] = consentState }
@@ -414,11 +438,11 @@ final class AnalyticsService: ObservableObject {
 
     func adRevenue(value: Decimal, currency: String, precision: Int, placement: String = AdPolicy.placement) {
         // Test callbacks must never be counted as production purchase/ad revenue.
-        log("ad_test_revenue", [
+        log(AdPolicy.isTest ? "ad_test_revenue" : "ad_paid_revenue", [
             "placement": placement,
             "ad_format": "banner",
             "ad_unit": AdPolicy.bannerUnitID,
-            "ad_is_test": 1,
+            "ad_is_test": AdPolicy.isTest ? 1 : 0,
             "value": NSDecimalNumber(decimal: value).doubleValue,
             "currency": currency,
             "precision": precision,

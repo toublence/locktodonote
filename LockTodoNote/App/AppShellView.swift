@@ -66,7 +66,7 @@ struct AppShellView: View {
             .id(languageStore.selection)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            if !isKeyboardVisible && selection != .settings && bannerEligibility[selection] == true
+            if !isKeyboardVisible && selection != .today && selection != .settings && bannerEligibility[selection] == true
                 && purchases.hasResolvedEntitlement && !purchases.isPro {
                 AdaptiveBannerView(placement: "\(selection.rawValue)_footer")
                     .id(selection)

@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "# %@" : {
+
+    },
     "%@" : {
       "localizations" : {
         "ar" : {
@@ -58,6 +61,9 @@
           }
         }
       }
+    },
+    "○ %@" : {
+
     },
     "calendar.accessibilitySummary" : {
       "extractionState" : "manual",
@@ -1002,6 +1008,9 @@
           }
         }
       }
+    },
+    "Choose Meta Audience Network (Bidding) single-source testing in Ad Inspector before loading." : {
+
     },
     "common.cancel" : {
       "extractionState" : "manual",
@@ -9319,6 +9328,12 @@
         }
       }
     },
+    "Meta mediation device QA" : {
+
+    },
+    "Meta test=%@" : {
+
+    },
     "navigation.calendar" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -13648,6 +13663,16 @@
     },
     "QA storage: %@ cards" : {
 
+    },
+    "QA Widget: known=%@ any=%@ lock=%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "QA Widget: known=%1$@ any=%2$@ lock=%3$@"
+          }
+        }
+      }
     },
     "quickAdd.repeat" : {
       "extractionState" : "manual",
@@ -20022,6 +20047,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "剩餘待辦"
+          }
+        }
+      }
+    },
+    "UMP ready=%@; ATT=%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "UMP ready=%1$@; ATT=%2$@"
           }
         }
       }

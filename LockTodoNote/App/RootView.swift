@@ -25,7 +25,7 @@ struct RootView: View {
             .preferredColorScheme(themeStore.mode.colorScheme)
             #if DEBUG
             .overlay(alignment: .bottomLeading) {
-                if DeviceQASupport.isEnabled { DeviceQADiagnosticsView() }
+                if DeviceQASupport.isEnabled && !AdPolicy.isMetaQA { DeviceQADiagnosticsView() }
             }
             #endif
             .tint(palette.accent)
@@ -144,8 +144,17 @@ struct RootView: View {
             }
     }
 
+    @ViewBuilder
     private func content(palette: AppPalette) -> some View {
+        #if DEBUG
+        if AdPolicy.isMetaQA {
+            MetaMediationQAView()
+        } else {
+            AppShellView(selection: $selectedDestination)
+        }
+        #else
         AppShellView(selection: $selectedDestination)
+        #endif
     }
 
     private func route(_ link: DeepLink) {
@@ -166,7 +175,6 @@ struct RootView: View {
 
     private var advertisingIsBlocked: Bool {
         environment.needsOnboarding
-            || selectedDestination == .today
             || environment.quickAddRequest != nil
             || environment.paywallRequest != nil
             || environment.memoEditorRequest != nil

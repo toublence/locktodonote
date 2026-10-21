@@ -1,0 +1,14 @@
+{
+  "original_card_count": 5,
+  "restored_card_count": 5,
+  "cards_semantically_identical": false,
+  "layouts_bytes_identical": true,
+  "test_backup_removed_after_restore": true,
+  "card_ids_identical": true,
+  "content_and_completion_unchanged": true,
+  "changed_fields_only": [
+    "targetDateTime",
+    "updatedAt"
+  ],
+  "date_change_reason": "Existing incomplete-task rollover on normal launch, October 17 to October 21."
+}

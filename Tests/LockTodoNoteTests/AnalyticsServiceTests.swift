@@ -164,6 +164,30 @@ struct AnalyticsServiceTests {
 
     // MARK: - Migration
 
+    @Test func widgetConfigurationsRecordChangesAndRemovalWithoutRepeatedDetection() {
+        let (service, backend, suite) = makeService()
+        defer { cleanUp(suite) }
+        service.widgetConfigurationsChecked(home: 1, rectangular: 0, inline: 0)
+        #expect(backend.parameters(for: "widget_configured_detected")?["widget_configuration_state"] as? String == "home_only")
+        service.widgetConfigurationsChecked(home: 1, rectangular: 0, inline: 0)
+        #expect(backend.names().filter { $0 == "widget_configured_detected" }.count == 1)
+        service.widgetConfigurationsChecked(home: 1, rectangular: 1, inline: 1)
+        #expect(backend.parameters(for: "widget_configured_detected")?["rectangular_count"] as? Int == 1)
+        service.widgetConfigurationCheckFailed(code: 7)
+        #expect(backend.parameters(for: "widget_configuration_check_failed")?["widget_configuration_state"] as? String == "lock_screen")
+        service.widgetConfigurationsChecked(home: 0, rectangular: 0, inline: 0)
+        #expect(backend.parameters(for: "widget_configuration_checked")?["widget_configuration_state"] as? String == "none")
+        #expect(backend.names().filter { $0 == "widget_configured_detected" }.count == 2)
+    }
+
+    @Test func paidRevenueSeparatesTestAndProduction() {
+        let (service, backend, suite) = makeService()
+        defer { cleanUp(suite) }
+        service.adRevenue(value: 0.001, currency: "USD", precision: 1)
+        #expect(backend.names() == [AdPolicy.isTest ? "ad_test_revenue" : "ad_paid_revenue"])
+        #expect(backend.parameters(for: backend.names()[0])?["ad_is_test"] as? Int == (AdPolicy.isTest ? 1 : 0))
+    }
+
     @Test func migrationOutcomesReportOnlyWhenSomethingHappened() {
         let (service, backend, suite) = makeService()
         defer { cleanUp(suite) }

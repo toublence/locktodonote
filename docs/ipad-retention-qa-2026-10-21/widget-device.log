@@ -1,0 +1,28 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project LockTodoNote.xcodeproj -scheme LockTodoNote -destination id=00008112-001848821413601E -allowProvisioningUpdates -derivedDataPath /Users/nam/.codex/tmp/locktodonote-ipad-retention-20261021-1333/build -disableAutomaticPackageResolution -skipPackageUpdates -parallel-testing-enabled NO "-only-testing:LockTodoNoteUITests/DeviceFeatureUITests/test11InstalledLockWidgetRefreshAndOpenWithoutReset" -resultBundlePath /Users/nam/.codex/tmp/locktodonote-ipad-retention-20261021-1333/widget-device.xcresult COMPILER_INDEX_STORE_ENABLE=NO GCC_GENERATE_DEBUGGING_SYMBOLS=NO
+
+Build settings from command line:
+    COMPILER_INDEX_STORE_ENABLE = NO
+    GCC_GENERATE_DEBUGGING_SYMBOLS = NO
+
+Resolve Package Graph
+
+Package: swift-package-manager-google-user-messaging-platform
+
+Package: swift-package-manager-google-mobile-ads
+
+Package: firebase-ios-sdk
+
+fatalError
+Resolved source packages:
+  LockTodoNoteShared: (null)
+
+xcodebuild: error: Could not resolve package dependencies:
+  fatalError
+  <unknown>:0: error: error opening '/var/folders/jr/kx6q4lks06g1nqtwq2dlfp7w0000gn/T/TemporaryDirectory.pgd3OW/Package-1.o' for output: /var/folders/jr/kx6q4lks06g1nqtwq2dlfp7w0000gn/T/TemporaryDirectory.pgd3OW/Package-1.o: No space left on device
+<unknown>:0: error: cannot open file '/Users/nam/Library/Caches/org.swift.swiftpm/manifests/ManifestLoading/swift-package-manager-google-user-messaging-platform.dia' for diagnostics emission (No space left on device)
+  <unknown>:0: error: error opening '/var/folders/jr/kx6q4lks06g1nqtwq2dlfp7w0000gn/T/TemporaryDirectory.nDMV6j/Package-1.o' for output: /var/folders/jr/kx6q4lks06g1nqtwq2dlfp7w0000gn/T/TemporaryDirectory.nDMV6j/Package-1.o: No space left on device
+<unknown>:0: error: cannot open file '/Users/nam/Library/Caches/org.swift.swiftpm/manifests/ManifestLoading/swift-package-manager-google-mobile-ads.dia' for diagnostics emission (No space left on device)
+  <unknown>:0: error: error opening '/var/folders/jr/kx6q4lks06g1nqtwq2dlfp7w0000gn/T/TemporaryDirectory.5zrlbv/Package-1.o' for output: /var/folders/jr/kx6q4lks06g1nqtwq2dlfp7w0000gn/T/TemporaryDirectory.5zrlbv/Package-1.o: No space left on device
+<unknown>:0: error: cannot open file '/Users/nam/Library/Caches/org.swift.swiftpm/manifests/ManifestLoading/firebase-ios-sdk.dia' for diagnostics emission (No space left on device)
+

@@ -21,12 +21,9 @@ enum PrimaryDestination: String, CaseIterable, Hashable, Identifiable {
 
 struct AppShellView: View {
     @Binding var selection: PrimaryDestination
-    @State private var bannerEligibility: [PrimaryDestination: Bool] = [:]
-    @State private var isKeyboardVisible = false
     @State private var lastContentDestination: PrimaryDestination = .today
     @State private var backAction: ShellBackAction?
 
-    @EnvironmentObject private var purchases: PurchaseService
     @EnvironmentObject private var analytics: AnalyticsService
     @EnvironmentObject private var dashboard: DashboardCoordinator
     @EnvironmentObject private var languageStore: AppLanguageStore
@@ -65,23 +62,8 @@ struct AppShellView: View {
             }
             .id(languageStore.selection)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-            if !isKeyboardVisible && selection != .today && selection != .settings && bannerEligibility[selection] == true
-                && purchases.hasResolvedEntitlement && !purchases.isPro {
-                AdaptiveBannerView(placement: "\(selection.rawValue)_footer")
-                    .id(selection)
-                    .padding(.top, 8)
-            }
-
         }
         .background(palette.background)
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
-            isKeyboardVisible = true
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-            isKeyboardVisible = false
-        }
-        .onPreferenceChange(BannerEligibilityPreferenceKey.self) { bannerEligibility = $0 }
         .onPreferenceChange(ShellBackActionPreferenceKey.self) { backAction = $0 }
         .onChange(of: selection) { destination in
             if destination != .settings { lastContentDestination = destination }
@@ -93,14 +75,6 @@ struct AppShellView: View {
                 analytics.settingsOpened(source: "top_control")
             }
         }
-    }
-}
-
-struct BannerEligibilityPreferenceKey: PreferenceKey {
-    static let defaultValue: [PrimaryDestination: Bool] = [:]
-
-    static func reduce(value: inout [PrimaryDestination: Bool], nextValue: () -> [PrimaryDestination: Bool]) {
-        value.merge(nextValue(), uniquingKeysWith: { _, next in next })
     }
 }
 

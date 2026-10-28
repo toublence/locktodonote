@@ -86,7 +86,7 @@ final class AppEnvironment: ObservableObject {
         self.liveActivity = liveActivity
         self.purchases = purchases
         self.analytics = analytics
-        self.ads = AdService(analytics: analytics)
+        self.ads = AdService(analytics: analytics, cachedIsPro: purchases.isPro)
         self.notifications = notifications
         self.reviewCoordinator = reviewCoordinator
         self.links = LinkStore(store: appGroup)
@@ -137,6 +137,10 @@ final class AppEnvironment: ObservableObject {
            let envelope = try? JSONDecoder().decode(PendingPurchaseEnvelope.self, from: data) {
             pendingPurchaseContext = envelope.context
             pendingProPreview = envelope.preview?.draft(snapshot: dashboard.currentSnapshot())
+        }
+        ads.configure { [weak self] in
+            guard let self else { return true }
+            return self.needsOnboarding || self.purchases.isPurchasing
         }
         setupDataChangeObserver()
     }
@@ -213,10 +217,11 @@ final class AppEnvironment: ObservableObject {
         analytics.ensureInstallDate()
         reviewCoordinator.recordUsageDay()
         await purchases.refreshEntitlement()
+        // The launch ad is waiting on this answer; Reminders sync can take seconds.
+        ads.updateEntitlement(isPro: purchases.isPro, resolved: purchases.hasResolvedEntitlement)
         _ = await verifyWidgetInstallation()
         reminderSync.updateEntitlement(isPro: purchases.isPro)
         await reminderSync.synchronize()
-        ads.updateEntitlement(isPro: purchases.isPro, resolved: purchases.hasResolvedEntitlement)
         analytics.isPremium = purchases.isPro
         enforceTemplateEntitlement(purchases.entitlement)
         await purchases.loadProducts()

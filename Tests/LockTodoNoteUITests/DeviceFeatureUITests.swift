@@ -4,72 +4,6 @@ import XCTest
 final class DeviceFeatureUITests: XCTestCase {
     private var restoreAfterRetentionTest = false
 
-    func test12MetaMediationOnPhysicalDevice() throws {
-        continueAfterFailure = false
-        restoreAfterRetentionTest = true
-        let app = XCUIApplication()
-        app.launchArguments = ["-device-qa", "-device-qa-ads", "-device-qa-meta", "-qa-entitlement", "free", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
-        app.launch()
-        let inspector = app.buttons["meta.qa.inspector"]
-        XCTAssertTrue(inspector.waitForExistence(timeout: 30))
-        let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: inspector)
-        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 60), .completed)
-        XCTAssertTrue(app.staticTexts["meta.qa.adapter"].label.contains("ready"))
-        print("META_QA adapter on iPad: \(app.staticTexts["meta.qa.adapter"].label)")
-        inspector.tap()
-        let inspectorTitle = app.staticTexts.containing(NSPredicate(format: "label CONTAINS[c] 'Ad inspector'")).firstMatch
-        XCTAssertTrue(inspectorTitle.waitForExistence(timeout: 10), "Ad Inspector must validate this test device")
-        shot("meta-ad-inspector-ipad")
-        if app.switches.firstMatch.value as? String == "1" {
-            app.switches.firstMatch.tap()
-            let stop = app.buttons["Stop test"]
-            if stop.waitForExistence(timeout: 5) { stop.tap() }
-        }
-        app.switches.firstMatch.tap()
-        let meta = app.staticTexts.containing(NSPredicate(format: "label CONTAINS[c] 'Meta Audience Network'")).firstMatch
-        XCTAssertTrue(meta.waitForExistence(timeout: 10)); meta.tap()
-        shot("meta-single-source-selection-ipad")
-        app.buttons["Start test"].tap()
-        app.buttons["Close"].tap()
-        let load = app.buttons["meta.qa.load"]
-        let canLoad = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: load)
-        let registration = XCTWaiter.wait(for: [canLoad], timeout: 10)
-        if registration == .completed { load.tap() }
-        let impression = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label CONTAINS 'ad_impression_observed' OR label BEGINSWITH 'ad_failed:'"), object: app.staticTexts["meta.qa.event"])
-        let served = XCTWaiter.wait(for: [impression], timeout: 90)
-        let source = app.staticTexts["meta.qa.source"].label
-        let event = app.staticTexts["meta.qa.event"].label
-        print("META_QA delivered source=\(source); event=\(app.staticTexts["meta.qa.event"].label)")
-        print("META_QA delivered response=\(app.staticTexts["meta.qa.response"].label)")
-        shot("meta-mediated-banner-ipad")
-        // Clear the SDK's single-source override before restoring normal use.
-        app.buttons["meta.qa.inspector"].tap()
-        let unit = app.staticTexts.containing(NSPredicate(format: "label CONTAINS '8606002846'")).firstMatch
-        if unit.waitForExistence(timeout: 10) {
-            unit.tap()
-            let request = app.buttons["Request test ad"]
-            if request.waitForExistence(timeout: 5) {
-                request.tap()
-                _ = app.buttons["View"].waitForExistence(timeout: 15)
-                shot("meta-inspector-direct-request-ipad")
-                print("META_QA inspector direct request: \(app.debugDescription)")
-            }
-            if app.buttons["Go back"].exists { app.buttons["Go back"].tap() }
-        }
-        let sourceToggle = app.switches.firstMatch
-        if sourceToggle.waitForExistence(timeout: 10), sourceToggle.value as? String == "1" { sourceToggle.tap() }
-        let stop = app.buttons["Stop test"]
-        if stop.waitForExistence(timeout: 5) { stop.tap() }
-        let inactive = app.staticTexts["Inactive"].waitForExistence(timeout: 10)
-        shot("meta-single-source-disabled-ipad")
-        app.buttons["Close"].tap()
-        XCTAssertTrue(inactive, "Single-source override must be cleared")
-        XCTAssertEqual(registration, .completed)
-        XCTAssertEqual(served, .completed, "Meta test banner impression required")
-        XCTAssertTrue(event.contains("ad_impression_observed"), "Meta test banner impression required; observed \(event)")
-        XCTAssertTrue(source.contains("Facebook") || source.contains("Meta"), "Google demo ads do not prove Meta mediation")
-    }
-
     func test11InstalledLockWidgetRefreshAndOpenWithoutReset() throws {
         continueAfterFailure = false
         restoreAfterRetentionTest = true
@@ -140,12 +74,14 @@ final class DeviceFeatureUITests: XCTestCase {
 
     /// Runs against existing device data. No reset, seeding, or purchase occurs.
     /// DeviceQASupport archives the original data before applying QA overrides.
-    func test10RetentionCRUDGuideAndTestBannerWithoutReset() throws {
+    func test10RetentionCRUDGuideAndAppOpenAdWithoutReset() throws {
         continueAfterFailure = false
         restoreAfterRetentionTest = true
         let app = XCUIApplication()
-        func launchRetention(pro: Bool) {
-            app.launchArguments = ["-device-qa", "-qa-entitlement", pro ? "pro" : "free", "-device-qa-ads", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        func launchRetention(pro: Bool, ads: Bool = false) {
+            app.launchArguments = ["-device-qa", "-qa-entitlement", pro ? "pro" : "free", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+            // The app open ad would cover every launch of the CRUD steps.
+            if ads { app.launchArguments.append("-device-qa-ads") }
             app.launch()
             XCTAssertTrue(app.buttons["navigation.settings"].waitForExistence(timeout: 30))
             if app.buttons["onboarding.skip"].exists { app.buttons["onboarding.skip"].tap() }
@@ -216,16 +152,15 @@ final class DeviceFeatureUITests: XCTestCase {
         wait(app.staticTexts["qa.widget"], "known=true", 15)
         print("RETENTION_QA: \(app.staticTexts["qa.widget"].label)")
         shot("retention-widget-guide-ipad")
-        app.buttons["navigation.calendar"].tap()
+        app.terminate(); launchRetention(pro: false, ads: true)
         wait(app.staticTexts["qa.ads"], "eligible=true", 15)
         wait(app.staticTexts["qa.ads"], "ad_impression_observed", 60)
-        shot("retention-official-test-banner-ipad")
-        print("RETENTION_QA: official test banner impression PASS")
-        app.terminate(); launchRetention(pro: true)
-        app.buttons["navigation.calendar"].tap()
+        shot("retention-official-test-app-open-ipad")
+        print("RETENTION_QA: official test app open impression PASS")
+        app.terminate(); launchRetention(pro: true, ads: true)
         wait(app.staticTexts["qa.ads"], "eligible=false", 15)
-        XCTAssertFalse(app.otherElements["ads.calendarBanner"].exists)
-        print("RETENTION_QA: Pro banner suppression PASS")
+        XCTAssertFalse(app.staticTexts["qa.ads"].label.contains("ad_requested"))
+        print("RETENTION_QA: Pro app open suppression PASS")
     }
 
     private func launch(pro: Bool, timed: Bool = false, ads: Bool = false) -> XCUIApplication {
@@ -391,16 +326,14 @@ final class DeviceFeatureUITests: XCTestCase {
         XCTAssertTrue(app.buttons["paywall.close"].waitForExistence(timeout: 10))
         shot("free-apple-reminders-paywall")
     }
-    func test09AdMobTestBannerAndProSuppression() {
+    func test09AdMobTestAppOpenAndProSuppression() {
         let free = launch(pro: false, ads: true)
-        free.buttons["navigation.calendar"].tap()
         wait(free.staticTexts["qa.ads"], "eligible=true", 15)
         wait(free.staticTexts["qa.ads"], "ad_impression_observed", 60)
-        shot("free-admob-official-test-banner")
+        shot("free-admob-official-test-app-open")
         let pro = launch(pro: true, ads: true)
-        pro.buttons["navigation.calendar"].tap()
         wait(pro.staticTexts["qa.ads"], "eligible=false", 15)
-        XCTAssertFalse(pro.otherElements["ads.calendarBanner"].exists)
+        XCTAssertFalse(pro.staticTexts["qa.ads"].label.contains("ad_requested"))
         shot("pro-no-advertising")
     }
 

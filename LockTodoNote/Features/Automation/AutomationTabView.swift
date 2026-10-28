@@ -2,14 +2,11 @@ import SwiftUI
 import LockTodoNoteShared
 
 struct AutomationTabView: View {
-    @EnvironmentObject private var environment: AppEnvironment
     @EnvironmentObject private var cards: CardStore
     @EnvironmentObject private var schedules: SmartLockScreenStore
     @EnvironmentObject private var profiles: LayoutProfileStore
     @EnvironmentObject private var sync: ReminderSyncService
     @EnvironmentObject private var purchases: PurchaseService
-    @EnvironmentObject private var ads: AdService
-    @Environment(\.scenePhase) private var scenePhase
     @State private var editingTodo: TodoEntry?
     @State private var addingRepeat = false
 
@@ -134,16 +131,6 @@ struct AutomationTabView: View {
         .sheet(isPresented: $addingRepeat) {
             QuickAddSheet(mode: .todo, source: "automation", initialRecurrence: .daily)
         }
-        .preference(key: BannerEligibilityPreferenceKey.self, value: [.automation: canShowBanner])
-    }
-
-    private var canShowBanner: Bool {
-        ads.isReady && scenePhase == .active && !purchases.isPro
-            && editingTodo == nil && !addingRepeat
-            && environment.quickAddRequest == nil && environment.memoEditorRequest == nil
-            && environment.paywallRequest == nil && !environment.isProInfoPresented
-            && !environment.showReminderSuggestion && !environment.showShortcutLimitPrompt
-            && !purchases.isPurchasing && !ads.isGatheringConsent
     }
 
     private var remindersStatus: String {

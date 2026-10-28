@@ -427,8 +427,8 @@ final class AnalyticsService: ObservableObject {
     func adEvent(_ name: String, errorCode: Int? = nil, consentState: Int? = nil, placement: String = AdPolicy.placement) {
         var parameters: [String: Any] = [
             "placement": placement,
-            "ad_format": "banner",
-            "ad_unit": AdPolicy.bannerUnitID,
+            "ad_format": "app_open",
+            "ad_unit": AdPolicy.appOpenUnitID,
             "ad_is_test": AdPolicy.isTest ? 1 : 0,
         ]
         if let errorCode { parameters["error_code"] = errorCode }
@@ -440,8 +440,8 @@ final class AnalyticsService: ObservableObject {
         // Test callbacks must never be counted as production purchase/ad revenue.
         log(AdPolicy.isTest ? "ad_test_revenue" : "ad_paid_revenue", [
             "placement": placement,
-            "ad_format": "banner",
-            "ad_unit": AdPolicy.bannerUnitID,
+            "ad_format": "app_open",
+            "ad_unit": AdPolicy.appOpenUnitID,
             "ad_is_test": AdPolicy.isTest ? 1 : 0,
             "value": NSDecimalNumber(decimal: value).doubleValue,
             "currency": currency,

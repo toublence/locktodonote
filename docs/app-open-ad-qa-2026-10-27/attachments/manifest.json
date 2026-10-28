@@ -1,0 +1,26 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BA32E88F-D450-4FE5-A01D-4FEDC5FF79A8",
+        "deviceName" : "LockTodoNote Settings QA",
+        "exportedFileName" : "E7957F23-E819-48BE-B4C5-E7946527D09F.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "pro-no-advertising_0_A7C45594-3903-4A39-8205-873F5A906D69.png",
+        "timestamp" : 1793101728.884
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "BA32E88F-D450-4FE5-A01D-4FEDC5FF79A8",
+        "deviceName" : "LockTodoNote Settings QA",
+        "exportedFileName" : "1DCEEA9D-0F3C-4FCF-A289-22876A656515.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "free-admob-official-test-app-open_0_43AD9C18-01D0-474E-9C16-B98CA4746FBE.png",
+        "timestamp" : 1793101721.65
+      }
+    ],
+    "testIdentifier" : "DeviceFeatureUITests/test09AdMobTestAppOpenAndProSuppression()",
+    "testIdentifierURL" : "test://com.apple.xcode/LockTodoNote/LockTodoNoteUITests/DeviceFeatureUITests/test09AdMobTestAppOpenAndProSuppression"
+  }
+]

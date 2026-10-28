@@ -56,9 +56,6 @@ enum DeviceQASupport {
 
     static func seedIfRequested(store: AppGroupStore) {
         guard isEnabled else { return }
-        if ProcessInfo.processInfo.arguments.contains("-device-qa-ads") {
-            store.defaults?.set(true, forKey: FlutterPreferenceKeys.activationCompleted)
-        }
         guard ProcessInfo.processInfo.arguments.contains("-device-qa-seed"), let root = store.containerURL else { return }
         let now = Date()
         let personal = Card(id: "qa-personal", title: "QA Personal", type: .checklist,

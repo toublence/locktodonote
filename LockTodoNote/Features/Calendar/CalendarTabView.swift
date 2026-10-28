@@ -6,12 +6,9 @@ import LockTodoNoteShared
 /// Activity's calendar template shows, so the two stay legible together.
 struct CalendarTabView: View {
     @EnvironmentObject private var cardStore: CardStore
-    @EnvironmentObject private var environment: AppEnvironment
     @EnvironmentObject private var dashboard: DashboardCoordinator
     @EnvironmentObject private var settingsStore: LockScreenSettingsStore
     @EnvironmentObject private var analytics: AnalyticsService
-    @EnvironmentObject private var ads: AdService
-    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.palette) private var palette
@@ -21,7 +18,6 @@ struct CalendarTabView: View {
     @State private var selectionConfirmation: String?
     @State private var editingTodo: TodoEntry?
     @State private var editingMemo: Card?
-    @State private var isKeyboardVisible = false
 
     private let calendar = Calendar.current
 
@@ -37,15 +33,8 @@ struct CalendarTabView: View {
             .frame(maxWidth: .infinity)
         }
         .background(palette.background)
-        .preference(key: BannerEligibilityPreferenceKey.self, value: [.calendar: canShowBanner])
         .sheet(item: $editingTodo) { TodoEditorSheet(entry: $0) }
         .sheet(item: $editingMemo) { MemoEditorSheet(card: $0) }
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
-            isKeyboardVisible = true
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-            isKeyboardVisible = false
-        }
         .onChange(of: selectedDate) { date in
             guard settingsStore.settings.syncCalendarSelectionToLockScreen else { return }
             dashboard.selectExplicitDate(date)
@@ -73,15 +62,6 @@ struct CalendarTabView: View {
                     .transition(.opacity)
             }
         }
-    }
-
-    private var canShowBanner: Bool {
-        ads.isReady && scenePhase == .active && !environment.purchases.isPro
-            && !isKeyboardVisible && editingTodo == nil && editingMemo == nil
-            && environment.quickAddRequest == nil && environment.memoEditorRequest == nil
-            && environment.paywallRequest == nil && !environment.isProInfoPresented
-            && !environment.showReminderSuggestion && !environment.showShortcutLimitPrompt
-            && !environment.purchases.isPurchasing && !ads.isGatheringConsent
     }
 
     private var monthGrid: some View {

@@ -1009,9 +1009,6 @@
         }
       }
     },
-    "Choose Meta Audience Network (Bidding) single-source testing in Ad Inspector before loading." : {
-
-    },
     "common.cancel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9327,12 +9324,6 @@
           }
         }
       }
-    },
-    "Meta mediation device QA" : {
-
-    },
-    "Meta test=%@" : {
-
     },
     "navigation.calendar" : {
       "extractionState" : "manual",
@@ -20047,16 +20038,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "剩餘待辦"
-          }
-        }
-      }
-    },
-    "UMP ready=%@; ATT=%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "UMP ready=%1$@; ATT=%2$@"
           }
         }
       }

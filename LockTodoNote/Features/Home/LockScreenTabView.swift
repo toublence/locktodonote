@@ -12,8 +12,6 @@ struct LockScreenTabView: View {
     @EnvironmentObject private var dashboard: DashboardCoordinator
     @EnvironmentObject private var analytics: AnalyticsService
     @EnvironmentObject private var purchases: PurchaseService
-    @EnvironmentObject private var ads: AdService
-    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.palette) private var palette
     @Environment(\.openURL) private var openURL
@@ -127,18 +125,6 @@ struct LockScreenTabView: View {
             Button(appString(localized: "common.ok", defaultValue: "OK")) { errorMessage = nil }
         }
         }
-        .preference(key: BannerEligibilityPreferenceKey.self, value: [.today: canShowBanner])
-    }
-
-    private var canShowBanner: Bool {
-        ads.isReady && scenePhase == .active && !purchases.isPro
-            && !isCaptureFocused && editingCard == nil && editingTodo == nil
-            && !isEditingDday && infoTemplate == nil && photoSelectionTemplate == nil
-            && errorMessage == nil
-            && environment.quickAddRequest == nil && environment.memoEditorRequest == nil
-            && environment.paywallRequest == nil && !environment.isProInfoPresented
-            && !environment.showReminderSuggestion && !environment.showShortcutLimitPrompt
-            && !purchases.isPurchasing && !ads.isGatheringConsent
     }
 
     private var shouldShowQuickAddTip: Bool {

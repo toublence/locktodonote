@@ -25,7 +25,7 @@ struct RootView: View {
             .preferredColorScheme(themeStore.mode.colorScheme)
             #if DEBUG
             .overlay(alignment: .bottomLeading) {
-                if DeviceQASupport.isEnabled && !AdPolicy.isMetaQA { DeviceQADiagnosticsView() }
+                if DeviceQASupport.isEnabled { DeviceQADiagnosticsView() }
             }
             #endif
             .tint(palette.accent)
@@ -90,14 +90,16 @@ struct RootView: View {
                     environment.deepLinkError = nil
                 }
             }
-            .onChange(of: environment.pendingDeepLink) { link in
-                guard let link else { return }
-                route(link)
-                environment.pendingDeepLink = nil
+            .onChange(of: environment.pendingDeepLink) { _ in
+                routePendingDeepLink()
+            }
+            // A sheet opened under the app open ad would lose its keyboard
+            // focus, so links opened with the app wait for the ad to finish.
+            .onChange(of: ads.isAppOpenInProgress) { _ in
+                routePendingDeepLink()
             }
             .onChange(of: scenePhase) { phase in
                 guard phase == .active else {
-                    if phase == .background { ads.startNextSession() }
                     hasLeftForeground = true
                     leftForegroundAt = Date()
                     return
@@ -114,6 +116,7 @@ struct RootView: View {
                     guard scenePhase == .active else { return }
                     let blocked = environment.needsOnboarding
                         || ads.isGatheringConsent
+                        || ads.isAppOpenInProgress
                         || environment.quickAddRequest != nil
                         || environment.paywallRequest != nil
                         || environment.isProInfoPresented
@@ -144,17 +147,14 @@ struct RootView: View {
             }
     }
 
-    @ViewBuilder
     private func content(palette: AppPalette) -> some View {
-        #if DEBUG
-        if AdPolicy.isMetaQA {
-            MetaMediationQAView()
-        } else {
-            AppShellView(selection: $selectedDestination)
-        }
-        #else
         AppShellView(selection: $selectedDestination)
-        #endif
+    }
+
+    private func routePendingDeepLink() {
+        guard let link = environment.pendingDeepLink, !ads.isAppOpenInProgress else { return }
+        route(link)
+        environment.pendingDeepLink = nil
     }
 
     private func route(_ link: DeepLink) {

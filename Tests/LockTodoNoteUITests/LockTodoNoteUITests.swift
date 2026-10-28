@@ -139,7 +139,8 @@ final class LockTodoNoteUITests: XCTestCase {
         // migration guarantee in miniature: what was saved must come back.
         app.terminate()
         let relaunched = XCUIApplication()
-        relaunched.launchArguments = []
+        // Without -uitest- flags a debug build shows its launch app open ad.
+        relaunched.launchArguments = ["-disable-test-ads"]
         relaunched.launch()
 
         XCTAssertTrue(

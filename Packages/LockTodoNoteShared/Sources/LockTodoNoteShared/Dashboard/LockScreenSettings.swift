@@ -45,7 +45,7 @@ public struct LockScreenSettings: Codable, Hashable, Sendable {
         textScale: Double = LockScreenSettings.defaultTextScale,
         shortcutInsertPriority: ShortcutInsertPriority = .todo,
         selectedContentSection: ShortcutInsertPriority = .todo,
-        syncCalendarSelectionToLockScreen: Bool = true
+        syncCalendarSelectionToLockScreen: Bool = false
     ) {
         self.showTodos = showTodos
         self.showMemos = showMemos
@@ -71,7 +71,7 @@ public struct LockScreenSettings: Codable, Hashable, Sendable {
     /// Where a Shortcuts capture lands.
     ///
     /// Memo-only and todo-only templates decide for themselves. Mixed layouts
-    /// follow the Todo/Memo input tab the user most recently selected.
+    /// use the explicit Shortcuts preference, independently of capture/display.
     public func resolveShortcutTarget() -> ShortcutInsertPriority {
         switch template {
         case .dateMemo, .imageMemo, .ddayMemo: .memo
@@ -86,6 +86,18 @@ public struct LockScreenSettings: Codable, Hashable, Sendable {
         case .imageMemo: imageMemoFileName ?? imageFileName
         case .imageTodo: imageTodoFileName ?? imageFileName
         default: imageFileName
+        }
+    }
+
+    /// Whether a new app-side memo should replace the ordinary displayed memo.
+    /// nil means all memos; an explicit rule list cannot contain a new memo yet.
+    /// D-Day has its own preparation text and must not replace an ordinary memo.
+    public func selectsNewMemoForDisplay(allowedMemoIDs: [String]? = nil) -> Bool {
+        guard showMemos, allowedMemoIDs == nil else { return false }
+        switch template {
+        case .memoTodo, .dateMemo, .imageMemo: return true
+        case .calendarItems: return selectedContentSection == .memo
+        case .dateTodo, .imageTodo, .ddayMemo: return false
         }
     }
 
@@ -114,7 +126,7 @@ public struct LockScreenSettings: Codable, Hashable, Sendable {
             ),
             syncCalendarSelectionToLockScreen: defaults.object(
                 forKey: FlutterPreferenceKeys.syncCalendarSelectionToLockScreen
-            ) as? Bool ?? true
+            ) as? Bool ?? false
         )
     }
 

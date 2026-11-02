@@ -18,12 +18,17 @@ final class DashboardCoordinator: ObservableObject {
     @Published private(set) var dateSelectionMode: DateSelectionMode
     @Published private(set) var snapshot: DashboardSnapshot?
 
+    weak var analytics: AnalyticsService?
+    private var lastResolvedRuleID: UUID?
     private let cardStore: CardStore
     private let settingsStore: LockScreenSettingsStore
     private let liveActivity: LiveActivityService
     private let entitlements: EntitlementProviding
     private let store: AppGroupStore
     private let calendar: Calendar
+    private let nowProvider: () -> Date
+
+    var today: Date { nowProvider() }
 
     init(
         cardStore: CardStore,
@@ -31,7 +36,8 @@ final class DashboardCoordinator: ObservableObject {
         liveActivity: LiveActivityService,
         entitlements: EntitlementProviding,
         store: AppGroupStore = AppGroupStore(),
-        calendar: Calendar = .current
+        calendar: Calendar = .current,
+        nowProvider: @escaping () -> Date = Date.init
     ) {
         self.cardStore = cardStore
         self.settingsStore = settingsStore
@@ -39,6 +45,7 @@ final class DashboardCoordinator: ObservableObject {
         self.entitlements = entitlements
         self.store = store
         self.calendar = calendar
+        self.nowProvider = nowProvider
         let followsToday = store.defaults?.object(forKey: FlutterPreferenceKeys.followToday) as? Bool ?? true
         self.dateSelectionMode = followsToday ? .followToday : .explicitDate
         if !followsToday,
@@ -46,7 +53,7 @@ final class DashboardCoordinator: ObservableObject {
            let storedDate = FlutterDate.parse(raw) {
             self.selectedDate = storedDate
         } else {
-            self.selectedDate = Date()
+            self.selectedDate = nowProvider()
         }
     }
 
@@ -58,12 +65,14 @@ final class DashboardCoordinator: ObservableObject {
         )
     }
 
-    func currentSnapshot(now: Date = Date()) -> DashboardSnapshot {
+    func currentSnapshot(now: Date? = nil) -> DashboardSnapshot {
+        let now = now ?? nowProvider()
         let effectiveDate = dateSelectionMode == .followToday ? now : selectedDate
         let resolved = SmartLockScreenSchedule.resolve(
             cards: cardStore.cards, settings: settingsStore.settings, store: store,
             at: now, isPro: entitlements.isPro, calendar: calendar
         )
+        lastResolvedRuleID = resolved.ruleID
         return composer.compose(
             cards: resolved.cards,
             selectedDate: resolved.ruleID == nil ? effectiveDate : now,
@@ -73,7 +82,8 @@ final class DashboardCoordinator: ObservableObject {
         )
     }
 
-    func followToday(now: Date = Date()) {
+    func followToday(now: Date? = nil) {
+        let now = now ?? nowProvider()
         dateSelectionMode = .followToday
         selectedDate = now
         store.defaults?.set(true, forKey: FlutterPreferenceKeys.followToday)
@@ -83,14 +93,17 @@ final class DashboardCoordinator: ObservableObject {
         dateSelectionMode = .explicitDate
         selectedDate = date
         store.defaults?.set(false, forKey: FlutterPreferenceKeys.followToday)
+        store.defaults?.set(FlutterDate.localString(from: date), forKey: AppGroupKeys.selectedDate)
     }
 
-    func refreshFollowingToday(now: Date = Date()) {
+    func refreshFollowingToday(now: Date? = nil) {
+        let now = now ?? nowProvider()
         guard dateSelectionMode == .followToday else { return }
         selectedDate = now
     }
 
-    func refreshSelectionFromSharedDefaults(now: Date = Date()) {
+    func refreshSelectionFromSharedDefaults(now: Date? = nil) {
+        let now = now ?? nowProvider()
         let followsToday = store.defaults?.object(forKey: FlutterPreferenceKeys.followToday) as? Bool ?? true
         if followsToday {
             dateSelectionMode = .followToday
@@ -102,10 +115,17 @@ final class DashboardCoordinator: ObservableObject {
         }
     }
 
+    func refreshForDateBoundary() {
+        guard cardStore.load(now: today) != nil else { return }
+        refreshFollowingToday()
+        publish()
+    }
+
     /// Recomposes and republishes. Safe to call on every edit.
     func publish() {
         let snapshot = currentSnapshot()
         self.snapshot = snapshot
+        recordCandidateCapacity(snapshot)
         store.saveDashboardState(snapshot.dictionary(isPro: entitlements.isPro))
         Task { await liveActivity.update(snapshot: snapshot, isPro: entitlements.isPro) }
     }
@@ -114,8 +134,24 @@ final class DashboardCoordinator: ObservableObject {
     func updateLiveActivity() async {
         let snapshot = currentSnapshot()
         self.snapshot = snapshot
+        recordCandidateCapacity(snapshot)
         store.saveDashboardState(snapshot.dictionary(isPro: entitlements.isPro))
         await liveActivity.update(snapshot: snapshot, isPro: entitlements.isPro)
+    }
+
+    private func recordCandidateCapacity(_ snapshot: DashboardSnapshot) {
+        let now = nowProvider()
+        let rule = lastResolvedRuleID.flatMap { id in
+            (try? SmartLockScreenSchedule.load(store: store))?.rules.first { $0.id == id }
+        }
+        let day = snapshot.selectedDate ?? now
+        let candidates = snapshot.calendarDays.first { $0.id == FlutterDate.dateKey(day, calendar: calendar) }?.todoItems.count ?? 0
+        let layout = LockScreenTemplate(rawValue: snapshot.lockScreenLayout)
+        let showsTodoRows = snapshot.showTodosOnLockScreen && (layout == .memoTodo || layout?.isTodoOnly == true
+            || (layout == .calendarItems && snapshot.selectedContentSection == "todo"))
+        let rowLimit = showsTodoRows ? (snapshot.textScale > 1.08 ? 3 : 4) : 0
+        analytics?.displayCandidates(template: snapshot.lockScreenLayout, candidates: candidates,
+            payloadLimit: 5, rowLimit: rowLimit, selected: rule?.todoSeriesIDs != nil, privacyRestricted: snapshot.privacyMode != "full")
     }
 
     /// Starts the Lock Screen card. Throws so the caller can show the real

@@ -1,0 +1,5 @@
+✔ Suite "Analytics event contract" passed after 0.334 seconds.
+✔ Suite RebirthExperienceTests passed after 0.001 seconds.
+✔ Suite "L1.2.2 analytics" passed after 0.012 seconds.
+✔ Test run with 25 tests in 3 suites passed after 0.347 seconds.
+** TEST SUCCEEDED **

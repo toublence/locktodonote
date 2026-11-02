@@ -7,6 +7,57 @@ import Foundation
 /// Order matters and matches `LocalCardRepository.loadCards()`:
 /// merge completions → merge quick adds → roll over → create recurrences.
 public enum CardMutations {
+    public enum TodoDeletionScope: Sendable { case occurrence, future, series }
+
+    /// Delete a line, never its sibling lines. Retained rules preserve the anchor
+    /// and exclusions even when the only occurrence is removed.
+    public static func deleteTodo(
+        _ cards: [Card], cardID: String, itemID: String, on date: Date,
+        scope: TodoDeletionScope, calendar: Calendar = .current
+    ) -> [Card] {
+        guard AppleReminderMirror.reminderID(from: cardID) == nil,
+              let source = cards.first(where: { $0.id == cardID }),
+              let item = source.checklistItems.first(where: { $0.id == itemID }) else { return cards }
+        let seriesID = item.effectiveRecurrenceId
+        let key = FlutterDate.dateKey(date, calendar: calendar)
+        var result = cards
+        var affectedIDs: Set<String> = []
+        if item.hasRecurrence, scope != .series {
+            var rule = item
+            rule.recurrenceAnchorDate = item.recurrenceAnchorDate ?? source.day(calendar: calendar)
+            result[result.firstIndex(where: { $0.id == cardID })!].recurrenceRules.append(rule)
+        }
+        for index in result.indices {
+            guard AppleReminderMirror.reminderID(from: result[index].id) == nil else { continue }
+            func matching(_ value: ChecklistItem) -> Bool { value.effectiveRecurrenceId == seriesID }
+            guard (result[index].checklistItems + result[index].recurrenceRules).contains(where: matching) else { continue }
+            affectedIDs.insert(result[index].id)
+            let previousFirstID = result[index].checklistItems.first?.id
+            let dayKey = result[index].dayKey(calendar: calendar)
+            func policy(_ value: ChecklistItem) -> ChecklistItem {
+                guard matching(value), item.hasRecurrence else { return value }
+                var value = value
+                if scope == .occurrence { value.excludedDateKeys.insert(key) }
+                if scope == .future { value.recurrenceEndDateKey = min(value.recurrenceEndDateKey ?? key, key) }
+                return value
+            }
+            result[index].checklistItems = result[index].checklistItems.filter { value in
+                guard matching(value) else { return true }
+                if !item.hasRecurrence { return false }
+                switch scope {
+                case .occurrence: return dayKey != key
+                case .future: return dayKey < key
+                case .series: return false
+                }
+            }.map(policy)
+            result[index].recurrenceRules = result[index].recurrenceRules.filter {
+                !(scope == .series && matching($0))
+            }.map(policy)
+            if let first = result[index].checklistItems.first, first.id != previousFirstID { result[index].title = first.text }
+        }
+        return result.filter { !affectedIDs.contains($0.id) || $0.type != .checklist || !$0.checklistItems.isEmpty || !$0.recurrenceRules.isEmpty }
+    }
+
     // MARK: - 1. Completions captured while the app was closed
 
     /// Applies Lock Screen / Dynamic Island completions to their items.
@@ -172,7 +223,24 @@ public enum CardMutations {
         var didChange = false
         var rolloverIndex = 0
 
-        for card in cards {
+        let policies = cards.flatMap { $0.checklistItems + $0.recurrenceRules }
+            .filter(\.hasRecurrence)
+        for original in cards {
+            var card = original
+            let targetKey = FlutterDate.dateKey(max(today, card.day(calendar: calendar)), calendar: calendar)
+            card.checklistItems.removeAll { item in
+                guard !item.isDone, item.hasRecurrence else { return false }
+                let key = targetKey
+                return policies.contains { policy in
+                    policy.effectiveRecurrenceId == item.effectiveRecurrenceId &&
+                    (policy.excludedDateKeys.contains(key) || policy.recurrenceEndDateKey.map { key >= $0 } == true)
+                }
+            }
+            if card.checklistItems != original.checklistItems { didChange = true }
+            // Preserve the original recurrence anchor before moving a legacy seed.
+            for index in card.checklistItems.indices where card.day(calendar: calendar) < today && !card.checklistItems[index].isDone && card.checklistItems[index].hasRecurrence && card.checklistItems[index].recurrenceAnchorDate == nil {
+                card.checklistItems[index].recurrenceAnchorDate = original.day(calendar: calendar)
+            }
             let cardDay = card.day(calendar: calendar)
             guard card.type == .checklist, cardDay < today else {
                 result.append(card)
@@ -251,7 +319,7 @@ public enum CardMutations {
 
         var series: [String: [(card: Card, item: ChecklistItem)]] = [:]
         for card in cards where card.type == .checklist {
-            for item in card.checklistItems where item.hasRecurrence {
+            for item in card.checklistItems + card.recurrenceRules where item.hasRecurrence {
                 series[item.effectiveRecurrenceId, default: []].append((card, item))
             }
         }
@@ -262,11 +330,19 @@ public enum CardMutations {
         // Sorting keeps a given library producing identical ids run to run.
         for key in series.keys.sorted() {
             guard var occurrences = series[key], !occurrences.isEmpty else { continue }
-            let alreadyToday = occurrences.contains { $0.card.day(calendar: calendar) == today }
+            let alreadyToday = cards.contains { card in
+                card.day(calendar: calendar) == today && card.checklistItems.contains {
+                    $0.hasRecurrence && $0.effectiveRecurrenceId == key
+                }
+            }
             if alreadyToday { continue }
 
             occurrences.sort { $0.card.day(calendar: calendar) < $1.card.day(calendar: calendar) }
-            let seed = occurrences[0]
+            var seed = occurrences[0]
+            // Merge durable policies from all copies; an old source cannot revive
+            // a stopped series even if it is the earliest recurrence seed.
+            seed.item.excludedDateKeys = occurrences.reduce(into: Set<String>()) { $0.formUnion($1.item.excludedDateKeys) }
+            seed.item.recurrenceEndDateKey = occurrences.compactMap { $0.item.recurrenceEndDateKey }.min()
             let seedDay = seed.item.recurrenceAnchorDate ?? seed.card.day(calendar: calendar)
             guard seed.item.isRecurrenceDue(seedDate: seedDay, on: today, calendar: calendar) else { continue }
 
@@ -281,6 +357,7 @@ public enum CardMutations {
                 item.dueDate = combine(day: today, time: dueDate, calendar: calendar)
             }
             occurrence.checklistItems = [item]
+            occurrence.recurrenceRules = []
             occurrence.targetDateTime = today
             occurrence.createdAt = now
             occurrence.updatedAt = now

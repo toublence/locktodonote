@@ -11,10 +11,12 @@ struct QuickAddSheet: View {
     @EnvironmentObject private var cardStore: CardStore
     @EnvironmentObject private var settingsStore: LockScreenSettingsStore
     @EnvironmentObject private var analytics: AnalyticsService
+    @EnvironmentObject private var environment: AppEnvironment
     @Environment(\.dismiss) private var dismiss
     @Environment(\.palette) private var palette
 
     @State private var text: String = ""
+    @State private var selectsMemo: Bool?
     @State private var recurrence: TodoRecurrence = .none
     @State private var advancedRepeat: AdvancedRepeatRule?
     @State private var smartEnabled = true
@@ -39,6 +41,21 @@ struct QuickAddSheet: View {
                         .focused($isFocused)
                         .accessibilityLabel(title)
                         .accessibilityIdentifier("quickAdd.editor")
+                }
+
+                if mode == .memo {
+                    Section {
+                        Toggle(appString(localized: "memo.showOnLockScreen", defaultValue: "Show on Lock Screen"), isOn: Binding(
+                            get: { selectsMemo ?? environment.newMemoReplacesDisplayedMemo },
+                            set: { selectsMemo = $0 }
+                        ))
+                        .disabled(environment.newMemoIsExcludedByRule)
+                        .accessibilityIdentifier("quickAdd.memo.showOnLockScreen")
+                    } footer: {
+                        Text(environment.newMemoIsExcludedByRule
+                            ? bilingualString(korean: "현재 구성에는 선택한 메모만 표시돼요.", english: "This layout shows selected notes only.")
+                            : bilingualString(korean: "표시할 메모만 교체하며 템플릿은 바꾸지 않습니다.", english: "This replaces the selected note without changing your template."))
+                    }
                 }
 
                 if mode == .todo {
@@ -71,7 +88,10 @@ struct QuickAddSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(appString(localized: "common.cancel", defaultValue: "Cancel")) { dismiss() }
+                    Button(appString(localized: "common.cancel", defaultValue: "Cancel")) {
+                        analytics.captureEnded(source: source, result: "cancelled")
+                        dismiss()
+                    }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(appString(localized: "common.save", defaultValue: "Save")) { save() }
@@ -81,7 +101,11 @@ struct QuickAddSheet: View {
             }
         }
         .presentationDetents([.medium, .large])
-        .onAppear { isFocused = true }
+        .onAppear {
+            isFocused = true
+            analytics.quickCaptureFocused(type: mode.rawValue, source: source)
+        }
+        .onDisappear { analytics.captureEnded(source: source, result: "interrupted") }
         .alert(
             saveError ?? "",
             isPresented: Binding(
@@ -134,7 +158,9 @@ struct QuickAddSheet: View {
             )
             if lines.count > 1 { analytics.multilineTodoImported(count: lines.count, source: source) }
         case .memo:
-            guard cardStore.addMemo(text: trimmed, to: date) else {
+            guard cardStore.addMemo(text: trimmed, to: date,
+                                    pinned: !environment.newMemoIsExcludedByRule &&
+                                        (selectsMemo ?? environment.newMemoReplacesDisplayedMemo)) else {
                 failSave(operation: "create_memo")
                 return
             }
@@ -256,6 +282,7 @@ struct TodoEditorSheet: View {
     @State private var recurrence: TodoRecurrence = .none
     @State private var advancedRepeat: AdvancedRepeatRule?
     @State private var saveError: String?
+    @State private var deletingTodo: TodoEntry?
 
     var body: some View {
         NavigationStack {
@@ -277,7 +304,16 @@ struct TodoEditorSheet: View {
                 }
             }
             .navigationTitle(appString(localized: "common.edit", defaultValue: "Edit"))
+            .modifier(TodoDeletionModifier(entry: $deletingTodo))
             .toolbar {
+                ToolbarItem(placement: .bottomBar) {
+                    if AppleReminderMirror.reminderID(from: entry.card.id) == nil {
+                        Button(appString(localized: "common.delete", defaultValue: "Delete"), role: .destructive) {
+                            guard cardStore.materializeCalendarTodo(id: entry.card.id, on: entry.card.targetDateTime ?? entry.card.createdAt) else { return }
+                            deletingTodo = entry
+                        }.accessibilityIdentifier("todo.editor.delete")
+                    }
+                }
                 ToolbarItem(placement: .cancellationAction) {
                     Button(appString(localized: "common.cancel", defaultValue: "Cancel")) { dismiss() }
                 }
@@ -287,6 +323,9 @@ struct TodoEditorSheet: View {
                         .accessibilityIdentifier("todo.editor.save")
                 }
             }
+        }
+        .onChange(of: cardStore.cards) { _ in
+            if cardStore.card(id: entry.card.id)?.checklistItems.contains(where: { $0.id == entry.item.id }) != true { dismiss() }
         }
         .onAppear {
             text = entry.item.text
@@ -328,5 +367,48 @@ struct TodoEditorSheet: View {
             return
         }
         dismiss()
+    }
+}
+
+/// Shared by Today and the calendar editor so every delete has identical semantics.
+struct TodoDeletionModifier: ViewModifier {
+    @Binding var entry: TodoEntry?
+    @EnvironmentObject private var cardStore: CardStore
+    @State private var confirmSeries = false
+    @State private var showScope = false
+    @State private var failed = false
+
+    func body(content: Content) -> some View {
+        content
+            .confirmationDialog(
+                bilingualString(korean: "반복 할 일 삭제 범위", english: "Delete repeating task"),
+                isPresented: $showScope,
+                titleVisibility: .visible
+            ) {
+                Button(bilingualString(korean: "이 날짜만 삭제", english: "Delete this day only"), role: .destructive) { remove(.occurrence) }
+                Button(bilingualString(korean: "앞으로 반복 중단", english: "Stop future repeats"), role: .destructive) { remove(.future) }
+                Button(bilingualString(korean: "전체 반복 삭제…", english: "Delete entire series…"), role: .destructive) { confirmSeries = true }
+                Button(appString(localized: "common.cancel", defaultValue: "Cancel"), role: .cancel) { entry = nil }
+            }
+            .alert(bilingualString(korean: "전체 반복을 삭제할까요?", english: "Delete entire series?"), isPresented: $confirmSeries) {
+                Button(appString(localized: "common.delete", defaultValue: "Delete"), role: .destructive) { remove(.series) }
+                Button(appString(localized: "common.cancel", defaultValue: "Cancel"), role: .cancel) { entry = nil }
+            } message: {
+                Text(bilingualString(korean: "이전 완료 기록을 포함한 모든 반복 항목이 삭제됩니다.", english: "All occurrences, including past completion history, will be deleted."))
+            }
+            .alert(bilingualString(korean: "삭제를 저장하지 못했습니다. 다시 시도해 주세요.", english: "Could not save the deletion. Please try again."), isPresented: $failed) {
+                Button("OK", role: .cancel) {}
+            }
+            .onChange(of: entry?.compositeId) { _ in
+                if entry?.item.hasRecurrence == false { remove(.occurrence) }
+                else if entry != nil { showScope = true }
+            }
+    }
+
+    private func remove(_ scope: CardMutations.TodoDeletionScope) {
+        guard let value = entry else { return }
+        failed = !cardStore.deleteTodo(cardID: value.card.id, itemID: value.item.id,
+                                      on: value.card.targetDateTime ?? value.card.createdAt, scope: scope)
+        entry = nil
     }
 }

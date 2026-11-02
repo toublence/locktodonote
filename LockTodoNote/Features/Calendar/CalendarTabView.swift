@@ -15,7 +15,6 @@ struct CalendarTabView: View {
 
     @State private var selectedDate = Date()
     @State private var visibleMonth = Date()
-    @State private var selectionConfirmation: String?
     @State private var editingTodo: TodoEntry?
     @State private var editingMemo: Card?
 
@@ -25,6 +24,14 @@ struct CalendarTabView: View {
         ScrollView {
             VStack(spacing: 12) {
                 monthGrid
+                Button(bilingualString(korean: "이 날짜를 잠금화면에 고정", english: "Pin this date to Lock Screen")) {
+                    dashboard.selectExplicitDate(selectedDate)
+                    dashboard.publish()
+                }.accessibilityIdentifier("calendar.pinDate")
+                Button(bilingualString(korean: "오늘 자동 표시", english: "Follow Today")) {
+                    dashboard.followToday()
+                    dashboard.publish()
+                }.accessibilityIdentifier("dashboard.followToday")
                 selectedDayList
             }
             .padding(.horizontal, horizontalSizeClass == .regular ? 36 : 16)
@@ -35,33 +42,7 @@ struct CalendarTabView: View {
         .background(palette.background)
         .sheet(item: $editingTodo) { TodoEditorSheet(entry: $0) }
         .sheet(item: $editingMemo) { MemoEditorSheet(card: $0) }
-        .onChange(of: selectedDate) { date in
-            guard settingsStore.settings.syncCalendarSelectionToLockScreen else { return }
-            dashboard.selectExplicitDate(date)
-            dashboard.publish()
-            selectionConfirmation = String(
-                format: appString(
-                    localized: "calendar.lockScreenDateChanged",
-                    defaultValue: "Lock Screen date changed to %@."
-                ),
-                appDateString(date)
-            )
-            Task { @MainActor in
-                try? await Task.sleep(for: .seconds(2))
-                selectionConfirmation = nil
-            }
-        }
-        .overlay(alignment: .bottom) {
-            if let selectionConfirmation {
-                Text(selectionConfirmation)
-                    .font(.footnote.weight(.semibold))
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .background(.regularMaterial, in: Capsule())
-                    .padding(.bottom, 12)
-                    .transition(.opacity)
-            }
-        }
+
     }
 
     private var monthGrid: some View {
@@ -290,6 +271,7 @@ private struct DayCell: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(accessibilityLabel)
+        .accessibilityIdentifier("calendar.day.\(FlutterDate.dateKey(date))")
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
     }
 

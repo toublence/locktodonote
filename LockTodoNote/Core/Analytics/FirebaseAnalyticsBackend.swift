@@ -26,10 +26,8 @@ enum FirebaseBootstrap {
     static func configure() {
         #if canImport(FirebaseAnalytics)
         guard FirebaseApp.app() == nil else { return }
-        // The bundled GoogleService-Info.plist is registered to a different
-        // bundle id than this app, so Firebase logs a mismatch warning. That is
-        // deliberate: it keeps events flowing into the same app record the
-        // Flutter build used, which is what preserves the existing dashboards.
+        // Use the config registered for this bundle in the existing project.
+        // The legacy fit.ttak.app registration remains for historical reports.
         FirebaseApp.configure()
         #if DEBUG
         Analytics.setAnalyticsCollectionEnabled(!ProcessInfo.processInfo.arguments.contains("-device-qa"))

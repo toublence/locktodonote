@@ -1,0 +1,8 @@
+{
+  "isDone": true,
+  "completedSource": "live_activity",
+  "completedAt": "2026-10-31T09:20:55.669847",
+  "surface": "iPad Notification Center Live Activity",
+  "app_return_ui_assertion": "incomplete; result writer interrupted by disk exhaustion",
+  "qa_record_cleaned": true
+}

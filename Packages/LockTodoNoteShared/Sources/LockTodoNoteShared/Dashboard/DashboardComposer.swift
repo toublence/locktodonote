@@ -83,17 +83,21 @@ public struct DashboardComposer: Sendable {
         let memoCard = settings.showMemos ? selectMemoCard(cards) : nil
         let todoItems = settings.showTodos ? (selected?.todoItems ?? []) : []
         let memoItems = settings.showMemos ? (selected?.memoItems ?? []) : []
+        // Recording a memo is not consent to display it. Keep the calendar's
+        // complete history/counts, but publish only the selected display notes.
+        let displayedMemoIDs = Set(cards.filter { $0.type == .quickNote && $0.showOnLockScreen }.map(\.id))
+        let displayedMemos = memoItems.filter { displayedMemoIDs.contains($0.id) }
 
         let visibleTodos: [DashboardTodoItem]
         let visibleMemos: [DashboardMemoItem]
         switch privacyMode {
         case .full:
             visibleTodos = todoItems
-            visibleMemos = memoItems
+            visibleMemos = displayedMemos
         case .titleOnly:
             // Checklist row text is content, not a card title. Memo titles may remain.
             visibleTodos = []
-            visibleMemos = memoItems.map {
+            visibleMemos = displayedMemos.map {
                 DashboardMemoItem(id: $0.id, title: $0.title)
             }
         case .hidden, .countOnly:
@@ -283,54 +287,17 @@ public struct DashboardComposer: Sendable {
     /// Unfinished todos from earlier days plus recurrences that are due, shown
     /// on tomorrow before the rollover actually creates them.
     private func projectedTodos(cards: [Card], targetDay: Date) -> [DashboardTodoItem] {
-        var projected: [DashboardTodoItem] = []
-        var seen: Set<String> = []
-        var representedSeries: Set<String> = []
-
-        for card in cards where card.type == .checklist && card.day(calendar: calendar) == targetDay {
-            for item in card.checklistItems where item.hasRecurrence {
-                representedSeries.insert(item.effectiveRecurrenceId)
-            }
-        }
-
-        for card in cards where card.type == .checklist {
-            guard card.day(calendar: calendar) < targetDay else { continue }
-            for item in card.checklistItems where !item.isDone {
+        let local = cards.filter { AppleReminderMirror.reminderID(from: $0.id) == nil }
+        let rolled = CardMutations.rollOverIncompleteTodos(local, calendar: calendar, now: targetDay, idFactory: { "projected:rollover-\($0)" }).cards
+        let generated = CardMutations.createRecurringTodosForToday(rolled, calendar: calendar, now: targetDay, idFactory: { "projected:repeat-\($0)" }).cards
+        let existing = Set(cards.filter { $0.day(calendar: calendar) == targetDay }
+            .flatMap { card in card.checklistItems.map { "\(card.id):\($0.id)" } })
+        return generated.filter { $0.type == .checklist && $0.day(calendar: calendar) == targetDay }
+            .flatMap { card in card.checklistItems.filter { !$0.isDone }.compactMap { item in
                 let id = "\(card.id):\(item.id)"
-                guard seen.insert(id).inserted else { continue }
-                projected.append(
-                    DashboardTodoItem(id: id, text: shortText(item.displayText(calendar: calendar)) ?? item.text)
-                )
-                if item.hasRecurrence {
-                    representedSeries.insert(item.effectiveRecurrenceId)
-                }
-            }
-        }
-
-        var seeds: [String: (item: ChecklistItem, day: Date)] = [:]
-        for card in cards where card.type == .checklist {
-            let day = card.day(calendar: calendar)
-            for item in card.checklistItems where item.hasRecurrence {
-                let key = item.effectiveRecurrenceId
-                if seeds[key] == nil || day < seeds[key]!.day {
-                    seeds[key] = (item, day)
-                }
-            }
-        }
-        for key in seeds.keys.sorted() {
-            guard
-                let seed = seeds[key],
-                !representedSeries.contains(key),
-                seed.item.isRecurrenceDue(seedDate: seed.item.recurrenceAnchorDate ?? seed.day, on: targetDay, calendar: calendar)
-            else { continue }
-            projected.append(
-                DashboardTodoItem(
-                    id: "projected:\(key):\(FlutterDate.dateKey(targetDay, calendar: calendar))",
-                    text: shortText(seed.item.displayText(calendar: calendar)) ?? seed.item.text
-                )
-            )
-        }
-        return projected
+                guard !existing.contains(id) else { return nil }
+                return DashboardTodoItem(id: id, text: shortText(item.displayText(calendar: calendar)) ?? item.text)
+            } }
     }
 
     // MARK: - Selection helpers
@@ -339,7 +306,7 @@ public struct DashboardComposer: Sendable {
         if let pinned = cards.first(where: { $0.type == .quickNote && $0.isPinned && $0.showOnLockScreen }) {
             return pinned
         }
-        return cards.first { $0.type == .quickNote }
+        return cards.first { $0.type == .quickNote && $0.showOnLockScreen }
     }
 
     private func memoText(

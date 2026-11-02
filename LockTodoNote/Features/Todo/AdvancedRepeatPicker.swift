@@ -1,8 +1,20 @@
 import SwiftUI
 import LockTodoNoteShared
 
+enum SmartRepeatPreferences {
+    static let enabledKey = "capture.smartRepeat.enabled"
+    static let ruleKey = "capture.smartRepeat.defaultRule"
+
+    static func rule(from data: Data) -> AdvancedRepeatRule? {
+        guard let rule = try? JSONDecoder().decode(AdvancedRepeatRule.self, from: data),
+              rule.isValid else { return nil }
+        return rule
+    }
+}
+
 /// The same rule editor is used by every capture surface and the todo editor.
 struct AdvancedRepeatPicker: View {
+    @EnvironmentObject private var analytics: AnalyticsService
     @Binding var rule: AdvancedRepeatRule?
     var startDate: Date
     var onApply: () -> Void = {}
@@ -10,7 +22,10 @@ struct AdvancedRepeatPicker: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Button { isPresented = true } label: {
+            Button {
+                analytics.feature(.repeatRule, outcome: .opened)
+                isPresented = true
+            } label: {
                 HStack {
                     Label("Smart Repeat · Pro", systemImage: "repeat")
                     Spacer()
@@ -29,6 +44,7 @@ struct AdvancedRepeatPicker: View {
         .sheet(isPresented: $isPresented) {
             AdvancedRepeatEditor(rule: rule, startDate: startDate) { value in
                 rule = value
+                analytics.feature(.repeatRule, outcome: value == nil ? .disabled : .success)
                 onApply()
             }
         }

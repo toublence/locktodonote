@@ -44,7 +44,74 @@ public struct AppGroupStore: Sendable {
         defaults.set(safe["memoItems"] ?? [], forKey: AppGroupKeys.memoItems)
         defaults.set(safe["showTodosOnLockScreen"] ?? true, forKey: AppGroupKeys.settingsShowTodos)
         defaults.set(safe["showMemosOnLockScreen"] ?? true, forKey: AppGroupKeys.settingsShowMemos)
-        if reloadWidget { reloadWidgetTimelines() }
+        // Duplicate foreground/activity publications must not consume WidgetKit's
+        // refresh budget. Include durable input revisions so future schedules,
+        // pinning and entitlement expiry still invalidate an unchanged preview.
+        var needsReload = false
+        if reloadWidget {
+            let signature = Self.widgetReloadSignature(payload: safe, context: widgetReloadContext(defaults: defaults))
+            let previous = defaults.dictionary(forKey: "glancecard.widget_reload_signature.v1")
+            let now = Date().timeIntervalSince1970
+            needsReload = Self.shouldReloadWidget(signature: signature, previous: previous,
+                lastRequest: defaults.double(forKey: "glancecard.widget_reload_requested_at.v1"), now: now)
+            if needsReload {
+                defaults.set(signature, forKey: "glancecard.widget_reload_signature.v1")
+                defaults.set(now, forKey: "glancecard.widget_reload_requested_at.v1")
+                defaults.set(true, forKey: "glancecard.widget_reload_pending.v1")
+            }
+        }
+        // Complete the cross-process handoff before asking extensions to read it.
+        defaults.synchronize()
+        if needsReload { reloadWidgetTimelines() }
+    }
+
+    static func widgetReloadSignature(payload: [String: Any], context: [String: Any]) -> [String: Any] {
+        var presentation = payload
+        presentation.removeValue(forKey: "updatedAt")
+        return ["presentation": presentation, "inputs": context]
+    }
+
+    static func shouldReloadWidget(signature: [String: Any], previous: [String: Any]?, lastRequest: TimeInterval, now: TimeInterval) -> Bool {
+        guard let previous else { return true }
+        // A request is not an OS acknowledgement. Permit later publications to
+        // retry an unchanged state instead of suppressing a deferred update forever.
+        return now - lastRequest >= 30 || !NSDictionary(dictionary: previous).isEqual(to: signature)
+    }
+
+    private func widgetReloadContext(defaults: UserDefaults) -> [String: Any] {
+        var revisions: [String: [Double]] = [:]
+        for name in ["Data/cards.json", SmartLockScreenSchedule.fileName, SmartLockScreenSchedule.profilesFileName] {
+            guard let url = containerURL?.appendingPathComponent(name),
+                  let attributes = try? FileManager.default.attributesOfItem(atPath: url.path),
+                  let modified = attributes[.modificationDate] as? Date else { continue }
+            revisions[name] = [modified.timeIntervalSince1970, (attributes[.size] as? NSNumber)?.doubleValue ?? 0]
+        }
+        let entitlement = Entitlement(cachedJSON: defaults.string(forKey: FlutterPreferenceKeys.purchaseState))
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        var context: [String: Any] = [
+            "files": revisions,
+            "followToday": defaults.object(forKey: FlutterPreferenceKeys.followToday) as? Bool ?? true,
+            "settings": (try? encoder.encode(LockScreenSettings.load(from: defaults))) ?? Data(),
+            "cachedIsPro": entitlement.isPro,
+            "timeZone": TimeZone.current.identifier,
+            "utcOffset": TimeZone.current.secondsFromGMT(),
+            "process": ProcessInfo.processInfo.processIdentifier,
+            "version": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "",
+            "build": Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
+        ]
+        if let expiry = entitlement.expirationDate { context["expiry"] = expiry.timeIntervalSince1970 }
+        return context
+    }
+
+    /// Foreground reloads may be throttled. Send the last changed state once
+    /// more at the background transition, as WidgetKit recommends.
+    public func flushPendingWidgetReload() {
+        guard let defaults, defaults.bool(forKey: "glancecard.widget_reload_pending.v1") else { return }
+        defaults.set(false, forKey: "glancecard.widget_reload_pending.v1")
+        defaults.set(Date().timeIntervalSince1970, forKey: "glancecard.widget_reload_requested_at.v1")
+        defaults.synchronize()
+        reloadWidgetTimelines()
     }
 
     public func dashboardState() -> [String: Any]? {
@@ -53,6 +120,18 @@ public struct AppGroupStore: Sendable {
 
     public func reloadWidgetTimelines() {
         #if canImport(WidgetKit)
+        #if DEBUG
+        if let defaults, defaults.bool(forKey: "qa.widget.diagnostics.enabled") {
+            let key = "qa.widget.timeline.reloadRequests"
+            var requests = defaults.array(forKey: key) as? [[String: Any]] ?? []
+            let items = dashboardState()?["todoItems"] as? [[String: Any]] ?? []
+            requests.append(["at": Date().timeIntervalSince1970,
+                             "source": Bundle.main.bundleIdentifier ?? "app",
+                             "texts": items.compactMap { $0["text"] as? String }])
+            defaults.set(Array(requests.suffix(12)), forKey: key)
+            defaults.synchronize()
+        }
+        #endif
         WidgetCenter.shared.reloadTimelines(ofKind: AppGroupKeys.widgetKind)
         #endif
     }
@@ -224,14 +303,35 @@ public struct AppGroupStore: Sendable {
     ) {
         return withQueueAccess {
             guard let defaults else { return }
+            // Frequent OS timeline callbacks must not evict real user actions.
+            if ["widget_timeline_requested", "lockscreen_activity_updated"].contains(name) {
+                let key = "analytics.throttle." + name
+                let last = defaults.double(forKey: key)
+                guard createdAt.timeIntervalSince1970 - last >= 3600 else { return }
+                defaults.set(createdAt.timeIntervalSince1970, forKey: key)
+            }
             var rows = defaults.array(forKey: AppGroupKeys.queuedAnalyticsEvents) as? [[String: Any]] ?? []
+            var context = parameters
+            context["origin_app_version"] = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown"
+            context["origin_app_build"] = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
+            context["origin_release"] = "L1.2.2"
+            #if DEBUG
+            context["origin_environment"] = "debug"
+            #else
+            context["origin_environment"] = "release_unknown"
+            #endif
+            context["is_premium"] = dashboardState()?["isPro"] as? Bool == true ? 1 : 0
             let event = QueuedAnalyticsEvent(
                 id: eventId,
                 name: name,
-                parameters: parameters,
+                parameters: context,
                 createdAt: createdAt
             )
             rows.append(event.dictionary)
+            let dropped = max(0, rows.count - AppGroupKeys.queuedAnalyticsEventLimit)
+            if dropped > 0 {
+                defaults.set(defaults.integer(forKey: "analytics.queue_dropped_total") + dropped, forKey: "analytics.queue_dropped_total")
+            }
             defaults.set(
                 Array(rows.suffix(AppGroupKeys.queuedAnalyticsEventLimit)),
                 forKey: AppGroupKeys.queuedAnalyticsEvents

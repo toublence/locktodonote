@@ -102,6 +102,11 @@ final class LayoutProfileStore: ObservableObject {
                 data = try Data(contentsOf: url)
             } else if let thumbnail = store.lockScreenImageData(fileName: source) {
                 data = thumbnail
+            } else if !settings.template.usesImage || source != settings.activeImageFileName {
+                // Older photo replacement could leave an inactive slot pointing
+                // to a removed file. It must not block saving the valid active
+                // layout. Missing active photos still fail without data loss.
+                continue
             } else {
                 throw ProfileError.missingImage
             }

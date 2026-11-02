@@ -8,6 +8,7 @@ struct QuickCaptureView: View {
     var allowedModes: [QuickAddMode] = [.todo, .memo]
     var onSaved: ((QuickAddMode, Int) -> Void)?
 
+    @EnvironmentObject private var environment: AppEnvironment
     @EnvironmentObject private var cardStore: CardStore
     @EnvironmentObject private var settingsStore: LockScreenSettingsStore
     @EnvironmentObject private var dashboard: DashboardCoordinator
@@ -19,8 +20,7 @@ struct QuickCaptureView: View {
     @State private var text = ""
     @State private var confirmation: String?
     @State private var recurrence: TodoRecurrence = .none
-    @State private var advancedRepeat: AdvancedRepeatRule?
-    @State private var smartEnabled = true
+    @AppStorage(SmartRepeatPreferences.enabledKey) private var smartEnabled = true
     @State private var hasManualRecurrence = false
     @State private var saveError: String?
     @FocusState private var isFocused: Bool
@@ -40,14 +40,14 @@ struct QuickCaptureView: View {
                 .pickerStyle(.segmented)
             }
 
-            if mode == .todo && advancedRepeat == nil {
+            if mode == .todo {
                 HStack {
                     Text(appString(localized: "quickAdd.repeat", defaultValue: "Show this todo"))
                         .foregroundStyle(palette.textSecondary)
                     Spacer(minLength: 0)
                     Picker("", selection: Binding(
                         get: { smartTodos.first?.recurrence ?? recurrence },
-                        set: { recurrence = $0; advancedRepeat = nil; hasManualRecurrence = true }
+                        set: { recurrence = $0; hasManualRecurrence = true }
                     )) {
                         ForEach(TodoRecurrence.allCases, id: \.self) { option in
                             Text(option.displayName).tag(option)
@@ -87,11 +87,7 @@ struct QuickCaptureView: View {
             .animation(reduceMotion ? nil : .snappy(duration: 0.25), value: isFocused)
 
             if mode == .todo {
-                AdvancedRepeatPicker(rule: $advancedRepeat, startDate: smartTodos.first?.scheduledDate ?? date) {
-                    recurrence = .none
-                    hasManualRecurrence = true
-                }
-                SmartQuickAddPreview(todos: smartTodos, isEnabled: $smartEnabled)
+                SmartQuickAddPreview(todos: smartTodos, isEnabled: $smartEnabled, showsToggle: false)
             }
             if let confirmation {
                 Label(confirmation, systemImage: "checkmark.circle.fill")
@@ -108,12 +104,12 @@ struct QuickCaptureView: View {
         )
         .onAppear {
             if !allowedModes.contains(mode) { mode = allowedModes.first ?? .memo }
-            settingsStore.settings.selectedContentSection = mode == .todo ? .todo : .memo
-            dashboard.publish()
         }
+        .onDisappear { analytics.captureEnded(source: source, result: "interrupted") }
         .onChange(of: mode) { newMode in
-            settingsStore.settings.selectedContentSection = newMode == .todo ? .todo : .memo
-            dashboard.publish()
+            analytics.captureEnded(source: source, result: "type_changed")
+            analytics.quickAddTypeSelected(type: newMode.rawValue, source: source)
+            if isFocused { analytics.captureStarted(type: newMode.rawValue, source: source) }
         }
         .onChange(of: isFocused) { focused in
             if focused { analytics.quickCaptureFocused(type: mode.rawValue, source: source) }
@@ -158,7 +154,7 @@ struct QuickCaptureView: View {
             guard !lines.isEmpty else { return }
             guard cardStore.addTodos(
                 texts: [trimmedText], to: date, recurrence: recurrence, smartEnabled: smartEnabled,
-                recurrenceOverride: hasManualRecurrence ? recurrence : nil, advancedRepeat: advancedRepeat
+                recurrenceOverride: hasManualRecurrence ? recurrence : nil
             ) else {
                 recordSaveFailure(operation: "create_todo")
                 return
@@ -180,7 +176,8 @@ struct QuickCaptureView: View {
             onSaved?(.todo, lines.count)
 
         case .memo:
-            guard cardStore.addMemo(text: trimmedText, to: date) else {
+            guard cardStore.addMemo(text: trimmedText, to: date,
+                pinned: !environment.newMemoIsExcludedByRule && environment.newMemoReplacesDisplayedMemo) else {
                 recordSaveFailure(operation: "create_memo")
                 return
             }

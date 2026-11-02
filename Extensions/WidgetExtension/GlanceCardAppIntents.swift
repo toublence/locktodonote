@@ -61,7 +61,8 @@ struct AddToLockTodoNoteIntent: LiveActivityIntent {
 
         let settings = LockScreenSettings.load(from: defaults)
         let isPro = store.dashboardState()?["isPro"] as? Bool ?? false
-        let safeSource = source.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "unknown" : source
+        let allowedSources = ["shortcut", "intent", "siri", "action_button", "widget", "live_activity", "dynamic_island", "unknown"]
+        let safeSource = allowedSources.contains(source) ? source : "unknown"
 
         // Check daily limit before prompting user for text
         if !isPro, store.shortcutUsageCount() >= AppGroupKeys.freeShortcutDailyLimit {
@@ -164,6 +165,7 @@ struct AddToLockTodoNoteIntent: LiveActivityIntent {
             itemCount = 1
         }
 
+        let analyticsEventID = UUID().uuidString
         store.appendPendingQuickAdd(
             PendingQuickAdd(
                 id: id,
@@ -171,7 +173,9 @@ struct AddToLockTodoNoteIntent: LiveActivityIntent {
                 target: resolvedTarget,
                 dateKey: dateKey,
                 createdAt: capturedAt,
-                smartTodos: smartTodos
+                smartTodos: smartTodos,
+                analyticsEventID: analyticsEventID,
+                analyticsSource: safeSource
             )
         )
         if !isPro { store.recordShortcutUsage() }
@@ -202,13 +206,16 @@ struct AddToLockTodoNoteIntent: LiveActivityIntent {
                 "type": resolvedTarget.rawValue,
                 "target": resolvedTarget.rawValue,
                 "item_count": itemCount,
+                "storage_stage": "pending_saved",
                 "source": safeSource,
                 "selected_template": settings.template.rawValue,
                 "template_id": settings.template.rawValue,
                 "is_pro": isPro,
                 "is_premium": isPro,
                 "result": "success",
-            ]
+            ],
+            eventId: analyticsEventID,
+            createdAt: capturedAt
         )
         store.markQuickAddEducationCompleted()
         store.enqueueAnalyticsEvent(
@@ -351,6 +358,8 @@ struct ToggleTodoIntent: LiveActivityIntent {
         let scheduled = (try? SmartLockScreenSchedule.load(store: store))?.isEnabled == true
         guard var payload = (scheduled ? ShortcutSupport.rebuiltDashboardPayload(store: store, previewOnly: true) : nil)
             ?? store.dashboardState() else { return .result() }
+        let candidates = payload["todoItems"] as? [[String: Any]] ?? []
+        guard candidates.contains(where: { $0["id"] as? String == todoId && ($0["isDone"] as? Bool ?? false) == false }) else { return .result() }
         let occurredAt = Date()
         let eventId = UUID().uuidString
 
@@ -382,6 +391,7 @@ struct ToggleTodoIntent: LiveActivityIntent {
             source: completionSource
         )
         analyticsParameters["review_signal_recorded"] = true
+        analyticsParameters["storage_stage"] = "pending_saved"
 
         store.enqueueAnalyticsEvent(
             name: "todo_completed",

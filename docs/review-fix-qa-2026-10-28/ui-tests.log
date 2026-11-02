@@ -1,0 +1,523 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project LockTodoNote.xcodeproj -scheme LockTodoNote -destination "platform=iOS Simulator,id=091CDD1E-C47F-45FE-8EBE-101705FC4F8C" -derivedDataPath /Users/nam/Library/Developer/Xcode/DerivedData/LockTodoNote-atpzgemoirqqmierhepkcfjatasq -disableAutomaticPackageResolution -skipPackageUpdates -parallel-testing-enabled NO "-only-testing:LockTodoNoteUITests/ReviewRegressionUITests" "-only-testing:LockTodoNoteUITests/DeviceFeatureUITests/test06ProAppleRemindersRoundTrip" -resultBundlePath /tmp/LockTodoNoteReviewFinal.xcresult test-without-building
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  GoogleAdsOnDeviceConversion: https://github.com/googleads/google-ads-on-device-conversion-ios-sdk @ 3.6.1
+  leveldb: https://github.com/firebase/leveldb.git @ 1.22.5
+  Promises: https://github.com/google/promises.git @ 2.4.1
+  GTMSessionFetcher: https://github.com/google/gtm-session-fetcher.git @ 5.3.1
+  gRPC: https://github.com/google/grpc-binary.git @ 1.69.1
+  InteropForGoogle: https://github.com/google/interop-ios-for-google-sdks.git @ 101.0.0
+  FBAudienceNetwork: https://github.com/facebook/FBAudienceNetwork.git @ 6.22.0
+  GoogleMobileAds: https://github.com/googleads/swift-package-manager-google-mobile-ads.git @ 13.11.0
+  nanopb: https://github.com/firebase/nanopb.git @ 2.30910.1
+  GoogleDataTransport: https://github.com/google/GoogleDataTransport.git @ 10.1.1
+  GoogleAppMeasurement: https://github.com/google/GoogleAppMeasurement.git @ 12.18.0
+  GoogleUtilities: https://github.com/google/GoogleUtilities.git @ 8.1.2
+  GoogleUserMessagingPlatform: https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git @ 3.1.0
+  AppCheck: https://github.com/google/app-check.git @ 11.3.1
+  Firebase: https://github.com/firebase/firebase-ios-sdk @ 12.18.0
+  LockTodoNoteShared: /Users/nam/projects/ios/locktodonote/Packages/LockTodoNoteShared
+  abseil: https://github.com/google/abseil-cpp-binary.git @ 1.2024072200.0
+  MetaAdapter: https://github.com/googleads/googleads-mobile-ios-mediation-meta.git @ 0a3d059
+
+Writing result bundle at path:
+	/tmp/LockTodoNoteReviewFinal.xcresult
+
+2026-10-28 10:46:24.191979+0900 LockTodoNoteUITests-Runner[77448:11792462] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-10-28 10:46:26.151.
+Test Suite 'LockTodoNoteUITests.xctest' started at 2026-10-28 10:46:26.152.
+Test Suite 'DeviceFeatureUITests' started at 2026-10-28 10:46:26.152.
+Test Case '-[LockTodoNoteUITests.DeviceFeatureUITests test06ProAppleRemindersRoundTrip]' started.
+    t =     0.00s Start Test at 2026-10-28 10:46:26.153
+    t =     0.06s Set Up
+    t =     0.06s Open com.namslab.glancecard
+    t =     0.06s     Launch com.namslab.glancecard
+    t =     1.81s         Setting up automation session
+    t =     4.71s         Wait for com.namslab.glancecard to idle
+    t =     7.68s Waiting 30.0s for "navigation.settings" Button to exist
+    t =     8.71s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.settings" Button`
+    t =     8.72s         Checking existence of `"navigation.settings" Button`
+    t =     9.91s Checking `Expect predicate `label CONTAINS "QA PRO"` for object "qa.dashboard" StaticText`
+    t =     9.91s     Find the "qa.dashboard" StaticText
+    t =     9.94s Tap "navigation.settings" Button
+    t =     9.94s     Wait for com.namslab.glancecard to idle
+    t =     9.94s     Find the "navigation.settings" Button
+    t =     9.96s     Check for interrupting elements affecting "navigation.settings" Button
+    t =    10.00s     Synthesize event
+    t =    10.30s     Wait for com.namslab.glancecard to idle
+    t =    10.36s Tap "settings.appleReminders" Button
+    t =    10.36s     Wait for com.namslab.glancecard to idle
+    t =    10.36s     Find the "settings.appleReminders" Button
+    t =    10.41s     Check for interrupting elements affecting "settings.appleReminders" Button
+    t =    10.44s     Synthesize event
+    t =    10.72s     Wait for com.namslab.glancecard to idle
+    t =    11.10s Waiting 5.0s for "qa.reminder.create" Button to exist
+    t =    12.14s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.reminder.create" Button`
+    t =    12.14s         Checking existence of `"qa.reminder.create" Button`
+    t =    12.19s Tap "qa.reminder.create" Button
+    t =    12.20s     Wait for com.namslab.glancecard to idle
+    t =    12.20s     Find the "qa.reminder.create" Button
+    t =    12.22s     Check for interrupting elements affecting "qa.reminder.create" Button
+    t =    12.24s     Synthesize event
+    t =    12.53s     Wait for com.namslab.glancecard to idle
+    t =    12.91s Tap Target Application 'com.namslab.glancecard'
+    t =    12.91s     Wait for com.namslab.glancecard to idle
+    t =    12.92s     Find the Target Application 'com.namslab.glancecard'
+    t =    12.95s     Check for interrupting elements affecting "LockTodoNote" Application
+    t =    12.99s     Synthesize event
+    t =    13.27s     Wait for com.namslab.glancecard to idle
+    t =    14.31s Checking `Expect predicate `label CONTAINS "QA imported"` for object "qa.reminder.status" StaticText`
+    t =    14.31s     Find the "qa.reminder.status" StaticText
+    t =    14.34s Tap "navigation.today" Button
+    t =    14.34s     Wait for com.namslab.glancecard to idle
+    t =    14.35s     Find the "navigation.today" Button
+    t =    14.37s     Check for interrupting elements affecting "navigation.today" Button
+    t =    14.40s     Synthesize event
+    t =    14.69s     Wait for com.namslab.glancecard to idle
+    t =    15.72s Checking `Expect predicate `label CONTAINS "QA Apple Reminder"` for object "qa.dashboard" StaticText`
+    t =    15.72s     Find the "qa.dashboard" StaticText
+    t =    15.76s Waiting 5.0s for "QA Apple Reminder" Button to exist
+    t =    16.79s     Checking `Expect predicate `existsNoRetry == 1` for object "QA Apple Reminder" Button`
+    t =    16.79s         Checking existence of `"QA Apple Reminder" Button`
+    t =    16.85s Tap "QA Apple Reminder" Button
+    t =    16.85s     Wait for com.namslab.glancecard to idle
+    t =    16.85s     Find the "QA Apple Reminder" Button
+    t =    16.88s     Check for interrupting elements affecting "todo.toggle.apple-reminder-MkRFNTE5NEUtQzEyRi00QzczLUIwNEQtNzg2NUIzQzRGNDY3:reminder-item" Button
+    t =    16.91s     Synthesize event
+    t =    17.20s     Wait for com.namslab.glancecard to idle
+    t =    17.28s Added attachment named 'pro-reminder-app-completion'
+    t =    17.28s Tap "navigation.settings" Button
+    t =    17.28s     Wait for com.namslab.glancecard to idle
+    t =    17.29s     Find the "navigation.settings" Button
+    t =    17.31s     Check for interrupting elements affecting "navigation.settings" Button
+    t =    17.33s     Synthesize event
+    t =    17.62s     Wait for com.namslab.glancecard to idle
+    t =    17.62s Tap "settings.appleReminders" Button
+    t =    17.62s     Wait for com.namslab.glancecard to idle
+    t =    17.62s     Find the "settings.appleReminders" Button
+    t =    17.66s     Check for interrupting elements affecting "settings.appleReminders" Button
+    t =    17.69s     Synthesize event
+    t =    17.98s     Wait for com.namslab.glancecard to idle
+    t =    18.33s Tap "qa.reminder.verify" Button
+    t =    18.33s     Wait for com.namslab.glancecard to idle
+    t =    18.33s     Find the "qa.reminder.verify" Button
+    t =    18.37s     Check for interrupting elements affecting "qa.reminder.verify" Button
+    t =    18.39s     Synthesize event
+    t =    18.68s     Wait for com.namslab.glancecard to idle
+    t =    19.98s Checking `Expect predicate `label CONTAINS "QA source completed"` for object "qa.reminder.status" StaticText`
+    t =    19.98s     Find the "qa.reminder.status" StaticText
+    t =    20.13s Added attachment named 'pro-reminder-source-completion'
+    t =    20.13s Tear Down
+Test Case '-[LockTodoNoteUITests.DeviceFeatureUITests test06ProAppleRemindersRoundTrip]' passed (20.448 seconds).
+Test Suite 'DeviceFeatureUITests' passed at 2026-10-28 10:46:46.601.
+	 Executed 1 test, with 0 failures (0 unexpected) in 20.448 (20.449) seconds
+Test Suite 'ReviewRegressionUITests' started at 2026-10-28 10:46:46.601.
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testCalendarBrowsingPinAndFollowTodayPersist]' started.
+    t =     0.00s Start Test at 2026-10-28 10:46:46.602
+    t =     0.03s Set Up
+    t =     0.03s Open com.namslab.glancecard
+    t =     0.03s     Launch com.namslab.glancecard
+    t =     0.03s         Terminate com.namslab.glancecard:77479
+    t =     1.27s         Setting up automation session
+    t =     2.17s         Wait for com.namslab.glancecard to idle
+    t =     4.06s Waiting 30.0s for "navigation.today" Button to exist
+    t =     5.09s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     5.09s         Checking existence of `"navigation.today" Button`
+    t =     5.29s Tap "navigation.calendar" Button
+    t =     5.29s     Wait for com.namslab.glancecard to idle
+    t =     5.29s     Find the "navigation.calendar" Button
+    t =     5.37s     Check for interrupting elements affecting "navigation.calendar" Button
+    t =     5.43s     Synthesize event
+    t =     5.74s     Wait for com.namslab.glancecard to idle
+    t =     6.82s Waiting 5.0s for "calendar.day.2026-10-27" Button to exist
+    t =     7.85s     Checking `Expect predicate `existsNoRetry == 1` for object "calendar.day.2026-10-27" Button`
+    t =     7.85s         Checking existence of `"calendar.day.2026-10-27" Button`
+    t =     7.88s Tap "calendar.day.2026-10-27" Button
+    t =     7.88s     Wait for com.namslab.glancecard to idle
+    t =     7.88s     Find the "calendar.day.2026-10-27" Button
+    t =     7.91s     Check for interrupting elements affecting "calendar.day.2026-10-27" Button
+    t =     7.93s     Synthesize event
+    t =     8.22s     Wait for com.namslab.glancecard to idle
+    t =     8.22s Find the "qa.date" StaticText
+    t =     8.24s Tap "calendar.pinDate" Button
+    t =     8.24s     Wait for com.namslab.glancecard to idle
+    t =     8.24s     Find the "calendar.pinDate" Button
+    t =     8.27s     Check for interrupting elements affecting "calendar.pinDate" Button
+    t =     8.29s     Synthesize event
+    t =     8.58s     Wait for com.namslab.glancecard to idle
+    t =     8.58s Find the "qa.date" StaticText
+    t =     8.60s Tap "navigation.today" Button
+    t =     8.60s     Wait for com.namslab.glancecard to idle
+    t =     8.60s     Find the "navigation.today" Button
+    t =     8.62s     Check for interrupting elements affecting "navigation.today" Button
+    t =     8.64s     Synthesize event
+    t =     8.93s     Wait for com.namslab.glancecard to idle
+    t =    10.10s Find the "qa.date" StaticText
+    t =    10.25s Added attachment named 'review-explicit-pinned-date'
+    t =    10.25s Terminate com.namslab.glancecard:77620
+    t =    11.30s Open com.namslab.glancecard
+    t =    11.30s     Launch com.namslab.glancecard
+    t =    11.51s         Setting up automation session
+    t =    12.29s         Wait for com.namslab.glancecard to idle
+    t =    14.12s Waiting 30.0s for "navigation.today" Button to exist
+    t =    15.15s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    15.15s         Checking existence of `"navigation.today" Button`
+    t =    15.32s Find the "qa.date" StaticText
+    t =    15.37s Tap "dashboard.followToday" Button
+    t =    15.37s     Wait for com.namslab.glancecard to idle
+    t =    15.38s     Find the "dashboard.followToday" Button
+    t =    15.44s     Check for interrupting elements affecting "dashboard.followToday" Button
+    t =    15.49s     Synthesize event
+    t =    15.78s     Wait for com.namslab.glancecard to idle
+    t =    15.79s Find the "qa.date" StaticText
+    t =    15.84s Terminate com.namslab.glancecard:77679
+    t =    16.91s Open com.namslab.glancecard
+    t =    16.91s     Launch com.namslab.glancecard
+    t =    17.34s         Setting up automation session
+    t =    19.34s         Wait for com.namslab.glancecard to idle
+    t =    21.88s Waiting 30.0s for "navigation.today" Button to exist
+    t =    22.89s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    22.89s         Checking existence of `"navigation.today" Button`
+    t =    23.02s Find the "qa.date" StaticText
+    t =    23.14s Added attachment named 'review-follow-today-restored'
+    t =    23.14s Tear Down
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testCalendarBrowsingPinAndFollowTodayPersist]' passed (23.475 seconds).
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testEntireSeriesConfirmation]' started.
+    t =     0.00s Start Test at 2026-10-28 10:47:10.079
+    t =     0.03s Set Up
+    t =     0.03s Open com.namslab.glancecard
+    t =     0.03s     Launch com.namslab.glancecard
+    t =     0.03s         Terminate com.namslab.glancecard:77714
+    t =     1.31s         Setting up automation session
+    t =     2.20s         Wait for com.namslab.glancecard to idle
+    t =     4.15s Waiting 30.0s for "navigation.today" Button to exist
+    t =     5.21s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     5.22s         Checking existence of `"navigation.today" Button`
+    t =     5.55s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     5.68s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     5.78s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     5.89s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.00s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.11s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.20s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.27s Tap "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.27s     Wait for com.namslab.glancecard to idle
+    t =     6.28s     Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.34s     Check for interrupting elements affecting "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.40s     Synthesize event
+    t =     6.70s     Wait for com.namslab.glancecard to idle
+    t =     6.82s Tap "Delete entire series…" Button
+    t =     6.82s     Wait for com.namslab.glancecard to idle
+    t =     7.33s     Find the "Delete entire series…" Button
+    t =     7.41s     Check for interrupting elements affecting "Delete entire series…" Button
+    t =     7.48s     Synthesize event
+    t =     7.79s     Wait for com.namslab.glancecard to idle
+    t =     8.14s Waiting 5.0s for "Delete entire series?" Alert to exist
+    t =     9.17s     Checking `Expect predicate `existsNoRetry == 1` for object "Delete entire series?" Alert`
+    t =     9.17s         Checking existence of `"Delete entire series?" Alert`
+    t =     9.21s Checking existence of `"All occurrences, including past completion history, will be deleted." StaticText`
+    t =     9.36s Added attachment named 'review-entire-series-confirmation'
+    t =     9.36s Tap "Delete" Button
+    t =     9.36s     Wait for com.namslab.glancecard to idle
+    t =     9.36s     Find the "Delete" Button
+    t =     9.40s     Check for interrupting elements affecting "Delete" Button
+    t =     9.44s     Synthesize event
+    t =     9.73s     Wait for com.namslab.glancecard to idle
+    t =    10.05s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    11.08s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    11.08s         Checking existence of `"qa.storage" StaticText`
+    t =    11.14s Find the "qa.storage" StaticText
+    t =    11.19s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    12.21s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    12.21s         Checking existence of `"qa.storage" StaticText`
+    t =    12.28s Find the "qa.storage" StaticText
+    t =    12.31s Terminate com.namslab.glancecard:77757
+    t =    13.37s Open com.namslab.glancecard
+    t =    13.37s     Launch com.namslab.glancecard
+    t =    13.59s         Setting up automation session
+    t =    14.37s         Wait for com.namslab.glancecard to idle
+    t =    16.17s Waiting 30.0s for "navigation.today" Button to exist
+    t =    17.20s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    17.20s         Checking existence of `"navigation.today" Button`
+    t =    17.39s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    18.41s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    18.41s         Checking existence of `"qa.storage" StaticText`
+    t =    18.45s Find the "qa.storage" StaticText
+    t =    18.48s Tear Down
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testEntireSeriesConfirmation]' passed (18.799 seconds).
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testLiveActivityReflectsDeletionOnSystemSurface]' started.
+    t =     0.00s Start Test at 2026-10-28 10:47:28.878
+    t =     0.03s Set Up
+    t =     0.03s Open com.namslab.glancecard
+    t =     0.03s     Launch com.namslab.glancecard
+    t =     0.03s         Terminate com.namslab.glancecard:77835
+    t =     1.30s         Setting up automation session
+    t =     2.08s         Wait for com.namslab.glancecard to idle
+    t =     3.82s Waiting 30.0s for "navigation.today" Button to exist
+    t =     4.85s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     4.85s         Checking existence of `"navigation.today" Button`
+    t =     6.06s Checking `Expect predicate `label CONTAINS "running"` for object "qa.activity" StaticText`
+    t =     6.06s     Find the "qa.activity" StaticText
+    t =     6.11s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.17s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.23s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.28s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.34s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.39s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.45s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.51s Tap "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.51s     Wait for com.namslab.glancecard to idle
+    t =     6.51s     Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.56s     Check for interrupting elements affecting "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.61s     Synthesize event
+    t =     6.90s     Wait for com.namslab.glancecard to idle
+    t =     6.93s Tap "Stop future repeats" Button
+    t =     6.93s     Wait for com.namslab.glancecard to idle
+    t =     7.44s     Find the "Stop future repeats" Button
+    t =     7.51s     Check for interrupting elements affecting "Stop future repeats" Button
+    t =     7.56s     Synthesize event
+    t =     7.85s     Wait for com.namslab.glancecard to idle
+    t =     8.25s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =     9.27s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =     9.27s         Checking existence of `"qa.storage" StaticText`
+    t =     9.33s Find the "qa.storage" StaticText
+    t =    10.38s Checking `Expect predicate `NOT label CONTAINS "Walk my dog"` for object "qa.dashboard" StaticText`
+    t =    10.38s     Find the "qa.dashboard" StaticText
+    t =    10.44s Press Target Application 'com.namslab.glancecard'[0.45, 0.01] for 0.1 seconds, then drag to Target Application 'com.namslab.glancecard'[0.45, 0.75] with velocity of 500.00 pixels per second, and then hold for 0.0 seconds 
+    t =    10.44s     Wait for com.namslab.glancecard to idle
+    t =    10.44s     Find the Target Application 'com.namslab.glancecard'
+    t =    10.46s     Check for interrupting elements affecting "LockTodoNote" Application
+    t =    10.49s     Synthesize event
+    t =    10.49s         Find the Target Application 'com.namslab.glancecard'
+    t =    10.51s         Find the Target Application 'com.namslab.glancecard'
+    t =    10.52s         Find the Target Application 'com.namslab.glancecard'
+    t =    10.54s         Find the Target Application 'com.namslab.glancecard'
+    t =    10.56s         Find the Target Application 'com.namslab.glancecard'
+    t =    12.34s     Wait for com.namslab.glancecard to idle
+    t =    12.34s Waiting 15.0s for StaticText (First Match) to exist
+    t =    13.37s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    13.37s         Checking existence of `StaticText (First Match)`
+    t =    13.58s Checking existence of `StaticText (First Match)`
+    t =    14.30s Added attachment named 'review-system-live-activity-after-delete'
+    t =    14.31s Open com.namslab.glancecard
+    t =    14.31s     Activate com.namslab.glancecard
+    t =    14.60s         Wait for com.namslab.glancecard to idle
+    t =    14.64s Tear Down
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testLiveActivityReflectsDeletionOnSystemSurface]' passed (15.395 seconds).
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testStopFutureRepeatsAndRelaunchNextDays]' started.
+    t =     0.01s Start Test at 2026-10-28 10:47:44.287
+    t =     0.07s Set Up
+    t =     0.08s Open com.namslab.glancecard
+    t =     0.08s     Launch com.namslab.glancecard
+    t =     0.08s         Terminate com.namslab.glancecard:77849
+    t =     1.54s         Setting up automation session
+    t =     3.35s         Wait for com.namslab.glancecard to idle
+    t =     5.74s Waiting 30.0s for "navigation.today" Button to exist
+    t =     6.76s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     6.76s         Checking existence of `"navigation.today" Button`
+    t =     6.87s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.93s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.97s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.02s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.07s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.12s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.17s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.33s Added attachment named 'review-before-delete'
+    t =     7.33s Tap "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.33s     Wait for com.namslab.glancecard to idle
+    t =     7.34s     Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.38s     Check for interrupting elements affecting "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.42s     Synthesize event
+    t =     7.70s     Wait for com.namslab.glancecard to idle
+    t =     8.21s Waiting 5.0s for "Stop future repeats" Button to exist
+    t =     9.24s     Checking `Expect predicate `existsNoRetry == 1` for object "Stop future repeats" Button`
+    t =     9.24s         Checking existence of `"Stop future repeats" Button`
+    t =     9.41s Added attachment named 'review-delete-scopes'
+    t =     9.41s Tap "Stop future repeats" Button
+    t =     9.41s     Wait for com.namslab.glancecard to idle
+    t =     9.41s     Find the "Stop future repeats" Button
+    t =     9.45s     Check for interrupting elements affecting "Stop future repeats" Button
+    t =     9.48s     Synthesize event
+    t =     9.76s     Wait for com.namslab.glancecard to idle
+    t =    10.14s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    11.17s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    11.17s         Checking existence of `"qa.storage" StaticText`
+    t =    11.23s Find the "qa.storage" StaticText
+    t =    11.26s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    12.29s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    12.29s         Checking existence of `"qa.storage" StaticText`
+    t =    12.35s Find the "qa.storage" StaticText
+    t =    12.38s Find the "qa.dashboard" StaticText
+    t =    12.49s Added attachment named 'review-stopped-with-sibling-preserved'
+    t =    12.49s Tap "qa.advanceDay" Button
+    t =    12.49s     Wait for com.namslab.glancecard to idle
+    t =    12.49s     Find the "qa.advanceDay" Button
+    t =    12.52s     Check for interrupting elements affecting "qa.advanceDay" Button
+    t =    12.54s     Synthesize event
+    t =    12.83s     Wait for com.namslab.glancecard to idle
+    t =    12.83s Find the "qa.date" StaticText
+    t =    12.86s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    13.89s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    13.89s         Checking existence of `"qa.storage" StaticText`
+    t =    13.95s Find the "qa.storage" StaticText
+    t =    14.06s Added attachment named 'review-running-date-boundary'
+    t =    14.06s Terminate com.namslab.glancecard:77874
+    t =    15.12s Open com.namslab.glancecard
+    t =    15.12s     Launch com.namslab.glancecard
+    t =    15.34s         Setting up automation session
+    t =    16.14s         Wait for com.namslab.glancecard to idle
+    t =    17.77s Waiting 30.0s for "navigation.today" Button to exist
+    t =    18.79s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    18.79s         Checking existence of `"navigation.today" Button`
+    t =    18.91s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    19.93s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    19.94s         Checking existence of `"qa.storage" StaticText`
+    t =    19.99s Find the "qa.storage" StaticText
+    t =    20.02s Find the "qa.date" StaticText
+    t =    20.05s Find the "qa.dashboard" StaticText
+    t =    20.07s Terminate com.namslab.glancecard:77886
+    t =    21.12s Open com.namslab.glancecard
+    t =    21.13s     Launch com.namslab.glancecard
+    t =    21.34s         Setting up automation session
+    t =    22.13s         Wait for com.namslab.glancecard to idle
+    t =    23.74s Waiting 30.0s for "navigation.today" Button to exist
+    t =    24.76s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    24.76s         Checking existence of `"navigation.today" Button`
+    t =    24.93s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    25.95s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    25.95s         Checking existence of `"qa.storage" StaticText`
+    t =    26.01s Find the "qa.storage" StaticText
+    t =    26.05s Find the "qa.date" StaticText
+    t =    26.09s Find the "qa.dashboard" StaticText
+    t =    26.13s Terminate com.namslab.glancecard:77894
+    t =    27.19s Open com.namslab.glancecard
+    t =    27.19s     Launch com.namslab.glancecard
+    t =    27.40s         Setting up automation session
+    t =    29.70s         Wait for com.namslab.glancecard to idle
+    t =    32.85s Waiting 30.0s for "navigation.today" Button to exist
+    t =    33.87s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    33.87s         Checking existence of `"navigation.today" Button`
+    t =    34.08s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    35.11s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    35.11s         Checking existence of `"qa.storage" StaticText`
+    t =    35.16s Find the "qa.storage" StaticText
+    t =    35.21s Find the "qa.date" StaticText
+    t =    35.26s Find the "qa.dashboard" StaticText
+    t =    35.46s Added attachment named 'review-next-day-auto-without-dog'
+    t =    35.46s Tear Down
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testStopFutureRepeatsAndRelaunchNextDays]' passed (35.821 seconds).
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testTodayOnlyAndOrdinaryDeletion]' started.
+    t =     0.00s Start Test at 2026-10-28 10:48:20.105
+    t =     0.03s Set Up
+    t =     0.03s Open com.namslab.glancecard
+    t =     0.04s     Launch com.namslab.glancecard
+    t =     0.04s         Terminate com.namslab.glancecard:77905
+    t =     1.30s         Setting up automation session
+    t =     2.80s         Wait for com.namslab.glancecard to idle
+    t =     5.67s Waiting 30.0s for "navigation.today" Button to exist
+    t =     6.71s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     6.71s         Checking existence of `"navigation.today" Button`
+    t =     6.86s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     6.96s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.03s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.10s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.19s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.26s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.34s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.42s Tap "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.42s     Wait for com.namslab.glancecard to idle
+    t =     7.43s     Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.49s     Check for interrupting elements affecting "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.55s     Synthesize event
+    t =     7.86s     Wait for com.namslab.glancecard to idle
+    t =     7.98s Tap "Delete this day only" Button
+    t =     7.98s     Wait for com.namslab.glancecard to idle
+    t =     8.49s     Find the "Delete this day only" Button
+    t =     8.59s     Check for interrupting elements affecting "Delete this day only" Button
+    t =     8.67s     Synthesize event
+    t =     8.98s     Wait for com.namslab.glancecard to idle
+    t =     9.37s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    10.40s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    10.40s         Checking existence of `"qa.storage" StaticText`
+    t =    10.46s Find the "qa.storage" StaticText
+    t =    10.51s Terminate com.namslab.glancecard:78100
+    t =    11.58s Open com.namslab.glancecard
+    t =    11.58s     Launch com.namslab.glancecard
+    t =    12.00s         Setting up automation session
+    t =    13.67s         Wait for com.namslab.glancecard to idle
+    t =    16.41s Waiting 30.0s for "navigation.today" Button to exist
+    t =    17.44s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    17.45s         Checking existence of `"navigation.today" Button`
+    t =    17.64s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    18.67s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    18.67s         Checking existence of `"qa.storage" StaticText`
+    t =    18.72s Find the "qa.storage" StaticText
+    t =    18.76s Terminate com.namslab.glancecard:78131
+    t =    19.81s Open com.namslab.glancecard
+    t =    19.81s     Launch com.namslab.glancecard
+    t =    20.02s         Setting up automation session
+    t =    21.79s         Wait for com.namslab.glancecard to idle
+    t =    24.54s Waiting 30.0s for "navigation.today" Button to exist
+    t =    25.58s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    25.58s         Checking existence of `"navigation.today" Button`
+    t =    25.73s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    26.76s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    26.76s         Checking existence of `"qa.storage" StaticText`
+    t =    26.79s Find the "qa.storage" StaticText
+    t =    26.83s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    26.88s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    26.94s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    26.99s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    27.04s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    27.09s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    27.15s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    27.20s Tap "todo.delete.qa-dog:qa-sibling" Button
+    t =    27.20s     Wait for com.namslab.glancecard to idle
+    t =    27.20s     Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    27.24s     Check for interrupting elements affecting "todo.delete.qa-dog:qa-sibling" Button
+    t =    27.29s     Synthesize event
+    t =    27.58s     Wait for com.namslab.glancecard to idle
+    t =    27.58s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    28.61s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    28.61s         Checking existence of `"qa.storage" StaticText`
+    t =    28.67s Find the "qa.storage" StaticText
+    t =    28.70s Terminate com.namslab.glancecard:78187
+    t =    29.76s Open com.namslab.glancecard
+    t =    29.77s     Launch com.namslab.glancecard
+    t =    29.99s         Setting up automation session
+    t =    30.82s         Wait for com.namslab.glancecard to idle
+    t =    32.55s Waiting 30.0s for "navigation.today" Button to exist
+    t =    33.58s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    33.58s         Checking existence of `"navigation.today" Button`
+    t =    33.74s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    34.76s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    34.76s         Checking existence of `"qa.storage" StaticText`
+    t =    34.81s Find the "qa.storage" StaticText
+    t =    34.84s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    35.87s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    35.87s         Checking existence of `"qa.storage" StaticText`
+    t =    35.92s Find the "qa.storage" StaticText
+    t =    36.06s Added attachment named 'review-today-only-next-occurrence'
+    t =    36.06s Tear Down
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testTodayOnlyAndOrdinaryDeletion]' passed (36.429 seconds).
+Test Suite 'ReviewRegressionUITests' passed at 2026-10-28 10:48:56.535.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 129.919 (129.933) seconds
+Test Suite 'LockTodoNoteUITests.xctest' passed at 2026-10-28 10:48:56.535.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 150.367 (150.383) seconds
+Test Suite 'Selected tests' passed at 2026-10-28 10:48:56.535.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 150.367 (150.384) seconds
+2026-10-28 10:48:56.928 xcodebuild[77199:11790878] [MT] IDETestOperationsObserverDebug: 155.303 elapsed -- Testing started completed.
+2026-10-28 10:48:56.928 xcodebuild[77199:11790878] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-28 10:48:56.928 xcodebuild[77199:11790878] [MT] IDETestOperationsObserverDebug: 155.303 sec, +155.303 sec -- end
+
+Test session results, code coverage, and logs:
+	/tmp/LockTodoNoteReviewFinal.xcresult
+
+** TEST EXECUTE SUCCEEDED **
+
+Testing started

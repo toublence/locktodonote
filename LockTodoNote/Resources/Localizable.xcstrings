@@ -8204,6 +8204,23 @@
         }
       }
     },
+    "liveActivity.permissionRequired" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow Live Activities in Settings"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잠금화면 표시를 위해 설정에서 허용해 주세요"
+          }
+        }
+      }
+    },
     "liveActivity.recover" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -13652,7 +13669,20 @@
         }
       }
     },
+    "QA Date: %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "QA Date: %1$@ %2$@"
+          }
+        }
+      }
+    },
     "QA storage: %@ cards" : {
+
+    },
+    "QA Widget Timelines" : {
 
     },
     "QA Widget: known=%@ any=%@ lock=%@" : {
@@ -18029,6 +18059,9 @@
           }
         }
       }
+    },
+    "Smart Repeat" : {
+
     },
     "storage.readFailed" : {
       "extractionState" : "manual",

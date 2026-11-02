@@ -2,12 +2,14 @@ import SwiftUI
 import LockTodoNoteShared
 
 struct SmartLockScreenView: View {
+    @EnvironmentObject private var analytics: AnalyticsService
     @EnvironmentObject private var environment: AppEnvironment
     @EnvironmentObject private var schedules: SmartLockScreenStore
     @EnvironmentObject private var profiles: LayoutProfileStore
     @EnvironmentObject private var purchases: PurchaseService
     @State private var editingRule: SmartLockScreenRule?
     @State private var message: String?
+    @State private var showsLayoutSave = false
 
     var body: some View {
         List {
@@ -16,8 +18,13 @@ struct SmartLockScreenView: View {
                     get: { schedules.schedule.isEnabled },
                     set: { value in
                         if value && !purchases.isPro { environment.requestPaywall(source: "smart_lock_screen"); return }
-                        do { try schedules.setEnabled(value, isPro: purchases.isPro) }
-                        catch { message = error.localizedDescription }
+                        do {
+                            try schedules.setEnabled(value, isPro: purchases.isPro)
+                            analytics.feature(.automaticSwitching, outcome: value ? .enabled : .disabled)
+                        } catch {
+                            analytics.feature(.automaticSwitching, outcome: .failed)
+                            message = error.localizedDescription
+                        }
                     }
                 ))
                 .accessibilityIdentifier("schedule.enabled")
@@ -56,7 +63,8 @@ struct SmartLockScreenView: View {
                 }
                 Button(bilingualString(korean: "전환 규칙 추가", english: "Add switching rule")) {
                     guard let profile = profiles.profiles.first else {
-                        message = bilingualString(korean: "먼저 잠금화면 구성을 저장하세요.", english: "Save a Lock Screen layout first.")
+                        analytics.feature(.layoutShortcut, outcome: .opened)
+                        showsLayoutSave = true
                         return
                     }
                     edit(SmartLockScreenRule(name: "", profileID: profile.id, weekdays: [2, 3, 4, 5, 6], startMinute: 9 * 60, endMinute: 18 * 60))
@@ -75,11 +83,25 @@ struct SmartLockScreenView: View {
             }.font(.footnote).foregroundStyle(.secondary)
         }
         .navigationTitle("Smart Lock Screen")
+        .onAppear { analytics.feature(.automaticSwitching, outcome: .opened) }
         .disabled(schedules.loadFailed || profiles.loadFailed || !purchases.hasResolvedEntitlement)
         .overlay {
             if schedules.loadFailed || profiles.loadFailed {
                 Text(SmartLockScreenStore.ScheduleError.unavailable.localizedDescription)
                     .padding().background(.regularMaterial)
+            }
+        }
+        .sheet(isPresented: $showsLayoutSave) {
+            NavigationStack {
+                LayoutProfilesView(onSaved: {
+                    analytics.feature(.layoutShortcut, outcome: .success)
+                    showsLayoutSave = false
+                })
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button(appString(localized: "common.cancel", defaultValue: "Cancel")) { showsLayoutSave = false }
+                        }
+                    }
             }
         }
         .sheet(item: $editingRule) { rule in SmartLockScreenRuleEditor(initial: rule) }
@@ -97,6 +119,7 @@ struct SmartLockScreenView: View {
 }
 
 private struct SmartLockScreenRuleEditor: View {
+    @EnvironmentObject private var analytics: AnalyticsService
     @EnvironmentObject private var schedules: SmartLockScreenStore
     @EnvironmentObject private var profiles: LayoutProfileStore
     @EnvironmentObject private var cards: CardStore
@@ -151,6 +174,13 @@ private struct SmartLockScreenRuleEditor: View {
                             .font(.caption).foregroundStyle(.secondary)
                     }
                 }
+                Section {
+                    Text(bilingualString(
+                        korean: "표시 공간을 넘으면 일부 항목만 보입니다. 직접 선택은 표시 범위이며 중요도나 순서를 정하지 않습니다. 새 할 일은 직접 추가로 선택하세요.",
+                        english: "Only items that fit are visible. Selection sets the display scope, not priority or order. Select newly created tasks here to include them."
+                    ))
+                    .font(.caption).foregroundStyle(.secondary)
+                }
                 Section(bilingualString(korean: "표시할 메모", english: "Visible notes")) {
                     Toggle(bilingualString(korean: "모든 메모", english: "All notes"), isOn: Binding(
                         get: { rule.memoCardIDs == nil }, set: { rule.memoCardIDs = $0 ? nil : [] }
@@ -171,12 +201,22 @@ private struct SmartLockScreenRuleEditor: View {
             .navigationTitle(bilingualString(korean: "전환 규칙", english: "Switching rule"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(appString(localized: "common.cancel", defaultValue: "Cancel")) { dismiss() }
+                    Button(appString(localized: "common.cancel", defaultValue: "Cancel")) {
+                        analytics.feature(.automaticSwitching, outcome: .cancelled)
+                        dismiss()
+                    }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(appString(localized: "common.save", defaultValue: "Save")) {
-                        do { try schedules.save(rule, isPro: purchases.isPro); dismiss() }
-                        catch { message = error.localizedDescription }
+                        do {
+                            try schedules.save(rule, isPro: purchases.isPro)
+                            analytics.feature(.automaticSwitching, outcome: .success)
+                            analytics.displaySelection(todoCount: rule.todoSeriesIDs?.count, memoCount: rule.memoCardIDs?.count)
+                            dismiss()
+                        } catch {
+                            analytics.feature(.automaticSwitching, outcome: .failed)
+                            message = error.localizedDescription
+                        }
                     }.disabled(!rule.isValid)
                     .accessibilityIdentifier("schedule.save")
                 }

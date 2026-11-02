@@ -1,0 +1,1182 @@
+Test Suite 'Selected tests' started at 2026-10-28 12:28:43.185.
+Test Suite 'LockTodoNoteUITests.xctest' started at 2026-10-28 12:28:43.185.
+Test Suite 'ReviewRegressionUITests' started at 2026-10-28 12:28:43.186.
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testAppleRemindersRoundTripOnQAList]' started.
+    t =     0.00s Start Test at 2026-10-28 12:28:43.186
+    t =     0.02s Set Up
+    t =     0.02s Open com.namslab.glancecard
+    t =     0.02s     Launch com.namslab.glancecard
+2026-10-28 12:28:47.333 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =     4.30s         Setting up automation session
+    t =     4.52s         Wait for com.namslab.glancecard to idle
+    t =     5.77s Waiting 30.0s for "navigation.today" Button to exist
+    t =     6.79s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     6.79s         Checking existence of `"navigation.today" Button`
+    t =     6.91s Tap "navigation.settings" Button
+    t =     6.91s     Wait for com.namslab.glancecard to idle
+    t =     6.92s     Find the "navigation.settings" Button
+    t =     6.96s     Check for interrupting elements affecting "navigation.settings" Button
+    t =     7.01s     Synthesize event
+    t =     7.30s     Wait for com.namslab.glancecard to idle
+    t =     7.31s Tap "settings.appleReminders" Button
+    t =     7.31s     Wait for com.namslab.glancecard to idle
+    t =     7.31s     Find the "settings.appleReminders" Button
+    t =     7.38s     Check for interrupting elements affecting "settings.appleReminders" Button
+    t =     7.43s     Synthesize event
+    t =     7.73s     Wait for com.namslab.glancecard to idle
+    t =     8.13s Waiting 10.0s for "qa.reminder.create" Button to exist
+    t =     9.16s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.reminder.create" Button`
+    t =     9.16s         Checking existence of `"qa.reminder.create" Button`
+    t =     9.24s Tap "qa.reminder.create" Button
+    t =     9.24s     Wait for com.namslab.glancecard to idle
+    t =     9.24s     Find the "qa.reminder.create" Button
+    t =     9.28s     Check for interrupting elements affecting "qa.reminder.create" Button
+    t =     9.32s     Synthesize event
+    t =     9.61s     Wait for com.namslab.glancecard to idle
+    t =     9.93s Tap Target Application 'com.namslab.glancecard'
+    t =     9.93s     Wait for com.namslab.glancecard to idle
+    t =     9.94s     Find the Target Application 'com.namslab.glancecard'
+    t =     9.98s     Check for interrupting elements affecting "LockTodoNote" Application
+    t =    10.01s     Synthesize event
+    t =    10.30s     Wait for com.namslab.glancecard to idle
+    t =    11.32s Checking `Expect predicate `label CONTAINS "QA imported"` for object "qa.reminder.status" StaticText`
+    t =    11.32s     Find the "qa.reminder.status" StaticText
+    t =    11.40s Tap "navigation.today" Button
+    t =    11.40s     Wait for com.namslab.glancecard to idle
+    t =    11.41s     Find the "navigation.today" Button
+    t =    11.45s     Check for interrupting elements affecting "navigation.today" Button
+    t =    11.50s     Synthesize event
+    t =    11.80s     Wait for com.namslab.glancecard to idle
+    t =    11.82s Find the "QA Apple Reminder" Button
+    t =    11.90s Find the "todo.toggle.apple-reminder-Q0ZFOEZDMjgtQUQxRC00RDY4LTk0QTctMTJDNUVBMUFDODYx:reminder-item" Button
+    t =    11.96s Find the "todo.toggle.apple-reminder-Q0ZFOEZDMjgtQUQxRC00RDY4LTk0QTctMTJDNUVBMUFDODYx:reminder-item" Button
+    t =    12.02s Find the "todo.toggle.apple-reminder-Q0ZFOEZDMjgtQUQxRC00RDY4LTk0QTctMTJDNUVBMUFDODYx:reminder-item" Button
+    t =    12.08s Find the "todo.toggle.apple-reminder-Q0ZFOEZDMjgtQUQxRC00RDY4LTk0QTctMTJDNUVBMUFDODYx:reminder-item" Button
+    t =    12.13s Find the "todo.toggle.apple-reminder-Q0ZFOEZDMjgtQUQxRC00RDY4LTk0QTctMTJDNUVBMUFDODYx:reminder-item" Button
+    t =    12.18s Find the "todo.toggle.apple-reminder-Q0ZFOEZDMjgtQUQxRC00RDY4LTk0QTctMTJDNUVBMUFDODYx:reminder-item" Button
+    t =    12.24s Tap "todo.toggle.apple-reminder-Q0ZFOEZDMjgtQUQxRC00RDY4LTk0QTctMTJDNUVBMUFDODYx:reminder-item" Button
+    t =    12.24s     Wait for com.namslab.glancecard to idle
+    t =    12.25s     Find the "todo.toggle.apple-reminder-Q0ZFOEZDMjgtQUQxRC00RDY4LTk0QTctMTJDNUVBMUFDODYx:reminder-item" Button
+    t =    12.28s     Check for interrupting elements affecting "todo.toggle.apple-reminder-Q0ZFOEZDMjgtQUQxRC00RDY4LTk0QTctMTJDNUVBMUFDODYx:reminder-item" Button
+    t =    12.33s     Synthesize event
+    t =    12.63s     Wait for com.namslab.glancecard to idle
+    t =    12.64s Tap "navigation.settings" Button
+    t =    12.64s     Wait for com.namslab.glancecard to idle
+    t =    12.64s     Find the "navigation.settings" Button
+    t =    12.71s     Check for interrupting elements affecting "navigation.settings" Button
+    t =    12.76s     Synthesize event
+    t =    13.05s     Wait for com.namslab.glancecard to idle
+    t =    13.05s Tap "settings.appleReminders" Button
+    t =    13.05s     Wait for com.namslab.glancecard to idle
+    t =    13.06s     Find the "settings.appleReminders" Button
+    t =    13.15s     Check for interrupting elements affecting "settings.appleReminders" Button
+    t =    13.19s     Synthesize event
+    t =    13.50s     Wait for com.namslab.glancecard to idle
+    t =    13.90s Tap "qa.reminder.verify" Button
+    t =    13.90s     Wait for com.namslab.glancecard to idle
+    t =    13.91s     Find the "qa.reminder.verify" Button
+    t =    13.97s     Check for interrupting elements affecting "qa.reminder.verify" Button
+    t =    14.01s     Synthesize event
+    t =    14.31s     Wait for com.namslab.glancecard to idle
+    t =    15.62s Checking `Expect predicate `label CONTAINS "QA source completed"` for object "qa.reminder.status" StaticText`
+    t =    15.62s     Find the "qa.reminder.status" StaticText
+    t =    15.83s Added attachment named 'ipad-reminders-source-completed'
+    t =    15.83s Tear Down
+    t =    15.83s     Terminate com.namslab.glancecard:9707
+    t =    16.85s     Open com.namslab.glancecard
+    t =    16.85s         Launch com.namslab.glancecard
+2026-10-28 12:29:00.169 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    17.12s             Setting up automation session
+    t =    17.31s             Wait for com.namslab.glancecard to idle
+    t =    18.63s     Waiting 60.0s for "navigation.settings" Button to exist
+    t =    19.68s         Checking `Expect predicate `existsNoRetry == 1` for object "navigation.settings" Button`
+    t =    19.68s             Checking existence of `"navigation.settings" Button`
+    t =    19.81s     Terminate com.namslab.glancecard:9713
+    t =    20.83s     Open com.namslab.glancecard
+    t =    20.83s         Launch com.namslab.glancecard
+2026-10-28 12:29:04.223 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    21.19s             Setting up automation session
+    t =    21.29s             Wait for com.namslab.glancecard to idle
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testAppleRemindersRoundTripOnQAList]' passed (22.854 seconds).
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testCalendarBrowsingPinAndFollowTodayPersist]' started.
+    t =     0.00s Start Test at 2026-10-28 12:29:06.040
+    t =     0.02s Set Up
+    t =     0.02s Open com.namslab.glancecard
+    t =     0.02s     Launch com.namslab.glancecard
+    t =     0.03s         Terminate com.namslab.glancecard:9714
+2026-10-28 12:29:07.266 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =     1.46s         Setting up automation session
+    t =     1.56s         Wait for com.namslab.glancecard to idle
+    t =     2.81s Waiting 30.0s for "navigation.today" Button to exist
+    t =     3.82s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     3.83s         Checking existence of `"navigation.today" Button`
+    t =     3.94s Tap "navigation.calendar" Button
+    t =     3.94s     Wait for com.namslab.glancecard to idle
+    t =     3.94s     Find the "navigation.calendar" Button
+    t =     3.99s     Check for interrupting elements affecting "navigation.calendar" Button
+    t =     4.03s     Synthesize event
+    t =     4.33s     Wait for com.namslab.glancecard to idle
+    t =     5.42s Waiting 5.0s for "calendar.day.2026-10-27" Button to exist
+    t =     6.44s     Checking `Expect predicate `existsNoRetry == 1` for object "calendar.day.2026-10-27" Button`
+    t =     6.45s         Checking existence of `"calendar.day.2026-10-27" Button`
+    t =     6.52s Tap "calendar.day.2026-10-27" Button
+    t =     6.53s     Wait for com.namslab.glancecard to idle
+    t =     6.53s     Find the "calendar.day.2026-10-27" Button
+    t =     6.57s     Check for interrupting elements affecting "calendar.day.2026-10-27" Button
+    t =     6.61s     Synthesize event
+    t =     6.91s     Wait for com.namslab.glancecard to idle
+    t =     6.92s Find the "qa.date" StaticText
+    t =     6.99s Tap "calendar.pinDate" Button
+    t =     6.99s     Wait for com.namslab.glancecard to idle
+    t =     7.00s     Find the "calendar.pinDate" Button
+    t =     7.04s     Check for interrupting elements affecting "calendar.pinDate" Button
+    t =     7.07s     Synthesize event
+    t =     7.37s     Wait for com.namslab.glancecard to idle
+    t =     7.38s Find the "qa.date" StaticText
+    t =     7.44s Tap "navigation.today" Button
+    t =     7.44s     Wait for com.namslab.glancecard to idle
+    t =     7.45s     Find the "navigation.today" Button
+    t =     7.48s     Check for interrupting elements affecting "navigation.today" Button
+    t =     7.52s     Synthesize event
+    t =     7.83s     Wait for com.namslab.glancecard to idle
+    t =     8.85s Find the "qa.date" StaticText
+    t =     9.07s Added attachment named 'review-explicit-pinned-date'
+    t =     9.07s Terminate com.namslab.glancecard:9722
+    t =    10.11s Open com.namslab.glancecard
+    t =    10.11s     Launch com.namslab.glancecard
+2026-10-28 12:29:16.289 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    10.40s         Setting up automation session
+    t =    10.50s         Wait for com.namslab.glancecard to idle
+    t =    11.77s Waiting 30.0s for "navigation.today" Button to exist
+    t =    12.81s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    12.81s         Checking existence of `"navigation.today" Button`
+    t =    12.93s Find the "qa.date" StaticText
+    t =    12.96s Tap "dashboard.followToday" Button
+    t =    12.97s     Wait for com.namslab.glancecard to idle
+    t =    12.97s     Find the "dashboard.followToday" Button
+    t =    13.02s     Check for interrupting elements affecting "dashboard.followToday" Button
+    t =    13.06s     Synthesize event
+    t =    13.37s     Wait for com.namslab.glancecard to idle
+    t =    13.37s Find the "qa.date" StaticText
+    t =    13.45s Terminate com.namslab.glancecard:9723
+    t =    14.53s Open com.namslab.glancecard
+    t =    14.53s     Launch com.namslab.glancecard
+2026-10-28 12:29:20.716 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    14.88s         Setting up automation session
+    t =    15.03s         Wait for com.namslab.glancecard to idle
+    t =    16.29s Waiting 30.0s for "navigation.today" Button to exist
+    t =    17.30s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    17.30s         Checking existence of `"navigation.today" Button`
+    t =    17.42s Find the "qa.date" StaticText
+    t =    17.61s Added attachment named 'review-follow-today-restored'
+    t =    17.61s Tear Down
+    t =    17.61s     Terminate com.namslab.glancecard:9724
+    t =    18.64s     Open com.namslab.glancecard
+    t =    18.64s         Launch com.namslab.glancecard
+2026-10-28 12:29:24.827 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    18.95s             Setting up automation session
+    t =    19.21s             Wait for com.namslab.glancecard to idle
+    t =    20.48s     Waiting 60.0s for "navigation.settings" Button to exist
+    t =    21.50s         Checking `Expect predicate `existsNoRetry == 1` for object "navigation.settings" Button`
+    t =    21.50s             Checking existence of `"navigation.settings" Button`
+    t =    21.62s     Terminate com.namslab.glancecard:9725
+    t =    22.72s     Open com.namslab.glancecard
+    t =    22.72s         Launch com.namslab.glancecard
+2026-10-28 12:29:28.888 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    22.99s             Setting up automation session
+    t =    23.08s             Wait for com.namslab.glancecard to idle
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testCalendarBrowsingPinAndFollowTodayPersist]' passed (24.716 seconds).
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testEditorDeletionDismissesAndPreservesOtherTask]' started.
+    t =     0.00s Start Test at 2026-10-28 12:29:30.758
+    t =     0.03s Set Up
+    t =     0.03s Open com.namslab.glancecard
+    t =     0.03s     Launch com.namslab.glancecard
+    t =     0.03s         Terminate com.namslab.glancecard:9726
+2026-10-28 12:29:32.204 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =     1.71s         Setting up automation session
+    t =     1.82s         Wait for com.namslab.glancecard to idle
+    t =     3.07s Waiting 30.0s for "navigation.today" Button to exist
+    t =     4.08s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     4.08s         Checking existence of `"navigation.today" Button`
+    t =     4.20s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =     4.26s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =     4.32s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =     4.38s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =     4.54s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =     4.62s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =     4.68s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =     4.74s Tap "todo.edit.qa-dog:qa-sibling" Button
+    t =     4.74s     Wait for com.namslab.glancecard to idle
+    t =     4.75s     Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =     4.79s     Check for interrupting elements affecting "todo.edit.qa-dog:qa-sibling" Button
+    t =     4.83s     Synthesize event
+    t =     5.13s     Wait for com.namslab.glancecard to idle
+    t =     5.87s Waiting 5.0s for "todo.editor.delete" Button to exist
+    t =     6.87s     Checking `Expect predicate `existsNoRetry == 1` for object "todo.editor.delete" Button`
+    t =     6.87s         Checking existence of `"todo.editor.delete" Button`
+    t =     7.00s Tap "todo.editor.delete" Button
+    t =     7.00s     Wait for com.namslab.glancecard to idle
+    t =     7.01s     Find the "todo.editor.delete" Button
+    t =     7.08s     Check for interrupting elements affecting "todo.editor.delete" Button
+    t =     7.14s     Synthesize event
+    t =     7.44s     Wait for com.namslab.glancecard to idle
+    t =     9.25s Checking `Expect predicate `exists == 0` for object "todo.editor.text" TextField`
+    t =     9.25s     Checking existence of `"todo.editor.text" TextField`
+    t =     9.33s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    10.35s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    10.35s         Checking existence of `"qa.storage" StaticText`
+    t =    10.42s Find the "qa.storage" StaticText
+    t =    10.47s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    11.47s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    11.48s         Checking existence of `"qa.storage" StaticText`
+    t =    11.55s Find the "qa.storage" StaticText
+    t =    11.74s Added attachment named 'review-editor-deletion-dismissed'
+    t =    11.74s Tear Down
+    t =    11.74s     Terminate com.namslab.glancecard:9734
+    t =    12.76s     Open com.namslab.glancecard
+    t =    12.76s         Launch com.namslab.glancecard
+2026-10-28 12:29:43.652 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    13.23s             Setting up automation session
+    t =    13.24s             Wait for com.namslab.glancecard to idle
+    t =    14.50s     Waiting 60.0s for "navigation.settings" Button to exist
+    t =    15.52s         Checking `Expect predicate `existsNoRetry == 1` for object "navigation.settings" Button`
+    t =    15.52s             Checking existence of `"navigation.settings" Button`
+    t =    15.64s     Terminate com.namslab.glancecard:9735
+    t =    16.67s     Open com.namslab.glancecard
+    t =    16.67s         Launch com.namslab.glancecard
+2026-10-28 12:29:47.563 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    16.95s             Setting up automation session
+    t =    17.09s             Wait for com.namslab.glancecard to idle
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testEditorDeletionDismissesAndPreservesOtherTask]' passed (18.623 seconds).
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testEntireSeriesConfirmation]' started.
+    t =     0.00s Start Test at 2026-10-28 12:29:49.382
+    t =     0.02s Set Up
+    t =     0.02s Open com.namslab.glancecard
+    t =     0.03s     Launch com.namslab.glancecard
+    t =     0.03s         Terminate com.namslab.glancecard:9736
+2026-10-28 12:29:50.623 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =     1.42s         Setting up automation session
+    t =     1.61s         Wait for com.namslab.glancecard to idle
+    t =     2.89s Waiting 30.0s for "navigation.today" Button to exist
+    t =     3.90s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     3.90s         Checking existence of `"navigation.today" Button`
+    t =     4.01s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.07s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.13s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.31s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.49s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.58s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.65s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.70s Tap "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.70s     Wait for com.namslab.glancecard to idle
+    t =     4.71s     Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.75s     Check for interrupting elements affecting "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.79s     Synthesize event
+    t =     5.09s     Wait for com.namslab.glancecard to idle
+    t =     5.49s Tap "Delete entire series…" Button
+    t =     5.49s     Wait for com.namslab.glancecard to idle
+    t =     5.49s     Find the "Delete entire series…" Button
+    t =     5.58s     Check for interrupting elements affecting "Delete entire series…" Button
+    t =     5.64s     Synthesize event
+    t =     5.94s     Wait for com.namslab.glancecard to idle
+    t =     6.30s Waiting 5.0s for "Delete entire series?" Alert to exist
+    t =     7.32s     Checking `Expect predicate `existsNoRetry == 1` for object "Delete entire series?" Alert`
+    t =     7.33s         Checking existence of `"Delete entire series?" Alert`
+    t =     7.41s Checking existence of `"All occurrences, including past completion history, will be deleted." StaticText`
+    t =     7.61s Added attachment named 'review-entire-series-confirmation'
+    t =     7.61s Tap "Delete" Button
+    t =     7.61s     Wait for com.namslab.glancecard to idle
+    t =     7.61s     Find the "Delete" Button
+    t =     7.68s     Check for interrupting elements affecting "Delete" Button
+    t =     7.72s     Synthesize event
+    t =     8.00s     Wait for com.namslab.glancecard to idle
+    t =     8.29s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =     9.32s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =     9.32s         Checking existence of `"qa.storage" StaticText`
+    t =     9.41s Find the "qa.storage" StaticText
+    t =     9.45s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    10.47s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    10.47s         Checking existence of `"qa.storage" StaticText`
+    t =    10.54s Find the "qa.storage" StaticText
+    t =    10.58s Terminate com.namslab.glancecard:9744
+    t =    11.66s Open com.namslab.glancecard
+    t =    11.66s     Launch com.namslab.glancecard
+2026-10-28 12:30:01.192 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    11.95s         Setting up automation session
+    t =    12.12s         Wait for com.namslab.glancecard to idle
+    t =    13.39s Waiting 30.0s for "navigation.today" Button to exist
+    t =    14.40s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    14.40s         Checking existence of `"navigation.today" Button`
+    t =    14.51s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    15.53s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    15.53s         Checking existence of `"qa.storage" StaticText`
+    t =    15.61s Find the "qa.storage" StaticText
+    t =    15.66s Tear Down
+    t =    15.67s     Terminate com.namslab.glancecard:9745
+    t =    16.71s     Open com.namslab.glancecard
+    t =    16.71s         Launch com.namslab.glancecard
+2026-10-28 12:30:06.233 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    17.87s             Setting up automation session
+    t =    18.05s             Wait for com.namslab.glancecard to idle
+    t =    19.31s     Waiting 60.0s for "navigation.settings" Button to exist
+    t =    20.32s         Checking `Expect predicate `existsNoRetry == 1` for object "navigation.settings" Button`
+    t =    20.32s             Checking existence of `"navigation.settings" Button`
+    t =    20.45s     Terminate com.namslab.glancecard:9746
+    t =    21.51s     Open com.namslab.glancecard
+    t =    21.51s         Launch com.namslab.glancecard
+2026-10-28 12:30:11.023 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    21.97s             Setting up automation session
+    t =    21.97s             Wait for com.namslab.glancecard to idle
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testEntireSeriesConfirmation]' passed (23.528 seconds).
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testFreeModeStopRemainsDeletedNextWeek]' started.
+    t =     0.00s Start Test at 2026-10-28 12:30:12.911
+    t =     0.03s Set Up
+    t =     0.03s Open com.namslab.glancecard
+    t =     0.03s     Launch com.namslab.glancecard
+    t =     0.03s         Terminate com.namslab.glancecard:9747
+2026-10-28 12:30:14.160 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =     1.48s         Setting up automation session
+    t =     1.50s         Wait for com.namslab.glancecard to idle
+    t =     2.78s Waiting 30.0s for "navigation.today" Button to exist
+    t =     3.81s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     3.81s         Checking existence of `"navigation.today" Button`
+    t =     3.92s Find the "qa.dashboard" StaticText
+    t =     3.95s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.01s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.18s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.37s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.45s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.52s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.59s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.64s Tap "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.64s     Wait for com.namslab.glancecard to idle
+    t =     4.65s     Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.69s     Check for interrupting elements affecting "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.73s     Synthesize event
+    t =     5.02s     Wait for com.namslab.glancecard to idle
+    t =     5.42s Tap "Stop future repeats" Button
+    t =     5.42s     Wait for com.namslab.glancecard to idle
+    t =     5.43s     Find the "Stop future repeats" Button
+    t =     5.52s     Check for interrupting elements affecting "Stop future repeats" Button
+    t =     5.57s     Synthesize event
+    t =     5.87s     Wait for com.namslab.glancecard to idle
+    t =     6.26s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =     7.27s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =     7.27s         Checking existence of `"qa.storage" StaticText`
+    t =     7.35s Find the "qa.storage" StaticText
+    t =     7.40s Tap "qa.advanceDay" Button
+    t =     7.40s     Wait for com.namslab.glancecard to idle
+    t =     7.41s     Find the "qa.advanceDay" Button
+    t =     7.45s     Check for interrupting elements affecting "qa.advanceDay" Button
+    t =     7.50s     Synthesize event
+    t =     7.79s     Wait for com.namslab.glancecard to idle
+    t =     7.80s Find the "qa.date" StaticText
+    t =     7.87s Terminate com.namslab.glancecard:9755
+    t =     8.88s Open com.namslab.glancecard
+    t =     8.88s     Launch com.namslab.glancecard
+2026-10-28 12:30:21.949 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =     9.18s         Setting up automation session
+    t =     9.27s         Wait for com.namslab.glancecard to idle
+    t =    10.56s Waiting 30.0s for "navigation.today" Button to exist
+    t =    11.56s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    11.56s         Checking existence of `"navigation.today" Button`
+    t =    11.67s Find the "qa.dashboard" StaticText
+    t =    11.71s Find the "qa.date" StaticText
+    t =    11.74s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    12.75s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    12.75s         Checking existence of `"qa.storage" StaticText`
+    t =    12.83s Find the "qa.storage" StaticText
+    t =    12.87s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    13.89s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    13.89s         Checking existence of `"qa.storage" StaticText`
+    t =    13.96s Find the "qa.storage" StaticText
+    t =    14.14s Added attachment named 'ipad-free-next-week-still-deleted'
+    t =    14.14s Tear Down
+    t =    14.14s     Terminate com.namslab.glancecard:9756
+    t =    15.23s     Open com.namslab.glancecard
+    t =    15.23s         Launch com.namslab.glancecard
+2026-10-28 12:30:28.299 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    15.62s             Setting up automation session
+    t =    15.65s             Wait for com.namslab.glancecard to idle
+    t =    16.94s     Waiting 60.0s for "navigation.settings" Button to exist
+    t =    17.95s         Checking `Expect predicate `existsNoRetry == 1` for object "navigation.settings" Button`
+    t =    17.95s             Checking existence of `"navigation.settings" Button`
+    t =    18.08s     Terminate com.namslab.glancecard:9757
+    t =    19.13s     Open com.namslab.glancecard
+    t =    19.13s         Launch com.namslab.glancecard
+2026-10-28 12:30:32.171 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    19.61s             Setting up automation session
+    t =    19.75s             Wait for com.namslab.glancecard to idle
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testFreeModeStopRemainsDeletedNextWeek]' passed (21.330 seconds).
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testHomeWidgetReflectsDeletionOnDevice]' started.
+    t =     0.00s Start Test at 2026-10-28 12:30:34.243
+    t =     0.03s Set Up
+    t =     0.03s Open com.namslab.glancecard
+    t =     0.03s     Launch com.namslab.glancecard
+    t =     0.03s         Terminate com.namslab.glancecard:9758
+2026-10-28 12:30:35.486 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =     1.38s         Setting up automation session
+    t =     1.50s         Wait for com.namslab.glancecard to idle
+    t =     2.76s Waiting 30.0s for "navigation.today" Button to exist
+    t =     3.78s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     3.78s         Checking existence of `"navigation.today" Button`
+    t =     3.89s Tap "qa.activity.stop" Button
+    t =     3.89s     Wait for com.namslab.glancecard to idle
+    t =     3.90s     Find the "qa.activity.stop" Button
+    t =     3.94s     Check for interrupting elements affecting "qa.activity.stop" Button
+    t =     3.99s     Synthesize event
+    t =     4.28s     Wait for com.namslab.glancecard to idle
+    t =     4.30s Pressing Home button
+    t =     4.76s Waiting 5.0s for StaticText (First Match) to exist
+    t =     5.81s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =     5.81s         Checking existence of `StaticText (First Match)`
+    t =     5.95s Find the StaticText (First Match)
+    t =     6.10s Waiting 45.0s for "Walk my dog" StaticText to exist
+    t =     7.11s     Checking `Expect predicate `existsNoRetry == 1` for object "Walk my dog" StaticText`
+    t =     7.11s         Checking existence of `"Walk my dog" StaticText`
+    t =     7.30s Find the "Walk my dog" StaticText
+    t =     7.71s Added attachment named 'ipad-home-widget-before-delete'
+    t =     7.71s Open com.namslab.glancecard
+    t =     7.71s     Activate com.namslab.glancecard
+    t =     7.78s         Wait for com.namslab.glancecard to idle
+    t =     7.79s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.86s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.90s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     7.95s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     8.10s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     8.15s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     8.20s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     8.26s Tap "todo.delete.qa-dog:qa-dog-item" Button
+    t =     8.26s     Wait for com.namslab.glancecard to idle
+    t =     8.26s     Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     8.30s     Check for interrupting elements affecting "todo.delete.qa-dog:qa-dog-item" Button
+    t =     8.32s         Wait for com.apple.DocumentManager.DockFolderViewService to idle
+    t =     8.37s     Synthesize event
+    t =     8.67s     Wait for com.namslab.glancecard to idle
+    t =     9.06s Tap "Stop future repeats" Button
+    t =     9.06s     Wait for com.namslab.glancecard to idle
+    t =     9.06s     Find the "Stop future repeats" Button
+    t =     9.15s     Check for interrupting elements affecting "Stop future repeats" Button
+    t =     9.21s     Synthesize event
+    t =     9.50s     Wait for com.namslab.glancecard to idle
+    t =     9.90s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    10.92s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    10.93s         Checking existence of `"qa.storage" StaticText`
+    t =    11.01s Find the "qa.storage" StaticText
+    t =    11.06s Pressing Home button
+    t =    11.52s Waiting 5.0s for StaticText (First Match) to exist
+    t =    12.54s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    12.54s         Checking existence of `StaticText (First Match)`
+    t =    12.67s Find the StaticText (First Match)
+    t =    12.80s Waiting 45.0s for "Keep this task" StaticText to exist
+    t =    13.87s     Checking `Expect predicate `existsNoRetry == 1` for object "Keep this task" StaticText`
+    t =    13.87s         Checking existence of `"Keep this task" StaticText`
+    t =    14.08s Find the "Keep this task" StaticText
+    t =    15.37s Checking `Expect predicate `exists == 0` for object "Walk my dog" StaticText`
+    t =    15.37s     Checking existence of `"Walk my dog" StaticText`
+    t =    15.79s Added attachment named 'ipad-home-widget-after-delete'
+    t =    15.79s Open com.namslab.glancecard
+    t =    15.79s     Activate com.namslab.glancecard
+    t =    15.87s         Wait for com.namslab.glancecard to idle
+    t =    15.90s Tear Down
+    t =    15.90s     Terminate com.namslab.glancecard:9766
+    t =    16.91s     Open com.namslab.glancecard
+    t =    16.91s         Launch com.namslab.glancecard
+2026-10-28 12:30:51.296 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    17.19s             Setting up automation session
+    t =    17.32s             Wait for com.namslab.glancecard to idle
+    t =    18.58s     Waiting 60.0s for "navigation.settings" Button to exist
+    t =    19.62s         Checking `Expect predicate `existsNoRetry == 1` for object "navigation.settings" Button`
+    t =    19.62s             Checking existence of `"navigation.settings" Button`
+    t =    19.74s     Terminate com.namslab.glancecard:9767
+    t =    20.76s     Open com.namslab.glancecard
+    t =    20.76s         Launch com.namslab.glancecard
+2026-10-28 12:30:55.137 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    21.24s             Setting up automation session
+    t =    21.24s             Wait for com.namslab.glancecard to idle
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testHomeWidgetReflectsDeletionOnDevice]' passed (22.949 seconds).
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testInstalledLockWidgetReflectsDeletionWithoutLiveActivity]' started.
+    t =     0.00s Start Test at 2026-10-28 12:30:57.192
+    t =     0.02s Set Up
+    t =     0.03s Open com.namslab.glancecard
+    t =     0.03s     Launch com.namslab.glancecard
+    t =     0.03s         Terminate com.namslab.glancecard:9768
+2026-10-28 12:30:58.535 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =     1.49s         Setting up automation session
+    t =     1.60s         Wait for com.namslab.glancecard to idle
+    t =     2.84s Waiting 30.0s for "navigation.today" Button to exist
+    t =     3.87s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     3.87s         Checking existence of `"navigation.today" Button`
+    t =     4.99s Checking `Expect predicate `label CONTAINS "known=true"` for object "qa.widget" StaticText`
+    t =     4.99s     Find the "qa.widget" StaticText
+    t =     5.07s Find the "qa.widget" StaticText
+IPAD_WIDGET_CONFIGURATION: QA Widget: known=true any=true lock=true
+    t =     5.11s Tap "qa.activity.stop" Button
+    t =     5.11s     Wait for com.namslab.glancecard to idle
+    t =     5.12s     Find the "qa.activity.stop" Button
+    t =     5.16s     Check for interrupting elements affecting "qa.activity.stop" Button
+    t =     5.21s     Synthesize event
+    t =     5.50s     Wait for com.namslab.glancecard to idle
+    t =     6.53s Checking `Expect predicate `NOT label CONTAINS "running"` for object "qa.activity" StaticText`
+    t =     6.53s     Find the "qa.activity" StaticText
+    t =     6.62s Open com.namslab.glancecard
+    t =     6.62s     Activate com.namslab.glancecard
+    t =     6.65s         Wait for com.namslab.glancecard to idle
+    t =     6.66s Setting device orientation to Portrait
+    t =     6.67s     Wait for com.namslab.glancecard to idle
+    t =     6.67s Press Target Application 'com.namslab.glancecard'[0.45, 0.01] for 0.1 seconds, then drag to Target Application 'com.namslab.glancecard'[0.45, 0.75] with velocity of 500.00 pixels per second, and then hold for 0.0 seconds 
+    t =     6.67s     Wait for com.namslab.glancecard to idle
+    t =     6.68s     Find the Target Application 'com.namslab.glancecard'
+    t =     6.72s     Check for interrupting elements affecting "LockTodoNote" Application
+    t =     6.77s     Synthesize event
+    t =     6.77s         Find the Target Application 'com.namslab.glancecard'
+    t =     6.80s         Find the Target Application 'com.namslab.glancecard'
+    t =     6.84s         Find the Target Application 'com.namslab.glancecard'
+    t =     6.87s         Find the Target Application 'com.namslab.glancecard'
+    t =     6.91s         Find the Target Application 'com.namslab.glancecard'
+    t =     9.04s     Wait for com.namslab.glancecard to idle
+    t =     9.05s Waiting 10.0s for "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button to exist
+    t =    10.07s     Checking `Expect predicate `existsNoRetry == 1` for object "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    10.07s         Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    10.26s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    10.44s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    10.60s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    10.98s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    11.12s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    11.28s Added attachment named 'ipad-lock-widget-before-delete-without-activity'
+IPAD_ACCESSORY_OCR before: O Walk my dog O Keep this task
+    t =    11.28s Open com.namslab.glancecard
+    t =    11.28s     Activate com.namslab.glancecard
+    t =    11.33s         Wait for com.namslab.glancecard to idle
+    t =    11.33s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    11.46s Swipe up Target Application 'com.namslab.glancecard'
+    t =    11.46s     Wait for com.namslab.glancecard to idle
+    t =    11.47s     Find the Target Application 'com.namslab.glancecard'
+    t =    11.50s     Check for interrupting elements affecting "LockTodoNote" Application
+    t =    11.50s         Wait for com.apple.springboard to idle
+    t =    12.19s     Synthesize event
+    t =    12.64s     Wait for com.namslab.glancecard to idle
+    t =    13.14s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    13.23s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    13.29s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    13.35s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    13.41s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    13.46s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    13.52s Tap "todo.delete.qa-dog:qa-dog-item" Button
+    t =    13.52s     Wait for com.namslab.glancecard to idle
+    t =    13.52s     Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    13.56s     Check for interrupting elements affecting "todo.delete.qa-dog:qa-dog-item" Button
+    t =    13.60s     Synthesize event
+    t =    13.90s     Wait for com.namslab.glancecard to idle
+    t =    14.30s Tap "Stop future repeats" Button
+    t =    14.30s     Wait for com.namslab.glancecard to idle
+    t =    14.31s     Find the "Stop future repeats" Button
+    t =    14.40s     Check for interrupting elements affecting "Stop future repeats" Button
+    t =    14.46s     Synthesize event
+    t =    14.75s     Wait for com.namslab.glancecard to idle
+    t =    15.14s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    16.16s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    16.16s         Checking existence of `"qa.storage" StaticText`
+    t =    16.23s Find the "qa.storage" StaticText
+    t =    16.27s Press Target Application 'com.namslab.glancecard'[0.45, 0.01] for 0.1 seconds, then drag to Target Application 'com.namslab.glancecard'[0.45, 0.75] with velocity of 500.00 pixels per second, and then hold for 0.0 seconds 
+    t =    16.28s     Wait for com.namslab.glancecard to idle
+    t =    16.28s     Find the Target Application 'com.namslab.glancecard'
+    t =    16.31s     Check for interrupting elements affecting "LockTodoNote" Application
+    t =    16.35s     Synthesize event
+    t =    16.46s         Find the Target Application 'com.namslab.glancecard'
+    t =    16.50s         Find the Target Application 'com.namslab.glancecard'
+    t =    16.54s         Find the Target Application 'com.namslab.glancecard'
+    t =    16.58s         Find the Target Application 'com.namslab.glancecard'
+    t =    16.62s         Find the Target Application 'com.namslab.glancecard'
+    t =    18.75s     Wait for com.namslab.glancecard to idle
+    t =    18.76s Waiting 15.0s for "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button to exist
+    t =    19.77s     Checking `Expect predicate `existsNoRetry == 1` for object "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    19.78s         Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    19.97s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    20.16s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    20.31s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    21.62s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    21.79s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    23.01s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    23.20s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    24.42s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    24.60s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    25.82s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    26.01s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    27.24s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    27.42s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    28.65s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    28.83s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    30.05s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    30.24s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    31.59s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    31.78s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    33.00s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    33.19s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    34.42s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    34.72s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    35.97s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    36.16s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    36.35s Added attachment named 'ipad-lock-widget-os-deferred-update'
+    t =    36.35s Terminate com.namslab.glancecard:9776
+    t =    37.36s Open com.namslab.glancecard
+    t =    37.36s     Launch com.namslab.glancecard
+2026-10-28 12:31:34.720 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    37.66s         Setting up automation session
+    t =    37.83s         Wait for com.namslab.glancecard to idle
+    t =    39.03s Waiting 30.0s for "navigation.today" Button to exist
+    t =    40.06s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    40.06s         Checking existence of `"navigation.today" Button`
+    t =    40.17s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    41.20s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    41.21s         Checking existence of `"qa.storage" StaticText`
+    t =    41.28s Find the "qa.storage" StaticText
+    t =    41.33s Press Target Application 'com.namslab.glancecard'[0.45, 0.01] for 0.1 seconds, then drag to Target Application 'com.namslab.glancecard'[0.45, 0.75] with velocity of 500.00 pixels per second, and then hold for 0.0 seconds 
+    t =    41.33s     Wait for com.namslab.glancecard to idle
+    t =    41.34s     Find the Target Application 'com.namslab.glancecard'
+    t =    41.37s     Check for interrupting elements affecting "LockTodoNote" Application
+    t =    41.41s     Synthesize event
+    t =    41.42s         Find the Target Application 'com.namslab.glancecard'
+    t =    41.45s         Find the Target Application 'com.namslab.glancecard'
+    t =    41.59s         Find the Target Application 'com.namslab.glancecard'
+    t =    41.63s         Find the Target Application 'com.namslab.glancecard'
+    t =    41.68s         Find the Target Application 'com.namslab.glancecard'
+    t =    43.81s     Wait for com.namslab.glancecard to idle
+    t =    43.82s Waiting 15.0s for "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button to exist
+    t =    44.84s     Checking `Expect predicate `existsNoRetry == 1` for object "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    44.84s         Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    45.03s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    45.30s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+IPAD_ACCESSORY_REFRESH used cold relaunch after OS deferral
+IPAD_ACCESSORY_OCR after: O Keep this task
+    t =    45.62s Checking existence of `"com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button`
+    t =    45.79s Find the "com.namslab.glancecard.widget:GlanceCardLockScreenWidget" Button
+    t =    45.98s Added attachment named 'ipad-lock-widget-after-delete-without-activity'
+    t =    45.98s Open com.namslab.glancecard
+    t =    45.98s     Activate com.namslab.glancecard
+    t =    46.03s         Wait for com.namslab.glancecard to idle
+    t =    46.04s Find the "qa.timelines" StaticText
+IPAD_WIDGET_TIMELINES screenAt=1793158302.807888: {"qa.widget.timeline.7":[{"texts":["Walk my dog","Keep this task"],"at":1793158259.0472112,"family":"accessoryRectangular"},{"texts":["Walk my dog","Keep this task"],"at":1793158264.427933,"family":"accessoryRectangular"},{"at":1793158293.689115,"texts":["Keep this task"],"family":"accessoryRectangular"},{"texts":["Keep this task"],"at":1793158295.2120299,"family":"accessoryRectangular"}],"qa.widget.timeline.reloadRequests":[{"at":1793158258.9552619,"texts":["Walk my dog","Keep this task"],"source":"com.namslab.glancecard"},{"at":1793158272.3262281,"texts":["Keep this task"],"source":"com.namslab.glancecard"},{"texts":["Keep this task"],"at":1793158295.1868138,"source":"com.namslab.glancecard"}],"qa.widget.timeline.1":[{"texts":["Walk my dog","Keep this task"],"at":1793158258.9836149,"family":"systemMedium"},{"at":1793158264.5055962,"texts":["Walk my dog","Keep this task"],"family":"systemMedium"},{"texts":["Keep this task"],"at":1793158293.6254559,"family":"systemMedium"},{"texts":["Keep this task"],"at":1793158295.2785349,"family":"systemMedium"}]}
+    t =    46.11s Setting device orientation to Portrait
+    t =    46.12s     Wait for com.apple.springboard to idle
+    t =    46.84s Tear Down
+    t =    46.84s     Terminate com.namslab.glancecard:9777
+    t =    47.92s     Open com.namslab.glancecard
+    t =    47.93s         Launch com.namslab.glancecard
+2026-10-28 12:31:45.257 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    48.23s             Setting up automation session
+    t =    48.40s             Wait for com.namslab.glancecard to idle
+    t =    49.66s     Waiting 60.0s for "navigation.settings" Button to exist
+    t =    50.67s         Checking `Expect predicate `existsNoRetry == 1` for object "navigation.settings" Button`
+    t =    50.67s             Checking existence of `"navigation.settings" Button`
+    t =    50.79s     Terminate com.namslab.glancecard:9778
+    t =    51.81s     Open com.namslab.glancecard
+    t =    51.81s         Launch com.namslab.glancecard
+2026-10-28 12:31:49.256 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    52.41s             Setting up automation session
+    t =    52.42s             Wait for com.namslab.glancecard to idle
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testInstalledLockWidgetReflectsDeletionWithoutLiveActivity]' passed (54.181 seconds).
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testLiveActivityReflectsDeletionOnSystemSurface]' started.
+    t =     0.00s Start Test at 2026-10-28 12:31:51.375
+    t =     0.02s Set Up
+    t =     0.03s Open com.namslab.glancecard
+    t =     0.03s     Launch com.namslab.glancecard
+    t =     0.03s         Terminate com.namslab.glancecard:9779
+2026-10-28 12:31:52.549 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =     1.31s         Setting up automation session
+    t =     1.44s         Wait for com.namslab.glancecard to idle
+    t =     2.72s Waiting 30.0s for "navigation.today" Button to exist
+    t =     3.74s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     3.74s         Checking existence of `"navigation.today" Button`
+    t =     3.85s Find the "qa.activity" StaticText
+IPAD_ACTIVITY before start: QA Activity: unsupported_disabled
+    t =     3.89s Find the "qa.activity" StaticText
+    t =     3.93s Open com.namslab.glancecard
+    t =     3.94s     Activate com.namslab.glancecard
+    t =     3.97s         Wait for com.namslab.glancecard to idle
+    t =     3.98s Waiting 10.0s for "qa.settings.open" Button to exist
+    t =     4.99s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.settings.open" Button`
+    t =     4.99s         Checking existence of `"qa.settings.open" Button`
+    t =     5.07s Tap "qa.settings.open" Button
+    t =     5.07s     Wait for com.namslab.glancecard to idle
+    t =     5.08s     Find the "qa.settings.open" Button
+    t =     5.12s     Check for interrupting elements affecting "qa.settings.open" Button
+    t =     5.18s     Synthesize event
+    t =     5.47s     Wait for com.namslab.glancecard to idle
+    t =     5.48s Wait for com.apple.Preferences to become Running Foreground
+    t =     5.48s Waiting 3.0s for Switch (First Match) to exist
+    t =     6.53s     Checking `Expect predicate `existsNoRetry == 1` for object Switch (First Match)`
+    t =     6.53s         Checking existence of `Switch (First Match)`
+    t =     6.65s         Capturing element debug description
+    t =     7.56s     Checking `Expect predicate `existsNoRetry == 1` for object Switch (First Match)`
+    t =     7.57s         Checking existence of `Switch (First Match)`
+    t =     7.67s         Capturing element debug description
+    t =     8.49s     Checking `Expect predicate `existsNoRetry == 1` for object Switch (First Match)`
+    t =     8.49s         Checking existence of `Switch (First Match)`
+    t =     8.58s         Capturing element debug description
+    t =     8.59s     Checking existence of `Switch (First Match)`
+    t =     8.64s Collecting debug information to assist test failure triage
+    t =     8.64s     Requesting snapshot of accessibility hierarchy for app with pid 9275
+    t =     8.87s Waiting 3.0s for Cell (First Match) to exist
+    t =     9.89s     Checking `Expect predicate `existsNoRetry == 1` for object Cell (First Match)`
+    t =     9.89s         Checking existence of `Cell (First Match)`
+    t =     9.99s         Capturing element debug description
+    t =    10.87s     Checking `Expect predicate `existsNoRetry == 1` for object Cell (First Match)`
+    t =    10.87s         Checking existence of `Cell (First Match)`
+    t =    10.97s         Capturing element debug description
+    t =    11.88s     Checking `Expect predicate `existsNoRetry == 1` for object Cell (First Match)`
+    t =    11.88s         Checking existence of `Cell (First Match)`
+    t =    11.98s         Capturing element debug description
+    t =    11.98s     Checking existence of `Cell (First Match)`
+    t =    12.05s Collecting debug information to assist test failure triage
+    t =    12.05s     Requesting snapshot of accessibility hierarchy for app with pid 9275
+    t =    12.27s Waiting 3.0s for Button (First Match) to exist
+    t =    13.28s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    13.29s         Checking existence of `Button (First Match)`
+    t =    13.38s Tap Button (First Match)
+    t =    13.38s     Wait for com.apple.Preferences to idle
+    t =    13.38s     Find the Button (First Match)
+    t =    13.44s     Check for interrupting elements affecting "실시간 현황" Button
+    t =    13.52s     Synthesize event
+    t =    13.86s     Wait for com.apple.Preferences to idle
+    t =    14.22s Waiting 5.0s for Switch (First Match) to exist
+    t =    15.23s     Checking `Expect predicate `existsNoRetry == 1` for object Switch (First Match)`
+    t =    15.24s         Checking existence of `Switch (First Match)`
+    t =    15.32s Find the Switch (First Match)
+IPAD_ACTIVITY_SETTING before: 0; desired: 1
+    t =    15.38s Find the "실시간 현황 허용" Switch
+    t =    15.53s Tap "실시간 현황 허용" Switch[0.94, 0.50]
+    t =    15.53s     Wait for com.apple.Preferences to idle
+    t =    15.54s     Find the "실시간 현황 허용" Switch
+    t =    15.61s     Check for interrupting elements affecting "실시간 현황 허용" Switch
+    t =    15.67s     Synthesize event
+    t =    15.73s         Find the "실시간 현황 허용" Switch
+    t =    15.77s         Find the "실시간 현황 허용" Switch
+    t =    15.81s         Find the "실시간 현황 허용" Switch
+    t =    16.13s     Wait for com.apple.Preferences to idle
+    t =    17.46s Find the "실시간 현황 허용" Switch
+IPAD_ACTIVITY_SETTING after: 1
+    t =    17.67s Added attachment named 'ipad-live-activities-enabled-setting'
+    t =    18.70s Checking `Expect predicate `value == "1" OR value == 1` for object "실시간 현황 허용" Switch`
+    t =    18.70s     Find the "실시간 현황 허용" Switch
+    t =    18.83s Open com.namslab.glancecard
+    t =    18.83s     Activate com.namslab.glancecard
+    t =    18.92s         Wait for com.namslab.glancecard to idle
+    t =    18.95s Waiting 5.0s for "Start" Button to exist
+    t =    19.95s     Checking `Expect predicate `existsNoRetry == 1` for object "Start" Button`
+    t =    19.95s         Checking existence of `"Start" Button`
+    t =    19.98s Find the "Start" Button
+    t =    20.02s Tap "Start" Button
+    t =    20.02s     Wait for com.namslab.glancecard to idle
+    t =    20.03s     Find the "Start" Button
+    t =    20.04s     Check for interrupting elements affecting "Start" Button
+    t =    20.08s     Synthesize event
+    t =    20.37s     Wait for com.namslab.glancecard to idle
+    t =    20.50s Added attachment named 'ipad-live-activity-start-state'
+    t =    21.57s Checking `Expect predicate `label CONTAINS "running"` for object "qa.activity" StaticText`
+    t =    21.57s     Find the "qa.activity" StaticText
+    t =    21.65s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    21.71s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    21.77s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    21.82s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    21.88s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    21.94s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    21.99s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    22.05s Tap "todo.delete.qa-dog:qa-dog-item" Button
+    t =    22.05s     Wait for com.namslab.glancecard to idle
+    t =    22.05s     Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =    22.09s     Check for interrupting elements affecting "todo.delete.qa-dog:qa-dog-item" Button
+    t =    22.13s     Synthesize event
+    t =    22.42s     Wait for com.namslab.glancecard to idle
+    t =    22.80s Tap "Stop future repeats" Button
+    t =    22.80s     Wait for com.namslab.glancecard to idle
+    t =    22.81s     Find the "Stop future repeats" Button
+    t =    22.90s     Check for interrupting elements affecting "Stop future repeats" Button
+    t =    22.95s     Synthesize event
+    t =    23.36s     Wait for com.namslab.glancecard to idle
+    t =    23.77s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    24.78s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    24.78s         Checking existence of `"qa.storage" StaticText`
+    t =    24.87s Find the "qa.storage" StaticText
+    t =    25.93s Checking `Expect predicate `NOT label CONTAINS "Walk my dog"` for object "qa.dashboard" StaticText`
+    t =    25.94s     Find the "qa.dashboard" StaticText
+    t =    26.01s Press Target Application 'com.namslab.glancecard'[0.45, 0.01] for 0.1 seconds, then drag to Target Application 'com.namslab.glancecard'[0.45, 0.75] with velocity of 500.00 pixels per second, and then hold for 0.0 seconds 
+    t =    26.01s     Wait for com.namslab.glancecard to idle
+    t =    26.02s     Find the Target Application 'com.namslab.glancecard'
+    t =    26.06s     Check for interrupting elements affecting "LockTodoNote" Application
+    t =    26.10s     Synthesize event
+    t =    26.10s         Find the Target Application 'com.namslab.glancecard'
+    t =    26.13s         Find the Target Application 'com.namslab.glancecard'
+    t =    26.17s         Find the Target Application 'com.namslab.glancecard'
+    t =    26.20s         Find the Target Application 'com.namslab.glancecard'
+    t =    26.24s         Find the Target Application 'com.namslab.glancecard'
+    t =    28.36s     Wait for com.namslab.glancecard to idle
+    t =    28.37s Waiting 15.0s for StaticText (First Match) to exist
+    t =    29.47s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    29.47s         Checking existence of `StaticText (First Match)`
+    t =    29.69s Checking existence of `StaticText (First Match)`
+    t =    29.88s Find the StaticText (First Match)
+    t =    30.11s Checking existence of `"○ Keep this task" StaticText`
+    t =    30.34s Find the "○ Keep this task" StaticText
+    t =    30.59s Added attachment named 'review-system-live-activity-after-delete'
+    t =    30.59s Open com.namslab.glancecard
+    t =    30.59s     Activate com.namslab.glancecard
+    t =    30.65s         Wait for com.namslab.glancecard to idle
+    t =    30.66s Tear Down
+    t =    30.66s     Open com.namslab.glancecard
+    t =    30.66s         Activate com.namslab.glancecard
+    t =    31.48s             Wait for com.namslab.glancecard to idle
+    t =    31.55s     Waiting 10.0s for "qa.settings.open" Button to exist
+    t =    32.57s         Checking `Expect predicate `existsNoRetry == 1` for object "qa.settings.open" Button`
+    t =    32.57s             Checking existence of `"qa.settings.open" Button`
+    t =    32.65s     Tap "qa.settings.open" Button
+    t =    32.65s         Wait for com.namslab.glancecard to idle
+    t =    32.66s         Find the "qa.settings.open" Button
+    t =    32.71s         Check for interrupting elements affecting "qa.settings.open" Button
+    t =    32.76s         Synthesize event
+    t =    33.06s         Wait for com.namslab.glancecard to idle
+    t =    33.06s     Wait for com.apple.Preferences to become Running Foreground
+    t =    33.06s     Waiting 3.0s for Switch (First Match) to exist
+    t =    34.16s         Checking `Expect predicate `existsNoRetry == 1` for object Switch (First Match)`
+    t =    34.16s             Checking existence of `Switch (First Match)`
+    t =    34.23s             Capturing element debug description
+    t =    35.12s         Checking `Expect predicate `existsNoRetry == 1` for object Switch (First Match)`
+    t =    35.13s             Checking existence of `Switch (First Match)`
+    t =    35.23s             Capturing element debug description
+    t =    36.07s         Checking `Expect predicate `existsNoRetry == 1` for object Switch (First Match)`
+    t =    36.07s             Checking existence of `Switch (First Match)`
+    t =    36.17s             Capturing element debug description
+    t =    36.18s         Checking existence of `Switch (First Match)`
+    t =    36.24s     Collecting debug information to assist test failure triage
+    t =    36.24s         Requesting snapshot of accessibility hierarchy for app with pid 9275
+    t =    36.46s     Waiting 3.0s for Cell (First Match) to exist
+    t =    37.47s         Checking `Expect predicate `existsNoRetry == 1` for object Cell (First Match)`
+    t =    37.47s             Checking existence of `Cell (First Match)`
+    t =    37.58s             Capturing element debug description
+    t =    38.51s         Checking `Expect predicate `existsNoRetry == 1` for object Cell (First Match)`
+    t =    38.51s             Checking existence of `Cell (First Match)`
+    t =    38.61s             Capturing element debug description
+    t =    39.46s         Checking `Expect predicate `existsNoRetry == 1` for object Cell (First Match)`
+    t =    39.46s             Checking existence of `Cell (First Match)`
+    t =    39.55s             Capturing element debug description
+    t =    39.56s         Checking existence of `Cell (First Match)`
+    t =    39.62s     Collecting debug information to assist test failure triage
+    t =    39.63s         Requesting snapshot of accessibility hierarchy for app with pid 9275
+    t =    39.85s     Waiting 3.0s for Button (First Match) to exist
+    t =    40.87s         Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    40.88s             Checking existence of `Button (First Match)`
+    t =    40.97s     Tap Button (First Match)
+    t =    40.97s         Wait for com.apple.Preferences to idle
+    t =    40.98s         Find the Button (First Match)
+    t =    41.03s         Check for interrupting elements affecting "실시간 현황" Button
+    t =    41.24s         Synthesize event
+    t =    41.58s         Wait for com.apple.Preferences to idle
+    t =    41.94s     Waiting 5.0s for Switch (First Match) to exist
+    t =    42.96s         Checking `Expect predicate `existsNoRetry == 1` for object Switch (First Match)`
+    t =    42.96s             Checking existence of `Switch (First Match)`
+    t =    43.04s     Find the Switch (First Match)
+IPAD_ACTIVITY_SETTING before: 1; desired: 0
+    t =    43.09s     Find the "실시간 현황 허용" Switch
+    t =    43.24s     Tap "실시간 현황 허용" Switch[0.94, 0.50]
+    t =    43.25s         Wait for com.apple.Preferences to idle
+    t =    43.25s         Find the "실시간 현황 허용" Switch
+    t =    43.32s         Check for interrupting elements affecting "실시간 현황 허용" Switch
+    t =    43.39s         Synthesize event
+    t =    43.44s             Find the "실시간 현황 허용" Switch
+    t =    43.49s             Find the "실시간 현황 허용" Switch
+    t =    43.54s             Find the "실시간 현황 허용" Switch
+    t =    43.87s         Wait for com.apple.Preferences to idle
+    t =    45.18s     Find the "실시간 현황 허용" Switch
+IPAD_ACTIVITY_SETTING after: 0
+    t =    45.39s     Added attachment named 'ipad-live-activities-restored-setting'
+    t =    46.42s     Checking `Expect predicate `value == "0" OR value == 0` for object "실시간 현황 허용" Switch`
+    t =    46.42s         Find the "실시간 현황 허용" Switch
+    t =    46.55s     Open com.namslab.glancecard
+    t =    46.55s         Activate com.namslab.glancecard
+    t =    46.63s             Wait for com.namslab.glancecard to idle
+    t =    46.65s     Terminate com.namslab.glancecard:9788
+    t =    47.75s     Open com.namslab.glancecard
+    t =    47.76s         Launch com.namslab.glancecard
+2026-10-28 12:32:39.269 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    48.10s             Setting up automation session
+    t =    48.21s             Wait for com.namslab.glancecard to idle
+    t =    49.48s     Waiting 60.0s for "navigation.settings" Button to exist
+    t =    50.49s         Checking `Expect predicate `existsNoRetry == 1` for object "navigation.settings" Button`
+    t =    50.50s             Checking existence of `"navigation.settings" Button`
+    t =    50.62s     Terminate com.namslab.glancecard:9798
+    t =    51.63s     Open com.namslab.glancecard
+    t =    51.63s         Launch com.namslab.glancecard
+2026-10-28 12:32:43.049 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    51.98s             Setting up automation session
+    t =    52.00s             Wait for com.namslab.glancecard to idle
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testLiveActivityReflectsDeletionOnSystemSurface]' passed (53.662 seconds).
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testStopFutureRepeatsAndRelaunchNextDays]' started.
+    t =     0.00s Start Test at 2026-10-28 12:32:45.038
+    t =     0.02s Set Up
+    t =     0.02s Open com.namslab.glancecard
+    t =     0.03s     Launch com.namslab.glancecard
+    t =     0.03s         Terminate com.namslab.glancecard:9799
+2026-10-28 12:32:46.120 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =     1.32s         Setting up automation session
+    t =     1.42s         Wait for com.namslab.glancecard to idle
+    t =     2.70s Waiting 30.0s for "navigation.today" Button to exist
+    t =     3.71s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     3.71s         Checking existence of `"navigation.today" Button`
+    t =     3.82s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     3.88s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     3.93s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     3.98s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.04s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.09s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.26s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.46s Added attachment named 'review-before-delete'
+    t =     4.47s Tap "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.47s     Wait for com.namslab.glancecard to idle
+    t =     4.47s     Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.54s     Check for interrupting elements affecting "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.57s     Synthesize event
+    t =     4.86s     Wait for com.namslab.glancecard to idle
+    t =     5.25s Waiting 5.0s for "Stop future repeats" Button to exist
+    t =     6.27s     Checking `Expect predicate `existsNoRetry == 1` for object "Stop future repeats" Button`
+    t =     6.28s         Checking existence of `"Stop future repeats" Button`
+    t =     6.52s Added attachment named 'review-delete-scopes'
+    t =     6.52s Tap "Stop future repeats" Button
+    t =     6.52s     Wait for com.namslab.glancecard to idle
+    t =     6.52s     Find the "Stop future repeats" Button
+    t =     6.60s     Check for interrupting elements affecting "Stop future repeats" Button
+    t =     6.64s     Synthesize event
+    t =     6.93s     Wait for com.namslab.glancecard to idle
+    t =     7.31s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =     8.32s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =     8.32s         Checking existence of `"qa.storage" StaticText`
+    t =     8.40s Find the "qa.storage" StaticText
+    t =     8.55s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =     9.56s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =     9.56s         Checking existence of `"qa.storage" StaticText`
+    t =     9.63s Find the "qa.storage" StaticText
+    t =     9.68s Find the "qa.dashboard" StaticText
+    t =     9.86s Added attachment named 'review-stopped-with-sibling-preserved'
+    t =     9.86s Tap "qa.advanceDay" Button
+    t =     9.86s     Wait for com.namslab.glancecard to idle
+    t =     9.86s     Find the "qa.advanceDay" Button
+    t =     9.92s     Check for interrupting elements affecting "qa.advanceDay" Button
+    t =     9.95s     Synthesize event
+    t =    10.23s     Wait for com.namslab.glancecard to idle
+    t =    10.23s Find the "qa.date" StaticText
+    t =    10.31s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    11.31s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    11.31s         Checking existence of `"qa.storage" StaticText`
+    t =    11.38s Find the "qa.storage" StaticText
+    t =    11.57s Added attachment named 'review-running-date-boundary'
+    t =    11.57s Terminate com.namslab.glancecard:9807
+    t =    12.58s Open com.namslab.glancecard
+    t =    12.58s     Launch com.namslab.glancecard
+2026-10-28 12:32:57.672 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    12.85s         Setting up automation session
+    t =    12.95s         Wait for com.namslab.glancecard to idle
+    t =    14.21s Waiting 30.0s for "navigation.today" Button to exist
+    t =    15.26s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    15.26s         Checking existence of `"navigation.today" Button`
+    t =    15.37s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    16.39s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    16.39s         Checking existence of `"qa.storage" StaticText`
+    t =    16.47s Find the "qa.storage" StaticText
+    t =    16.52s Find the "qa.date" StaticText
+    t =    16.56s Find the "qa.dashboard" StaticText
+    t =    16.60s Terminate com.namslab.glancecard:9809
+    t =    17.66s Open com.namslab.glancecard
+    t =    17.66s     Launch com.namslab.glancecard
+2026-10-28 12:33:02.780 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    17.97s         Setting up automation session
+    t =    18.08s         Wait for com.namslab.glancecard to idle
+    t =    19.34s Waiting 30.0s for "navigation.today" Button to exist
+    t =    20.35s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    20.36s         Checking existence of `"navigation.today" Button`
+    t =    20.47s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    21.48s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    21.48s         Checking existence of `"qa.storage" StaticText`
+    t =    21.56s Find the "qa.storage" StaticText
+    t =    21.61s Find the "qa.date" StaticText
+    t =    21.65s Find the "qa.dashboard" StaticText
+    t =    21.68s Terminate com.namslab.glancecard:9810
+    t =    22.78s Open com.namslab.glancecard
+    t =    22.78s     Launch com.namslab.glancecard
+2026-10-28 12:33:07.868 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    23.25s         Setting up automation session
+    t =    23.26s         Wait for com.namslab.glancecard to idle
+    t =    24.50s Waiting 30.0s for "navigation.today" Button to exist
+    t =    25.51s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    25.51s         Checking existence of `"navigation.today" Button`
+    t =    25.63s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    26.63s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    26.63s         Checking existence of `"qa.storage" StaticText`
+    t =    26.71s Find the "qa.storage" StaticText
+    t =    26.76s Find the "qa.date" StaticText
+    t =    26.80s Find the "qa.dashboard" StaticText
+    t =    26.98s Added attachment named 'review-next-day-auto-without-dog'
+    t =    26.98s Tear Down
+    t =    26.98s     Terminate com.namslab.glancecard:9811
+    t =    28.05s     Open com.namslab.glancecard
+    t =    28.05s         Launch com.namslab.glancecard
+2026-10-28 12:33:13.131 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    28.53s             Setting up automation session
+    t =    28.54s             Wait for com.namslab.glancecard to idle
+    t =    29.82s     Waiting 60.0s for "navigation.settings" Button to exist
+    t =    30.83s         Checking `Expect predicate `existsNoRetry == 1` for object "navigation.settings" Button`
+    t =    30.84s             Checking existence of `"navigation.settings" Button`
+    t =    30.96s     Terminate com.namslab.glancecard:9812
+    t =    31.98s     Open com.namslab.glancecard
+    t =    31.98s         Launch com.namslab.glancecard
+2026-10-28 12:33:17.057 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    32.26s             Setting up automation session
+    t =    32.35s             Wait for com.namslab.glancecard to idle
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testStopFutureRepeatsAndRelaunchNextDays]' passed (34.039 seconds).
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testTodayOnlyAndOrdinaryDeletion]' started.
+    t =     0.00s Start Test at 2026-10-28 12:33:19.079
+    t =     0.03s Set Up
+    t =     0.03s Open com.namslab.glancecard
+    t =     0.03s     Launch com.namslab.glancecard
+    t =     0.03s         Terminate com.namslab.glancecard:9813
+2026-10-28 12:33:20.202 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =     1.35s         Setting up automation session
+    t =     1.49s         Wait for com.namslab.glancecard to idle
+    t =     3.17s Waiting 30.0s for "navigation.today" Button to exist
+    t =     4.20s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     4.20s         Checking existence of `"navigation.today" Button`
+    t =     4.31s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.37s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.54s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.73s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.81s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     4.88s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     5.05s Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     5.14s Tap "todo.delete.qa-dog:qa-dog-item" Button
+    t =     5.14s     Wait for com.namslab.glancecard to idle
+    t =     5.14s     Find the "todo.delete.qa-dog:qa-dog-item" Button
+    t =     5.19s     Check for interrupting elements affecting "todo.delete.qa-dog:qa-dog-item" Button
+    t =     5.23s     Synthesize event
+    t =     5.53s     Wait for com.namslab.glancecard to idle
+    t =     5.93s Tap "Delete this day only" Button
+    t =     5.93s     Wait for com.namslab.glancecard to idle
+    t =     5.94s     Find the "Delete this day only" Button
+    t =     6.03s     Check for interrupting elements affecting "Delete this day only" Button
+    t =     6.09s     Synthesize event
+    t =     6.39s     Wait for com.namslab.glancecard to idle
+    t =     6.77s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =     7.78s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =     7.79s         Checking existence of `"qa.storage" StaticText`
+    t =     7.87s Find the "qa.storage" StaticText
+    t =     7.91s Terminate com.namslab.glancecard:9821
+    t =     9.02s Open com.namslab.glancecard
+    t =     9.03s     Launch com.namslab.glancecard
+2026-10-28 12:33:28.153 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =     9.38s         Setting up automation session
+    t =     9.51s         Wait for com.namslab.glancecard to idle
+    t =    10.77s Waiting 30.0s for "navigation.today" Button to exist
+    t =    11.78s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    11.78s         Checking existence of `"navigation.today" Button`
+    t =    11.88s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    12.91s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    12.91s         Checking existence of `"qa.storage" StaticText`
+    t =    12.98s Find the "qa.storage" StaticText
+    t =    13.03s Terminate com.namslab.glancecard:9823
+    t =    14.05s Open com.namslab.glancecard
+    t =    14.05s     Launch com.namslab.glancecard
+2026-10-28 12:33:33.196 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    14.34s         Setting up automation session
+    t =    14.45s         Wait for com.namslab.glancecard to idle
+    t =    15.71s Waiting 30.0s for "navigation.today" Button to exist
+    t =    16.74s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    16.74s         Checking existence of `"navigation.today" Button`
+    t =    16.86s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    17.89s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    17.89s         Checking existence of `"qa.storage" StaticText`
+    t =    17.97s Find the "qa.storage" StaticText
+    t =    18.02s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    18.09s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    18.14s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    18.20s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    18.26s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    18.32s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    18.37s Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    18.53s Tap "todo.delete.qa-dog:qa-sibling" Button
+    t =    18.53s     Wait for com.namslab.glancecard to idle
+    t =    18.55s     Find the "todo.delete.qa-dog:qa-sibling" Button
+    t =    18.61s     Check for interrupting elements affecting "todo.delete.qa-dog:qa-sibling" Button
+    t =    18.66s     Synthesize event
+    t =    18.96s     Wait for com.namslab.glancecard to idle
+    t =    18.97s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    19.99s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    19.99s         Checking existence of `"qa.storage" StaticText`
+    t =    20.07s Find the "qa.storage" StaticText
+    t =    20.11s Terminate com.namslab.glancecard:9824
+    t =    21.12s Open com.namslab.glancecard
+    t =    21.12s     Launch com.namslab.glancecard
+2026-10-28 12:33:40.254 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    21.46s         Setting up automation session
+    t =    21.61s         Wait for com.namslab.glancecard to idle
+    t =    22.84s Waiting 30.0s for "navigation.today" Button to exist
+    t =    23.84s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =    23.84s         Checking existence of `"navigation.today" Button`
+    t =    23.96s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    24.97s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    24.98s         Checking existence of `"qa.storage" StaticText`
+    t =    25.05s Find the "qa.storage" StaticText
+    t =    25.10s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    26.11s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    26.11s         Checking existence of `"qa.storage" StaticText`
+    t =    26.18s Find the "qa.storage" StaticText
+    t =    26.38s Added attachment named 'review-today-only-next-occurrence'
+    t =    26.38s Tear Down
+    t =    26.38s     Terminate com.namslab.glancecard:9825
+    t =    27.44s     Open com.namslab.glancecard
+    t =    27.44s         Launch com.namslab.glancecard
+2026-10-28 12:33:46.555 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    27.95s             Setting up automation session
+    t =    27.96s             Wait for com.namslab.glancecard to idle
+    t =    29.21s     Waiting 60.0s for "navigation.settings" Button to exist
+    t =    30.22s         Checking `Expect predicate `existsNoRetry == 1` for object "navigation.settings" Button`
+    t =    30.22s             Checking existence of `"navigation.settings" Button`
+    t =    30.34s     Terminate com.namslab.glancecard:9826
+    t =    31.35s     Open com.namslab.glancecard
+    t =    31.35s         Launch com.namslab.glancecard
+2026-10-28 12:33:50.492 xcodebuild[90084:11994499] [MT] DVTDevice: Error locating DeviceSupport directory using Optional("arm64") or Optional("arm64e"): nilError
+    t =    31.65s             Setting up automation session
+    t =    31.77s             Wait for com.namslab.glancecard to idle
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testTodayOnlyAndOrdinaryDeletion]' passed (33.435 seconds).
+Test Suite 'ReviewRegressionUITests' passed at 2026-10-28 12:33:52.513.
+	 Executed 10 tests, with 0 failures (0 unexpected) in 309.317 (309.327) seconds
+Test Suite 'LockTodoNoteUITests.xctest' passed at 2026-10-28 12:33:52.515.
+	 Executed 10 tests, with 0 failures (0 unexpected) in 309.317 (309.330) seconds
+Test Suite 'Selected tests' passed at 2026-10-28 12:33:52.517.
+	 Executed 10 tests, with 0 failures (0 unexpected) in 309.317 (309.333) seconds
+2026-10-28 12:33:53.168 xcodebuild[90084:12000771]  IDETestOperationsObserverDebug: Failure collecting diagnostics from devices: Process exited with error 1:
+ ERROR: The operation couldn’t be completed. (CoreDeviceCLISupport.DiagnoseError error 0.)
+This tool generates files that allow Apple to investigate issues with your
+computer and help improve Apple products. The files might contain personal
+information found on your device or associated with your Apple Account(s),
+including but not limited to your name, serial numbers of your device,
+your device name, your device's location over the last one to two days,
+your attached peripheral devices, your user name, your email address and
+email settings, file paths, file names, Siri suggestions, your computer's
+IP addresses, and network connection information.
+
+This information is used by Apple in accordance with its privacy policy
+(www.apple.com/privacy) and is not shared with any other company. By using
+this tool and sending the results to Apple, you consent to Apple using the
+contents of these files to improve Apple products.
+
+An error occurred while running devicectl diagnose. Will archive the diagnostics collected thus far.
+Wrote file to /Users/nam/.codex/tmp/locktodonote-review-ipad-20261028/final-regression-tests.xcresult/Staging/1_Test/Diagnostics/devicectl_diagnostics.zip
+Partial devicectl diagnose bundle located here: /Users/nam/.codex/tmp/locktodonote-review-ipad-20261028/final-regression-tests.xcresult/Staging/1_Test/Diagnostics/devicectl_diagnostics.zip
+
+2026-10-28 12:33:53.182 xcodebuild[90084:11994499] [MT] IDETestOperationsObserverDebug: 313.614 elapsed -- Testing started completed.
+2026-10-28 12:33:53.182 xcodebuild[90084:11994499] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-28 12:33:53.182 xcodebuild[90084:11994499] [MT] IDETestOperationsObserverDebug: 313.614 sec, +313.614 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/nam/.codex/tmp/locktodonote-review-ipad-20261028/final-regression-tests.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started

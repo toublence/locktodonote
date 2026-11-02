@@ -1,0 +1,13 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project LockTodoNote.xcodeproj -scheme LockTodoNote -destination "platform=iOS Simulator,id=091CDD1E-C47F-45FE-8EBE-101705FC4F8C" -derivedDataPath /Users/nam/Library/Developer/Xcode/DerivedData/LockTodoNote-atpzgemoirqqmierhepkcfjatasq -disableAutomaticPackageResolution -skipPackageUpdates -jobs 4 build-for-testing COMPILER_INDEX_STORE_ENABLE=NO
+
+Build settings from command line:
+    COMPILER_INDEX_STORE_ENABLE = NO
+
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/nam/Library/Developer/Xcode/DerivedData/LockTodoNote-atpzgemoirqqmierhepkcfjatasq/Build/Products/Debug-iphonesimulator/LockTodoNoteUITests-Runner.app
+/Users/nam/Library/Developer/Xcode/DerivedData/LockTodoNote-atpzgemoirqqmierhepkcfjatasq/Build/Products/Debug-iphonesimulator/LockTodoNoteUITests-Runner.app: replacing existing signature
+
+note: Run script build phase 'Upload Crashlytics dSYMs' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'LockTodoNote' from project 'LockTodoNote')
+** TEST BUILD SUCCEEDED **
+

@@ -1,0 +1,19 @@
+[
+  "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+  "LockTodoNote.xcodeproj/project.pbxproj",
+  "LockTodoNote/App/AppEnvironment.swift",
+  "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+  "LockTodoNote/Core/LiveActivity/DashboardCoordinator.swift",
+  "LockTodoNote/Core/Reminders/ReminderSyncService.swift",
+  "LockTodoNote/Core/Storage/CardRepository.swift",
+  "LockTodoNote/Core/Storage/CardStore.swift",
+  "LockTodoNote/Features/Home/LockScreenTabView.swift",
+  "LockTodoNote/Features/Settings/AppleRemindersSettingsView.swift",
+  "LockTodoNote/Features/Templates/SmartLockScreenView.swift",
+  "LockTodoNote/Features/Todo/AdvancedRepeatPicker.swift",
+  "LockTodoNote/Features/Todo/QuickAddSheet.swift",
+  "LockTodoNote/Features/Todo/QuickCaptureView.swift",
+  "Packages/LockTodoNoteShared/Sources/LockTodoNoteShared/AppGroup/AppGroupStore.swift",
+  "Packages/LockTodoNoteShared/Sources/LockTodoNoteShared/AppGroup/PendingItems.swift",
+  "Tests/LockTodoNoteTests/AnalyticsServiceTests.swift"
+]

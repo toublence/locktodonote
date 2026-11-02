@@ -1,0 +1,35 @@
+{
+  "devicesAndConfigurations": [
+    {
+      "device": {
+        "architecture": "arm64",
+        "deviceName": "iPad (4)",
+        "modelName": "iPad Air 11-inch (M2)",
+        "osBuildNumber": "23G90",
+        "osVersion": "26.6.2",
+        "platform": "iOS"
+      },
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "passedTests": 10,
+      "skippedTests": 0,
+      "testPlanConfiguration": {
+        "configurationId": "1",
+        "configurationName": "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription": "LockTodoNote · Built with macOS 15.7.3",
+  "expectedFailures": 0,
+  "failedTests": 0,
+  "finishTime": 1793158433.201,
+  "passedTests": 10,
+  "result": "Passed",
+  "skippedTests": 0,
+  "startTime": 1793158104.104,
+  "statistics": [],
+  "testFailures": [],
+  "title": "Test - LockTodoNote",
+  "topInsights": [],
+  "totalTestCount": 10
+}

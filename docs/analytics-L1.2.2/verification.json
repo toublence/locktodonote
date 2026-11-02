@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-31",
+  "release": "L1.2.2",
+  "app_tests": {
+    "passed": 31,
+    "suites": 7,
+    "log": "/tmp/locktodonote-L122-storekit-propagation.log"
+  },
+  "release_ios_build": "BUILD SUCCEEDED; Apple Development signed; not an App Store upload archive",
+  "bundles": [
+    {
+      "bundle_id": "com.namslab.glancecard",
+      "version": "1.2.2",
+      "build": "22"
+    },
+    {
+      "bundle_id": "com.namslab.glancecard.ShareExtension",
+      "version": "1.2.2",
+      "build": "22"
+    },
+    {
+      "bundle_id": "com.namslab.glancecard.widget",
+      "version": "1.2.2",
+      "build": "22"
+    }
+  ],
+  "release_executable_sha256": "23704a9376755768d1d2121f717504474efeaa2e67f02b4a8a6e8b9ab0a586ac",
+  "real_iphone": "not connected",
+  "ipad": "iPad Air 11 M2 / iPadOS 26.6.2; 1.2.0(20) to 1.2.2(22) update verified",
+  "firebase_debugview": "iPad widget_configuration_checked received; analytics_release=L1.2.2, app_version=1.2.2, app_build=22, analytics_schema_version=2; not all flows deduplicated",
+  "build_22_conflict": "ASC TestFlight all-status build list latest=21; 22 not observed on 2026-10-31",
+  "manual_simulator": {
+    "existing_card_preserved": true,
+    "smart_repeat_settings_default_on": true,
+    "todo_created_and_app_completed": true,
+    "live_activity_completion_saved": true,
+    "qa_cards_after": 3,
+    "calendar_memo_preserves_todo_display": true,
+    "calendar_capture_ui_unchanged": true,
+    "calendar_record_only_memos": 1
+  },
+  "app_store_upload": false,
+  "purchase_performed": false,
+  "shared_queue_tests": {
+    "passed": 6,
+    "suites": 2,
+    "log": "/tmp/locktodonote-L122-shared-final.log"
+  },
+  "release_build_log": "/tmp/locktodonote-ipad-L122-final-release-build.log",
+  "storekit_test": "Local Xcode lifetime purchase, restore, cached entitlement and refund revocation passed; no account payment",
+  "firebase_project": "q-lens-3c1fd",
+  "firebase_bundle": "com.namslab.glancecard",
+  "ga_property": "528972146",
+  "ga_custom_dimensions_registered": 30,
+  "local_storekit_simulated_purchase": true,
+  "ipad_ui_tests": {
+    "passed_scenarios": [
+      "upgrade onboarding and Smart Repeat settings default ON",
+      "todo create, complete, undo and relaunch",
+      "record-only memo preserves selected display"
+    ],
+    "full_suite_pass": false,
+    "live_activity_completion": "actual system interaction plus card file isDone=true/completedSource=live_activity verified; return UI assertion incomplete",
+    "failed_or_interrupted": [
+      "initial nested scroll locator",
+      "cleanup assertion; exact own records later removed",
+      "final result writer interrupted during low disk space"
+    ],
+    "logs": [
+      "/tmp/locktodonote-ipad-L122-readonly-authenticated.log",
+      "/tmp/locktodonote-ipad-L122-core-flows.log",
+      "/tmp/locktodonote-ipad-L122-core-nested-scroll.log"
+    ],
+    "normal_launch_restored": true,
+    "qa_records_remaining": 0
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "as_of_date": "2026-10-28",
+  "timezone": "Asia/Seoul",
+  "target": {
+    "metric": "App Store Connect cumulative In-App Purchases",
+    "value": 1000,
+    "deadline": null,
+    "confirmed_by_user": "누적 구매 1,000건",
+    "actual_all_time_iap": null,
+    "guardrails": [
+      "actual_paid_transactions",
+      "unique_first_time_payers",
+      "refunded_purchases",
+      "proceeds",
+      "renewals"
+    ]
+  },
+  "observed_screenshot": {
+    "period_start": null,
+    "period_end": null,
+    "visible_date_label": "October 26일",
+    "period_is_monthly": null,
+    "period_is_all_time": null,
+    "first_time_downloads": 816,
+    "redownloads": 34,
+    "store_conversion_rate": 0.0649,
+    "impressions_approximate": 18300,
+    "product_page_views_approximate": 3060,
+    "updates_approximate": 1290,
+    "in_app_purchases": 38,
+    "proceeds_usd_displayed": 87,
+    "paying_users": null,
+    "download_to_paid": {
+      "day1": 0.0141,
+      "day7": 0.0192,
+      "day35": 0.0328
+    },
+    "active_plans": 12,
+    "paid_plans": 9,
+    "monthly_recurring_revenue_usd_displayed": 2,
+    "net_paid_plans": 7,
+    "paid_plan_starts": 6,
+    "conversions_to_paid": 4,
+    "churned_plans": 3,
+    "source_files": [
+      "/Users/nam/projects/ios/locktodonote/docs/iap-1000-evidence-2026-10-28/acquisition-sales.png",
+      "/Users/nam/projects/ios/locktodonote/docs/iap-1000-evidence-2026-10-28/subscriptions.png"
+    ]
+  },
+  "illustrative_model": {
+    "assumed_all_time_iap": 38,
+    "remaining_iap": 962,
+    "warning": "38 is a selected-period screenshot value, not confirmed lifetime IAP. Replace it with the verified all-time total.",
+    "unit": "one first paid transaction per newly acquired payer",
+    "assumed_existing_free_user_conversions": 0,
+    "assumed_renewals": 0,
+    "assumed_additional_purchases_by_existing_payers": 0,
+    "cohort_observation_days": 35,
+    "required_downloads_formula": "ceil(max(0, target - assumed_all_time_iap) / first_paid_conversion_rate)",
+    "rate_scenarios": [
+      {
+        "first_paid_conversion_rate": 0.0328,
+        "basis": "screenshot D35 rate applied illustratively to new downloads; cohort filters unknown",
+        "required_new_downloads": 29330
+      },
+      {
+        "first_paid_conversion_rate": 0.05,
+        "basis": "planning assumption, not measured lift or industry benchmark",
+        "required_new_downloads": 19240
+      },
+      {
+        "first_paid_conversion_rate": 0.07,
+        "basis": "planning assumption, not measured lift or industry benchmark",
+        "required_new_downloads": 13743
+      },
+      {
+        "first_paid_conversion_rate": 0.1,
+        "basis": "planning assumption, not measured lift or industry benchmark",
+        "required_new_downloads": 9620
+      }
+    ],
+    "monthly_scenarios": [
+      {
+        "assumed_monthly_new_downloads": 1000,
+        "assumed_first_paid_conversion_rate": 0.05,
+        "expected_first_purchases_per_month_of_acquisition": 50.0,
+        "required_monthly_acquisition_cohorts": 20,
+        "additional_observation_days_after_last_cohort": 35
+      },
+      {
+        "assumed_monthly_new_downloads": 2000,
+        "assumed_first_paid_conversion_rate": 0.07,
+        "expected_first_purchases_per_month_of_acquisition": 140.0,
+        "required_monthly_acquisition_cohorts": 7,
+        "additional_observation_days_after_last_cohort": 35
+      },
+      {
+        "assumed_monthly_new_downloads": 3000,
+        "assumed_first_paid_conversion_rate": 0.07,
+        "expected_first_purchases_per_month_of_acquisition": 210.00000000000003,
+        "required_monthly_acquisition_cohorts": 5,
+        "additional_observation_days_after_last_cohort": 35
+      }
+    ],
+    "cautions": [
+      "816 observed downloads are not assumed to be monthly.",
+      "Expected values are planning arithmetic, not guaranteed purchases.",
+      "The actual App Store IAP metric includes introductory subscriptions and renewals; distinguish this from actual charged transactions.",
+      "Do not estimate unique payer conversion as screenshot IAP divided by downloads.",
+      "Do not combine platform reports and verified transactions by simple addition; reconcile and deduplicate.",
+      "Refunds and proceeds must be tracked alongside the target."
+    ]
+  },
+  "experiment_sample_size_illustration": {
+    "baseline_rate": 0.0328,
+    "comparison_rate": 0.05,
+    "alpha_two_sided": 0.05,
+    "power": 0.8,
+    "allocation": "1:1",
+    "approximate_mature_downloads_per_arm": 2105,
+    "method": "normal approximation for two independent proportions; no continuity correction",
+    "limitation": "Planning illustration only; excludes clustering, duplicate users, unequal traffic, sequential monitoring and delayed-payment effects."
+  },
+  "public_korea_prices_krw": {
+    "locktodonote": {
+      "monthly": 1100,
+      "yearly": 7700,
+      "lifetime": 17000
+    },
+    "livenote": {
+      "monthly": 2900,
+      "yearly": 17900,
+      "lifetime": 49000
+    },
+    "live_minder": {
+      "monthly": 1100,
+      "yearly": null,
+      "lifetime": 15000
+    },
+    "basis": "Public App Store listings retrieved 2026-10-28; reconfirm actual StoreKit products before a price experiment."
+  },
+  "sources": {
+    "metrics": "https://developer.apple.com/help/app-store-connect-analytics/reference/metrics-definitions/",
+    "cohorts": "https://developer.apple.com/help/app-store-connect-analytics/monetization/cohorts/",
+    "locktodonote_kr": "https://apps.apple.com/kr/app/locktodonote-%EC%9E%A0%EA%B8%88%ED%99%94%EB%A9%B4-%ED%95%A0%EC%9D%BC%EB%A9%94%EB%AA%A8/id6783183501",
+    "livenote_kr": "https://apps.apple.com/kr/app/livenote-lockscreen-memo-app/id6756247075",
+    "live_minder_kr": "https://apps.apple.com/kr/app/live-minder-reminders-to-do/id6449721889"
+  }
+}

@@ -56,6 +56,9 @@ final class AdService: NSObject, ObservableObject {
         self.analytics = analytics
         isPro = cachedIsPro
         super.init()
+        // Preserve access to an existing privacy choice even while app-open
+        // presentation is disabled. This does not request consent or load ads.
+        requiresPrivacyOptions = ConsentInformation.shared.privacyOptionsRequirementStatus == .required
         #if DEBUG
         // Device QA relaunches back to back and must see the ad every time.
         if ProcessInfo.processInfo.arguments.contains("-device-qa-ads") {

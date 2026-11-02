@@ -47,6 +47,7 @@ struct LockTodoNoteApp: App {
                     }
                     if phase == .background {
                         environment.smartLockScreen.setActive(false)
+                        environment.appGroup.flushPendingWidgetReload()
                         environment.reminderSync.scheduleBackgroundRefresh()
                     }
                 }

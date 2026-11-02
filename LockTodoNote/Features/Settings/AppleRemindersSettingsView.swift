@@ -3,6 +3,7 @@ import SwiftUI
 import UIKit
 
 struct AppleRemindersSettingsView: View {
+    @EnvironmentObject private var analytics: AnalyticsService
     @EnvironmentObject private var sync: ReminderSyncService
     @EnvironmentObject private var environment: AppEnvironment
     @Environment(\.openURL) private var openURL
@@ -113,6 +114,7 @@ struct AppleRemindersSettingsView: View {
                 ))
             }
         }
+        .onAppear { analytics.feature(.reminders, outcome: .opened) }
         .navigationTitle(bilingualString(korean: "Apple 미리알림 연동", english: "Apple Reminders"))
         .task {
             sync.refreshLists()

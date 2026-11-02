@@ -119,7 +119,7 @@ struct DashboardComposerTests {
     @Test func togglesHideTodosAndMemosIndependently() {
         let cards = [
             todoCard(id: "a", day: "2026-08-21", items: [ChecklistItem(id: "1", text: "Todo")]),
-            memoCard(id: "m", day: "2026-08-21", title: "Memo", body: "Body"),
+            memoCard(id: "m", day: "2026-08-21", title: "Memo", body: "Body", pinned: true),
         ]
         var settings = LockScreenSettings()
         settings.showTodos = false
@@ -132,6 +132,34 @@ struct DashboardComposerTests {
         #expect(snapshot.todoItems.isEmpty)
         #expect(!snapshot.memoItems.isEmpty)
         #expect(!snapshot.showTodosOnLockScreen)
+    }
+
+    @Test func recordOnlyMemosStayInHistoryWithoutBeingPublished() {
+        let cards = [
+            memoCard(id: "record", day: "2026-08-21", title: "Private record", body: "Not selected"),
+            memoCard(id: "shown", day: "2026-08-21", title: "Shown", body: "Selected", pinned: true),
+        ]
+        let snapshot = composer.compose(cards: cards, settings: LockScreenSettings(template: .memoTodo), now: day("2026-08-21"))
+        #expect(snapshot.memoItems.map(\.id) == ["shown"])
+        #expect(snapshot.memoText == "Selected")
+        #expect(snapshot.calendarDays.first(where: { $0.isToday })?.memoItems.count == 2)
+        #expect(snapshot.memoCount == 2, "History counts remain unchanged")
+    }
+
+    @Test func unselectedMemoCannotBecomeTheFallbackDisplay() {
+        let card = memoCard(id: "record", day: "2026-08-21", title: "Private record", body: "Not selected")
+        let snapshot = composer.compose(cards: [card], settings: LockScreenSettings(), now: day("2026-08-21"))
+        #expect(snapshot.memoItems.isEmpty)
+        #expect(snapshot.memoText == nil)
+        #expect(snapshot.memoTitle == nil)
+    }
+
+    @Test func explicitRuleNotesStillDisplayWithoutChangingTheOriginalSelection() {
+        let record = memoCard(id: "record", day: "2026-08-21", title: "Rule note", body: "Selected by rule")
+        let rule = SmartLockScreenRule(name: "Work", profileID: UUID(), weekdays: [6], startMinute: 0, endMinute: 1439, memoCardIDs: [record.id])
+        let snapshot = composer.compose(cards: rule.filteredCards([record]), settings: LockScreenSettings(template: .memoTodo), now: day("2026-08-21"))
+        #expect(snapshot.memoItems.map(\.id) == [record.id])
+        #expect(!record.isPinned && !record.showOnLockScreen)
     }
 
     // MARK: - Privacy
@@ -233,6 +261,23 @@ struct DashboardComposerTests {
         #expect(marked.contains("2026-08-05"))
     }
 
+    @Test func deletedSeriesDoesNotReturnInPreparedWidgetDay() throws {
+        var history = todoCard(id: "history", day: "2026-08-20", items: [
+            ChecklistItem(id: "dog", text: "Walk my dog", isDone: true, recurrence: .daily)
+        ])
+        history.checklistItems[0].recurrenceAnchorDate = day("2026-08-20")
+        let generated = CardMutations.createRecurringTodosForToday([history], calendar: calendar, now: day("2026-08-21")).cards
+        let current = generated.first { $0.id != history.id }!
+        let stopped = CardMutations.deleteTodo(generated, cardID: current.id, itemID: current.checklistItems[0].id,
+                                               on: day("2026-08-21"), scope: .future, calendar: calendar)
+        let persisted = try JSONDecoder().decode([Card].self, from: JSONEncoder().encode(stopped))
+        let snapshot = composer.compose(cards: persisted, settings: LockScreenSettings(), now: day("2026-08-21"))
+        #expect(snapshot.todoItems.isEmpty)
+        #expect(snapshot.preparedNextDay?.todoItems.isEmpty == true)
+        #expect(snapshot.calendarDays.first { $0.id == "2026-08-22" }?.todoItems.isEmpty == true)
+        #expect(persisted.flatMap(\.checklistItems).contains { $0.id == "dog" && $0.isDone })
+    }
+
     @Test func preComposesTomorrowSoTheWidgetCanRollOverAtMidnight() {
         let snapshot = composer.compose(
             cards: [],
@@ -324,7 +369,7 @@ struct ShortcutTargetTests {
     ) -> LockScreenSettings {
         var settings = LockScreenSettings()
         settings.template = template
-        settings.selectedContentSection = priority
+        settings.shortcutInsertPriority = priority
         return settings
     }
 
@@ -341,9 +386,18 @@ struct ShortcutTargetTests {
     }
 
     @Test(arguments: [LockScreenTemplate.calendarItems, .memoTodo])
-    func mixedTemplatesFollowTheSelectedInputTab(_ template: LockScreenTemplate) {
+    func mixedTemplatesFollowTheExplicitShortcutPreference(_ template: LockScreenTemplate) {
         #expect(settings(template: template, priority: .memo).resolveShortcutTarget() == .memo)
         #expect(settings(template: template, priority: .todo).resolveShortcutTarget() == .todo)
+    }
+
+    @Test func displayContentChoiceDoesNotChangeTheShortcutTarget() {
+        var settings = LockScreenSettings(template: .memoTodo, shortcutInsertPriority: .memo)
+        settings.selectedContentSection = .todo
+        #expect(settings.resolveShortcutTarget() == .memo)
+        settings.shortcutInsertPriority = .todo
+        settings.selectedContentSection = .memo
+        #expect(settings.resolveShortcutTarget() == .todo)
     }
 
     /// Layouts the renderer knows but the picker never offers fold back to the

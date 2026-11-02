@@ -43,7 +43,7 @@ struct DashboardPreviewCard: View {
                 split(leadingRatio: 0.34) {
                     PreviewDday(snapshot: snapshot)
                 } trailing: {
-                    PreviewItems(snapshot: snapshot, mode: .memo)
+                    PreviewItems(snapshot: snapshot, mode: .memo, usesDdayMemo: true)
                 }
             }
         }
@@ -153,6 +153,7 @@ private struct PreviewCalendar: View {
 private struct PreviewItems: View {
     let snapshot: DashboardSnapshot
     let mode: PreviewContentMode
+    var usesDdayMemo = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -167,16 +168,16 @@ private struct PreviewItems: View {
                 )
             } else if snapshot.privacyMode == PrivacyMode.countOnly.rawValue {
                 privacySummary(
-                    mode == .todo
+                    usesDdayMemo ? title : (mode == .todo
                         ? "\(max(snapshot.totalCount - snapshot.doneCount, 0))"
-                        : "\(snapshot.memoCount)",
+                        : "\(snapshot.memoCount)"),
                     systemImage: "number"
                 )
             } else if snapshot.privacyMode == PrivacyMode.titleOnly.rawValue {
                 privacySummary(
-                    mode == .memo && snapshot.memoTitle?.isEmpty == false
-                        ? snapshot.memoTitle!
-                        : title,
+                    usesDdayMemo ? (snapshot.ddayTitle ?? title) : (
+                        mode == .memo && snapshot.memoTitle?.isEmpty == false
+                            ? snapshot.memoTitle! : title),
                     systemImage: mode == .todo ? "checklist" : "note.text"
                 )
             } else if mode == .todo {
@@ -193,6 +194,12 @@ private struct PreviewItems: View {
                                 .strikethrough(item.isDone)
                         }
                     }
+                }
+            } else if usesDdayMemo {
+                if let memo = snapshot.ddayMemo, !memo.isEmpty {
+                    Text(memo).font(.caption).lineLimit(4)
+                } else {
+                    emptyText(appString(localized: "home.noMemos", defaultValue: "No memos yet"))
                 }
             } else if snapshot.memoItems.isEmpty {
                 emptyText(appString(localized: "home.noMemos", defaultValue: "No memos yet"))

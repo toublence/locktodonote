@@ -31,10 +31,12 @@ final class AnalyticsService: ObservableObject {
         let locale = Locale.current
         var parameters: [String: Any] = [
             "analytics_schema_version": 2,
+            "analytics_release": "L1.2.2",
+            "telemetry_environment": Self.telemetryEnvironment,
             "app_build": AppInfo.build,
             "implementation": "swiftui",
             "days_since_install": daysSinceInstall,
-            "app_version": AppInfo.versionDisplay,
+            "app_version": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown",
             "is_premium": isPremium ? 1 : 0,
             "trial_type": trialType,
             "ios_version": ProcessInfo.processInfo.operatingSystemVersionString,
@@ -51,14 +53,119 @@ final class AnalyticsService: ObservableObject {
     var isPremium = false
     var trialType = "none"
 
+    static var telemetryEnvironment: String {
+        #if DEBUG
+        return "debug"
+        #else
+        return Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt" ? "sandbox" : "release_unknown"
+        #endif
+    }
+
     private func log(_ name: String, _ parameters: [String: Any] = [:]) {
-        var merged = commonParameters
-        for (key, value) in parameters {
-            // Firebase rejects booleans; the Flutter build coerced them to 0/1.
+        let common = commonParameters
+        // Firebase accepts only 25 parameters. Event-specific fields take
+        // precedence over optional legacy device context, never release identity.
+        var merged = parameters
+        if merged["occurred_at_ms"] == nil { merged["occurred_at_ms"] = Int64(Date().timeIntervalSince1970 * 1000) }
+        let allowedSources: Set<String> = ["app", "inline", "calendar", "onboarding", "live_activity", "dynamic_island", "widget", "shortcut", "intent", "siri", "action_button", "unknown", "settings", "paywall", "display", "top_control", "today_tab", "automatic", "automatic_sync", "os_configuration", "candidate_calculation", "queue_merge", "activation", "memo_editor", "todo_editor", "notification"]
+        for key in ["source", "entry_source", "surface", "action_origin"] {
+            if let value = merged[key] as? String, !allowedSources.contains(value) { merged[key] = "unknown" }
+        }
+        for key in ["analytics_release", "app_version", "app_build", "analytics_schema_version", "telemetry_environment"] {
+            merged[key] = common[key]
+        }
+        for key in ["is_premium", "trial_type", "days_since_install", "implementation", "device_family", "language", "widget_configuration_state", "country", "ios_version"] where merged.count < 25 {
+            if merged[key] == nil { merged[key] = common[key] }
+        }
+        // Redundant legacy aliases are lowest priority when an old event is full.
+        for key in ["quoted_price", "price", "completed_count", "screen_name", "setup_type", "ios_version", "device_family", "live_activity_enabled", "is_pro", "target", "selected_template"] where merged.count > 25 {
+            merged.removeValue(forKey: key)
+        }
+        // Protect the wire contract even if a future call site adds too much.
+        let required: Set<String> = ["analytics_release", "app_version", "app_build", "analytics_schema_version", "telemetry_environment", "source", "result", "event_id", "occurred_at_ms", "forwarded_at_ms", "origin_app_version", "origin_app_build", "origin_release", "origin_environment", "storage_stage", "attempt_id", "request_id", "capture_id", "transaction_environment", "transaction_trial_state", "trial_basis", "value_basis", "is_revenue_event"]
+        for key in merged.keys.sorted() where merged.count > 25 && !required.contains(key) {
+            merged.removeValue(forKey: key)
+        }
+        for (key, value) in merged {
             merged[key] = (value as? Bool).map { $0 ? 1 : 0 } ?? value
         }
         backend.log(name: name, parameters: merged)
         reviewCoordinator?.record(event: name, parameters: merged)
+    }
+
+    /// Only finite, product-defined values reach new instrumentation.
+    enum Feature: String { case automaticSwitching = "automatic_switching", reminders, repeatRule = "repeat", layoutShortcut = "layout_shortcut" }
+    enum Outcome: String { case opened, attempted, success, failed, cancelled, enabled, disabled }
+    func feature(_ feature: Feature, outcome: Outcome, count: Int? = nil) {
+        var parameters: [String: Any] = ["feature": feature.rawValue, "result": outcome.rawValue, "source": "settings"]
+        if let count { parameters["count_bucket"] = Self.countBucket(count) }
+        log("l122_feature_action", parameters)
+    }
+
+    static func countBucket(_ count: Int) -> String {
+        switch count { case ...0: "0"; case 1: "1"; case 2...5: "2_5"; case 6...10: "6_10"; case 11...30: "11_30"; default: "31_plus" }
+    }
+
+    private struct CaptureSession { let started: Date; let type: String; let id: String }
+    private var captures: [String: CaptureSession] = [:]
+    func captureStarted(type: String, source: String) {
+        guard captures[source] == nil else { return }
+        let session = CaptureSession(started: Date(), type: type, id: UUID().uuidString)
+        captures[source] = session
+        log("l122_capture", ["source": source, "type": type, "result": "started", "capture_id": session.id])
+    }
+
+    func captureEnded(source: String, result: String) {
+        guard let session = captures.removeValue(forKey: source) else { return }
+        let seconds = max(0, Date().timeIntervalSince(session.started))
+        let bucket = seconds < 10 ? "under_10s" : seconds < 30 ? "10_29s" : seconds < 120 ? "30_119s" : "120s_plus"
+        log("l122_capture", ["source": source, "type": session.type, "result": result,
+                             "duration_bucket": bucket, "capture_id": session.id])
+    }
+
+    func memoCaptureDisplayed(selected: Bool, unchanged: Bool, ruleRestricted: Bool, replaced: Bool = false) {
+        log("l122_memo_display", ["source": "inline", "selected_for_display": selected,
+                                 "display_settings_unchanged": unchanged, "rule_restricted": ruleRestricted,
+                                 "replaced_existing": replaced, "result": "success"])
+    }
+
+    func contentMutation(action: String, type: String, recurring: Bool = false, linked: Bool = false, selected: Bool = false) {
+        log("l122_content_mutation", ["source": "app", "action": action, "type": type,
+                                     "recurring": recurring, "reminder_linked": linked, "selected_for_display": selected, "result": "success"])
+    }
+
+    private var lastDisplaySignature: String?
+    func displayCandidates(template: String, candidates: Int, payloadLimit: Int, rowLimit: Int, selected: Bool, privacyRestricted: Bool) {
+        var parameters: [String: Any] = ["source": "candidate_calculation", "template_id": template,
+            "candidate_bucket": privacyRestricted ? "unknown" : Self.countBucket(candidates),
+            "capacity_bucket": Self.countBucket(rowLimit), "payload_capacity": payloadLimit,
+            "selection_mode": selected ? "selected" : "all", "surface": "live_activity",
+            "measurement": "render_code_upper_bound", "privacy_restricted": privacyRestricted]
+        if !privacyRestricted { parameters["overflow"] = candidates > rowLimit }
+        let signature = "\(template)|\(Self.countBucket(candidates))|\(payloadLimit)|\(rowLimit)|\(selected)|\(privacyRestricted)|\(candidates > rowLimit)"
+        guard signature != lastDisplaySignature else { return }
+        lastDisplaySignature = signature
+        log("l122_display_overflow", parameters)
+    }
+
+    private var lastReminderImportBucket: String?
+    func reminderImport(count: Int) {
+        let bucket = Self.countBucket(count)
+        guard bucket != lastReminderImportBucket else { return }
+        lastReminderImportBucket = bucket
+        log("l122_reminder_import", ["source": "automatic_sync", "count_bucket": Self.countBucket(count), "result": "success"])
+    }
+
+    func newTodoScope(total: Int, included: Int, selected: Bool) {
+        log("l122_new_item_scope", ["source": "app", "candidate_bucket": Self.countBucket(total),
+            "included_bucket": Self.countBucket(included), "selection_mode": selected ? "selected" : "all",
+            "measurement": "rule_scope_not_impression", "result": "success"])
+    }
+
+    func displaySelection(todoCount: Int?, memoCount: Int?) {
+        log("l122_display_selection", ["source": "settings", "todo_mode": todoCount == nil ? "all" : "selected",
+            "memo_mode": memoCount == nil ? "all" : "selected", "todo_bucket": Self.countBucket(todoCount ?? 0),
+            "memo_bucket": Self.countBucket(memoCount ?? 0), "result": "success"])
     }
 
     private var daysSinceInstall: Int {
@@ -76,8 +183,23 @@ final class AnalyticsService: ObservableObject {
 
     /// Anchors retention math. Written once, on the first launch that lacks it.
     func ensureInstallDate() {
-        guard defaults?.string(forKey: FlutterPreferenceKeys.installDate) == nil else { return }
-        defaults?.set(FlutterDate.utcString(from: Date()), forKey: FlutterPreferenceKeys.installDate)
+        if defaults?.string(forKey: "analytics.release_cohort") == nil {
+            let existing = defaults?.string(forKey: FlutterPreferenceKeys.installDate) != nil
+                || defaults?.bool(forKey: FlutterPreferenceKeys.firstTodoCreated) == true
+                || defaults?.bool(forKey: FlutterPreferenceKeys.firstMemoCreated) == true
+            defaults?.set(existing ? "existing_or_unknown" : "new_observed", forKey: "analytics.release_cohort")
+        }
+        if defaults?.string(forKey: FlutterPreferenceKeys.installDate) == nil {
+            defaults?.set(FlutterDate.utcString(from: Date()), forKey: FlutterPreferenceKeys.installDate)
+        }
+        // An SDK app/stream change can emit first_open again for an existing
+        // install. Preserve the local cohort instead of calling it a new user.
+        let releaseKey = "analytics.release_observed.L1.2.2"
+        if let defaults, !defaults.bool(forKey: releaseKey), backend.isEnabled {
+            log("l122_release_observed", ["cohort": defaults.string(forKey: "analytics.release_cohort") ?? "unknown",
+                "source": "app", "result": "success"])
+            defaults.set(true, forKey: releaseKey)
+        }
     }
 
     // MARK: - Onboarding funnel
@@ -210,6 +332,7 @@ final class AnalyticsService: ObservableObject {
         source: String = "app",
         createdCount: Int = 1
     ) {
+        captureEnded(source: source, result: "saved")
         let isFirst = !(defaults?.bool(forKey: FlutterPreferenceKeys.firstTodoCreated) ?? false)
         log("todo_created", [
             "source": source,
@@ -254,12 +377,13 @@ final class AnalyticsService: ObservableObject {
             "remaining_count": remainingCount,
             "completed_count": taskCount - remainingCount,
             "template_id": templateId,
-            "setup_type": source == "app" ? "app" : "live_activity",
+            "setup_type": ["app", "calendar"].contains(source) ? "app" : "live_activity",
             "result": "success",
         ]
         if let eventId { parameters["event_id"] = eventId }
         if let occurredAt { parameters["occurred_at_ms"] = Int64(occurredAt.timeIntervalSince1970 * 1_000) }
         log("todo_completed", parameters)
+        recordFirstCompletion(at: occurredAt ?? Date(), source: source)
     }
 
     func liveActivityStartAttempt(requestId: String, source: String, templateId: String, reason: String) {
@@ -355,6 +479,7 @@ final class AnalyticsService: ObservableObject {
     }
 
     func quickCaptureFocused(type: String, source: String = "inline") {
+        captureStarted(type: type, source: source)
         log("quick_capture_focused", ["source": source, "type": type, "result": "success"])
     }
 
@@ -363,6 +488,7 @@ final class AnalyticsService: ObservableObject {
     }
 
     func memoCreated(source: String, templateId: String? = nil) {
+        captureEnded(source: source, result: "saved")
         let isFirst = !(defaults?.bool(forKey: FlutterPreferenceKeys.firstMemoCreated) ?? false)
         var parameters: [String: Any] = [
             "source": source, "result": "success", "is_first_memo": isFirst,
@@ -449,6 +575,10 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    func purchaseApplication(trigger: String, result: String) {
+        log("l122_purchase_application", ["paywall_trigger": trigger, "result": result])
+    }
+
     func proDisplayResult(template: String, result: String) {
         log("pro_display_result", ["template_id": template, "result": result])
     }
@@ -526,6 +656,8 @@ final class AnalyticsService: ObservableObject {
         previewTemplate: String? = nil,
         attemptId: String? = nil
     ) {
+        verifiedPurchaseEnvironment = "unknown"
+        verifiedTrialState = .unknown
         var parameters = purchaseParameters(
             productId: productId,
             source: source,
@@ -548,7 +680,7 @@ final class AnalyticsService: ObservableObject {
         previewTemplate: String? = nil,
         attemptId: String? = nil
     ) {
-        let parameters = purchaseParameters(
+        var parameters = purchaseParameters(
             productId: productId,
             source: source,
             price: price,
@@ -557,6 +689,10 @@ final class AnalyticsService: ObservableObject {
             previewTemplate: previewTemplate,
             attemptId: attemptId
         )
+        parameters["transaction_environment"] = verifiedPurchaseEnvironment
+        parameters["transaction_trial_state"] = verifiedTrialState.rawValue
+        parameters["trial_basis"] = verifiedTrialState == .unknown ? "unknown" : "verified_transaction"
+        parameters["is_trial"] = verifiedTrialState == .unknown ? nil : (verifiedTrialState == .freeTrial)
         log("purchase_completed", parameters)
     }
 
@@ -605,6 +741,7 @@ final class AnalyticsService: ObservableObject {
             "product_id": productId,
             "plan": analyticsPlan(productId),
             "is_trial": isTrial,
+            "trial_basis": "quoted_context",
             "result": "success",
         ]
         if let price {
@@ -662,6 +799,14 @@ final class AnalyticsService: ObservableObject {
         log("purchase_failed", parameters)
     }
 
+    enum VerifiedTrialState: String { case unknown, freeTrial = "free_trial", notTrial = "not_trial" }
+    private var verifiedPurchaseEnvironment = "unknown"
+    private var verifiedTrialState: VerifiedTrialState = .unknown
+    func purchaseVerifiedEnvironment(_ environment: String, trialState: VerifiedTrialState = .unknown) {
+        verifiedPurchaseEnvironment = ["Production", "Sandbox", "Xcode"].contains(environment) ? environment.lowercased() : "unknown"
+        verifiedTrialState = trialState
+    }
+
     func restoreCompleted(result: String) {
         log("restore_completed", ["source": "app", "result": result])
     }
@@ -671,6 +816,9 @@ final class AnalyticsService: ObservableObject {
     }
 
     func cardSaveFailed(operation: String, source: String, errorCode: String = "write_failed") {
+        if ["create_todo", "create_memo"].contains(operation) {
+            captureEnded(source: source, result: "failed")
+        }
         log("card_save_failed", [
             "source": source, "operation": operation, "error_code": errorCode, "result": "fail",
         ])
@@ -731,11 +879,20 @@ final class AnalyticsService: ObservableObject {
         switch outcome {
         case .migrated(let count):
             log("migration_completed", ["source": "app", "card_count": count, "result": "success"])
-        case .failed(let reason):
-            log("migration_failed", ["source": "app", "reason": reason, "result": "fail"])
+        case .failed:
+            log("migration_failed", ["source": "app", "reason": "migration_failed", "result": "fail"])
         case .alreadyMigrated, .nothingToMigrate:
             break
         }
+    }
+
+    private func recordFirstCompletion(at date: Date, source: String) {
+        guard let defaults, defaults.object(forKey: "analytics.first_completion_at") == nil else { return }
+        defaults.set(date.timeIntervalSince1970, forKey: "analytics.first_completion_at")
+        let install = defaults.string(forKey: FlutterPreferenceKeys.installDate).flatMap { FlutterDate.parse($0) }
+        let elapsed = install.map { max(0, Int(date.timeIntervalSince($0))) } ?? -1
+        log("l122_first_completion", ["source": source, "occurred_at_ms": Int64(date.timeIntervalSince1970 * 1000),
+            "elapsed_seconds": elapsed, "cohort": defaults.string(forKey: "analytics.release_cohort") ?? "unknown", "result": "success"])
     }
 
     // MARK: - Extension queue
@@ -746,12 +903,26 @@ final class AnalyticsService: ObservableObject {
     func flushQueuedEvents() {
         let events = store.queuedAnalyticsEvents()
         guard !events.isEmpty, backend.isEnabled else { return }
+        let dropped = defaults?.integer(forKey: "analytics.queue_dropped_total") ?? 0
+        let reported = defaults?.integer(forKey: "analytics.queue_dropped_reported") ?? 0
+        if dropped > reported {
+            log("l122_queue_health", ["source": "queue_merge", "dropped_delta": dropped - reported, "result": "overflow"])
+            defaults?.set(dropped, forKey: "analytics.queue_dropped_reported")
+        }
         for event in events {
             var parameters = event.parameters
             parameters["queued_delay_hours"] = event.queuedDelayHours()
             parameters["occurred_at_ms"] = Int64(event.createdAt.timeIntervalSince1970 * 1_000)
             parameters["event_id"] = event.id
+            parameters["forwarded_at_ms"] = Int64(Date().timeIntervalSince1970 * 1000)
+            if parameters["origin_app_version"] == nil { parameters["origin_app_version"] = "unknown_legacy" }
             log(event.name, parameters)
+            if event.name == "l122_external_commit", parameters["action"] as? String == "complete", parameters["result"] as? String == "success" {
+                let actionDate = (parameters["action_occurred_at_ms"] as? NSNumber).map {
+                    Date(timeIntervalSince1970: $0.doubleValue / 1000)
+                } ?? event.createdAt
+                recordFirstCompletion(at: actionDate, source: parameters["action_origin"] as? String ?? "unknown")
+            }
             store.acknowledgeQueuedAnalyticsEvents(ids: Set([event.id]))
         }
     }
@@ -805,6 +976,10 @@ final class AnalyticsService: ObservableObject {
             "result": "success",
         ])
         defaults.set(true, forKey: FlutterPreferenceKeys.activationEventLogged)
+        let installed = defaults.string(forKey: FlutterPreferenceKeys.installDate).flatMap { FlutterDate.parse($0) }
+        log("l122_first_value", ["source": "app", "milestone": "content_and_setup",
+            "elapsed_seconds": installed.map { max(0, Int(Date().timeIntervalSince($0))) } ?? -1,
+            "cohort": defaults.string(forKey: "analytics.release_cohort") ?? "unknown", "result": "success"])
     }
 
     var hasCompletedActivation: Bool {

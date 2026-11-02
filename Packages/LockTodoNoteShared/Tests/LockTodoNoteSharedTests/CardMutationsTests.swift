@@ -318,3 +318,89 @@ struct CardMutationsTests {
         #expect(CardMutations.sorted([older, newer]).map(\.id) == ["new", "old"])
     }
 }
+
+@Suite("Review deletion regression")
+struct ReviewDeletionTests {
+    private let calendar = Calendar(identifier: .gregorian)
+    private func day(_ offset: Int) -> Date { calendar.date(from: DateComponents(year: 2026, month: 10, day: 27 + offset))! }
+    private func seed(_ recurrence: TodoRecurrence = .daily, advanced: AdvancedRepeatRule? = nil) -> Card {
+        Card(id: "dog", title: "Walk my dog", type: .checklist,
+             checklistItems: [ChecklistItem(id: "dog-item", text: "Walk my dog", recurrence: recurrence, advancedRepeat: advanced),
+                              ChecklistItem(id: "sibling", text: "Keep this task")],
+             targetDateTime: day(0), createdAt: day(0), updatedAt: day(0))
+    }
+    private func reload(_ cards: [Card], _ offset: Int) throws -> [Card] {
+        let restored = try JSONDecoder().decode([Card].self, from: JSONEncoder().encode(cards))
+        let rolled = CardMutations.rollOverIncompleteTodos(restored, calendar: calendar, now: day(offset)).cards
+        return CardMutations.createRecurringTodosForToday(rolled, calendar: calendar, now: day(offset)).cards
+    }
+    private func dogItems(_ cards: [Card]) -> [ChecklistItem] {
+        cards.flatMap(\.checklistItems).filter { $0.effectiveRecurrenceId == "dog-item" }
+    }
+    @Test func oldCardOnlyDeletionReproducesReview() throws {
+        var history = seed(); history.checklistItems[0].isDone = true
+        history.checklistItems.removeLast()
+        let today = CardMutations.createRecurringTodosForToday([history], calendar: calendar, now: day(1)).cards
+        let oldDelete = today.filter { $0.id == history.id }
+        #expect(dogItems(try reload(oldDelete, 2)).count == 2)
+    }
+    @Test func ordinaryDeletionPreservesSiblingAndNeverReturns() throws {
+        var unrelated = seed(.none)
+        unrelated.id = "unrelated"
+        unrelated.title = "Custom list title"
+        unrelated.checklistItems = [ChecklistItem(id: "other-item", text: "Other task")]
+        let result = CardMutations.deleteTodo([seed(.none), unrelated], cardID: "dog", itemID: "dog-item", on: day(0), scope: .occurrence, calendar: calendar)
+        #expect(result.contains(unrelated))
+        for offset in [0, 1, 2, 7] {
+            let loaded = try reload(result, offset)
+            #expect(dogItems(loaded).isEmpty)
+            #expect(loaded.flatMap(\.checklistItems).contains { $0.id == "sibling" })
+        }
+    }
+    @Test func deleteOnlyOccurrenceSurvivesRestartAndNextRepeatReturns() throws {
+        let result = CardMutations.deleteTodo([seed()], cardID: "dog", itemID: "dog-item", on: day(0), scope: .occurrence, calendar: calendar)
+        #expect(dogItems(try reload(result, 0)).isEmpty)
+        #expect(dogItems(try reload(result, 1)).count == 1)
+        #expect(result.first?.recurrenceRules.first?.excludedDateKeys == ["2026-10-27"])
+    }
+    @Test func stoppingSeriesSurvivesOldSourcesAndFuturePreview() throws {
+        var history = seed(); history.checklistItems[0].isDone = true; history.checklistItems.removeLast()
+        let today = CardMutations.createRecurringTodosForToday([history], calendar: calendar, now: day(1)).cards
+        let current = today.first { $0.id != history.id }!
+        let result = CardMutations.deleteTodo(today, cardID: current.id, itemID: current.checklistItems[0].id, on: day(1), scope: .future, calendar: calendar)
+        for offset in [1, 2, 3, 8, 30] {
+            let loaded = try reload(result, offset)
+            #expect(dogItems(loaded).count == 1)
+            #expect(dogItems(loaded).allSatisfy { $0.isDone })
+            let future = CardMutations.calendarTodos(loaded, on: day(offset + 1), calendar: calendar, now: day(offset))
+            #expect(dogItems(future).isEmpty)
+        }
+    }
+    @Test func deleteEntireSeriesRemovesHistoryAndRules() throws {
+        var history = seed(); history.checklistItems[0].isDone = true
+        let today = CardMutations.createRecurringTodosForToday([history], calendar: calendar, now: day(1)).cards
+        let current = today.first { $0.id != history.id }!
+        let result = CardMutations.deleteTodo(today, cardID: current.id, itemID: current.checklistItems[0].id, on: day(1), scope: .series, calendar: calendar)
+        #expect(dogItems(try reload(result, 8)).isEmpty)
+        #expect(result.flatMap(\.recurrenceRules).isEmpty)
+        #expect(result.flatMap(\.checklistItems).contains { $0.id == "sibling" })
+    }
+    @Test func excludedDateAlsoBlocksStaleIncompleteRollover() throws {
+        var history = seed()
+        let future = CardMutations.createRecurringTodosForToday([history], calendar: calendar, now: day(1)).cards.last!
+        history.checklistItems.removeLast()
+        let result = CardMutations.deleteTodo([history, future], cardID: future.id, itemID: future.checklistItems[0].id, on: day(1), scope: .occurrence, calendar: calendar)
+        #expect(dogItems(try reload(result, 1)).isEmpty)
+        #expect(!dogItems(try reload(result, 2)).isEmpty)
+    }
+    @Test func allSupportedRulesHonorStopAndExclusions() throws {
+        let variants: [Card] = TodoRecurrence.allCases.filter { $0 != .none }.map { seed($0) }
+            + [seed(.none, advanced: .biweekly(3)), seed(.none, advanced: .selectedWeekdays([2, 4, 6])), seed(.none, advanced: .everyNDays(3))]
+        for card in variants {
+            let stopped = CardMutations.deleteTodo([card], cardID: card.id, itemID: "dog-item", on: day(0), scope: .future, calendar: calendar)
+            let excluded = CardMutations.deleteTodo([card], cardID: card.id, itemID: "dog-item", on: day(0), scope: .occurrence, calendar: calendar)
+            #expect(dogItems(try reload(excluded, 0)).isEmpty)
+            for offset in 1...21 { #expect(dogItems(try reload(stopped, offset)).isEmpty) }
+        }
+    }
+}

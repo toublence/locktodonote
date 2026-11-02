@@ -1,0 +1,716 @@
+[
+  {
+    "event": "activation_complete",
+    "emitter": "tryCompleteActivation",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 962,
+    "console_received": "unverified"
+  },
+  {
+    "event": "ad_consent_failed",
+    "emitter": "prepareIfNeeded",
+    "file": "LockTodoNote/Core/Ads/AdService.swift",
+    "line": 308,
+    "console_received": "unverified"
+  },
+  {
+    "event": "ad_consent_failed",
+    "emitter": "prepareIfNeeded",
+    "file": "LockTodoNote/Core/Ads/AdService.swift",
+    "line": 328,
+    "console_received": "unverified"
+  },
+  {
+    "event": "app_returned",
+    "emitter": "appReturned",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 844,
+    "console_received": "unverified"
+  },
+  {
+    "event": "card_save_failed",
+    "emitter": "cardSaveFailed",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 822,
+    "console_received": "unverified"
+  },
+  {
+    "event": "dday_set",
+    "emitter": "ddaySet",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 457,
+    "console_received": "unverified"
+  },
+  {
+    "event": "display_mode_selected",
+    "emitter": "displayModeSelected",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 478,
+    "console_received": "unverified"
+  },
+  {
+    "event": "first_todo_created",
+    "emitter": "todoCreated",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 353,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_capture",
+    "emitter": "captureStarted",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 115,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_capture",
+    "emitter": "captureEnded",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 122,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_content_mutation",
+    "emitter": "contentMutation",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 133,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_display_overflow",
+    "emitter": "displayCandidates",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 148,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_display_selection",
+    "emitter": "displaySelection",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 166,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_external_commit",
+    "emitter": "load",
+    "file": "LockTodoNote/Core/Storage/CardRepository.swift",
+    "line": 63,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_external_commit",
+    "emitter": "load",
+    "file": "LockTodoNote/Core/Storage/CardRepository.swift",
+    "line": 73,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_feature_action",
+    "emitter": "feature",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 102,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_first_completion",
+    "emitter": "recordFirstCompletion",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 894,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_first_value",
+    "emitter": "tryCompleteActivation",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 980,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_memo_display",
+    "emitter": "memoCaptureDisplayed",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 127,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_new_item_scope",
+    "emitter": "newTodoScope",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 160,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_purchase_application",
+    "emitter": "purchaseApplication",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 579,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_queue_health",
+    "emitter": "flushQueuedEvents",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 909,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_release_observed",
+    "emitter": "ensureInstallDate",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 199,
+    "console_received": "unverified"
+  },
+  {
+    "event": "l122_reminder_import",
+    "emitter": "reminderImport",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 156,
+    "console_received": "unverified"
+  },
+  {
+    "event": "live_activity_became_stale",
+    "emitter": "liveActivityBecameStale",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 510,
+    "console_received": "unverified"
+  },
+  {
+    "event": "live_activity_restarted",
+    "emitter": "restartActivity",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 707,
+    "console_received": "unverified"
+  },
+  {
+    "event": "live_activity_restarted",
+    "emitter": "liveActivityRestarted",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 506,
+    "console_received": "unverified"
+  },
+  {
+    "event": "live_activity_start_attempt",
+    "emitter": "restartActivity",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 670,
+    "console_received": "unverified"
+  },
+  {
+    "event": "live_activity_start_attempt",
+    "emitter": "liveActivityStartAttempt",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 390,
+    "console_received": "unverified"
+  },
+  {
+    "event": "live_activity_start_failed",
+    "emitter": "perform",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 284,
+    "console_received": "unverified"
+  },
+  {
+    "event": "live_activity_start_failed",
+    "emitter": "liveActivityStartFailed",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 436,
+    "console_received": "unverified"
+  },
+  {
+    "event": "live_activity_start_success",
+    "emitter": "restartActivity",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 701,
+    "console_received": "unverified"
+  },
+  {
+    "event": "live_activity_start_success",
+    "emitter": "liveActivityStarted",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 421,
+    "console_received": "unverified"
+  },
+  {
+    "event": "lock_screen_template_changed",
+    "emitter": "templateChanged",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 454,
+    "console_received": "unverified"
+  },
+  {
+    "event": "lockscreen_activity_ended",
+    "emitter": "liveActivityEnded",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 450,
+    "console_received": "unverified"
+  },
+  {
+    "event": "lockscreen_activity_updated",
+    "emitter": "refreshActivities",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 654,
+    "console_received": "unverified"
+  },
+  {
+    "event": "lockscreen_activity_updated",
+    "emitter": "restartActivity",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 695,
+    "console_received": "unverified"
+  },
+  {
+    "event": "lockscreen_interacted",
+    "emitter": "perform",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 425,
+    "console_received": "unverified"
+  },
+  {
+    "event": "lockscreen_interacted",
+    "emitter": "perform",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 455,
+    "console_received": "unverified"
+  },
+  {
+    "event": "lockscreen_interacted",
+    "emitter": "lockscreenInteracted",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 828,
+    "console_received": "unverified"
+  },
+  {
+    "event": "lockscreen_preview_seen",
+    "emitter": "lockscreenPreviewSeen",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 315,
+    "console_received": "unverified"
+  },
+  {
+    "event": "memo_created",
+    "emitter": "memoCreated",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 497,
+    "console_received": "unverified"
+  },
+  {
+    "event": "migration_completed",
+    "emitter": "record",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 881,
+    "console_received": "unverified"
+  },
+  {
+    "event": "migration_failed",
+    "emitter": "record",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 883,
+    "console_received": "unverified"
+  },
+  {
+    "event": "multiline_todo_imported",
+    "emitter": "multilineTodoImported",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 487,
+    "console_received": "unverified"
+  },
+  {
+    "event": "onboarding_complete",
+    "emitter": "onboardingComplete",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 219,
+    "console_received": "unverified"
+  },
+  {
+    "event": "onboarding_start",
+    "emitter": "onboardingStart",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 211,
+    "console_received": "unverified"
+  },
+  {
+    "event": "onboarding_step_view",
+    "emitter": "onboardingStepViewed",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 215,
+    "console_received": "unverified"
+  },
+  {
+    "event": "paywall_dismissed",
+    "emitter": "paywallDismissed",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 639,
+    "console_received": "unverified"
+  },
+  {
+    "event": "paywall_seen",
+    "emitter": "paywallSeen",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 592,
+    "console_received": "unverified"
+  },
+  {
+    "event": "plan_selected",
+    "emitter": "planSelected",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 633,
+    "console_received": "unverified"
+  },
+  {
+    "event": "pro_display_result",
+    "emitter": "proDisplayResult",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 583,
+    "console_received": "unverified"
+  },
+  {
+    "event": "pro_info_sheet_viewed",
+    "emitter": "proInfoSheetViewed",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 604,
+    "console_received": "unverified"
+  },
+  {
+    "event": "pro_preview_interacted",
+    "emitter": "proPreviewInteracted",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 612,
+    "console_received": "unverified"
+  },
+  {
+    "event": "pro_preview_viewed",
+    "emitter": "proPreviewViewed",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 608,
+    "console_received": "unverified"
+  },
+  {
+    "event": "pro_template_tapped",
+    "emitter": "proTemplateTapped",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 600,
+    "console_received": "unverified"
+  },
+  {
+    "event": "purchase_cancelled",
+    "emitter": "purchaseCancelled",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 782,
+    "console_received": "unverified"
+  },
+  {
+    "event": "purchase_completed",
+    "emitter": "purchaseCompleted",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 696,
+    "console_received": "unverified"
+  },
+  {
+    "event": "purchase_failed",
+    "emitter": "purchaseFailed",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 799,
+    "console_received": "unverified"
+  },
+  {
+    "event": "purchase_pending",
+    "emitter": "purchasePending",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 705,
+    "console_received": "unverified"
+  },
+  {
+    "event": "purchase_started",
+    "emitter": "purchaseStarted",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 671,
+    "console_received": "unverified"
+  },
+  {
+    "event": "purchase_value_applied",
+    "emitter": "purchaseValueApplied",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 726,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_education_completed",
+    "emitter": "perform",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 222,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_education_completed",
+    "emitter": "quickAddEducationCompleted",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 307,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_failed",
+    "emitter": "perform",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 78,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_failed",
+    "emitter": "perform",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 134,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_failed",
+    "emitter": "perform",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 158,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_failed",
+    "emitter": "perform",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 195,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_failed",
+    "emitter": "quickAddFailed",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 262,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_invoked",
+    "emitter": "perform",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 88,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_invoked",
+    "emitter": "quickAddInvoked",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 225,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_limit_reached",
+    "emitter": "perform",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 71,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_limit_reached",
+    "emitter": "quickAddLimitReached",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 270,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_onboarding_cta",
+    "emitter": "quickAddOnboardingCTA",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 285,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_onboarding_seen",
+    "emitter": "quickAddOnboardingSeen",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 278,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_tip_seen",
+    "emitter": "quickAddTipSeen",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 292,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_tip_tapped",
+    "emitter": "quickAddTipTapped",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 299,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_type_selected",
+    "emitter": "perform",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 115,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_add_type_selected",
+    "emitter": "quickAddTypeSelected",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 234,
+    "console_received": "unverified"
+  },
+  {
+    "event": "quick_capture_focused",
+    "emitter": "quickCaptureFocused",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 483,
+    "console_received": "unverified"
+  },
+  {
+    "event": "reminder_action",
+    "emitter": "reminderAction",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 815,
+    "console_received": "unverified"
+  },
+  {
+    "event": "restore_completed",
+    "emitter": "restoreCompleted",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 811,
+    "console_received": "unverified"
+  },
+  {
+    "event": "review_eligibility_reached",
+    "emitter": "reviewEligibilityReached",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 856,
+    "console_received": "unverified"
+  },
+  {
+    "event": "review_prompt_deferred",
+    "emitter": "reviewPromptDeferred",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 864,
+    "console_received": "unverified"
+  },
+  {
+    "event": "review_prompt_requested",
+    "emitter": "reviewPromptRequested",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 860,
+    "console_received": "unverified"
+  },
+  {
+    "event": "review_request_skipped",
+    "emitter": "reviewRequestSkipped",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 872,
+    "console_received": "unverified"
+  },
+  {
+    "event": "review_store_link_opened",
+    "emitter": "reviewStoreLinkOpened",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 868,
+    "console_received": "unverified"
+  },
+  {
+    "event": "settings_opened",
+    "emitter": "settingsOpened",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 474,
+    "console_received": "unverified"
+  },
+  {
+    "event": "shortcut_quick_add",
+    "emitter": "perform",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 204,
+    "console_received": "unverified"
+  },
+  {
+    "event": "shortcut_quick_add",
+    "emitter": "shortcutQuickAdd",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 248,
+    "console_received": "unverified"
+  },
+  {
+    "event": "temporary_pro_trial_started",
+    "emitter": "temporaryTrialStarted",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 852,
+    "console_received": "unverified"
+  },
+  {
+    "event": "todo_completed",
+    "emitter": "perform",
+    "file": "Extensions/WidgetExtension/GlanceCardAppIntents.swift",
+    "line": 397,
+    "console_received": "unverified"
+  },
+  {
+    "event": "todo_completed",
+    "emitter": "todoCompleted",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 385,
+    "console_received": "unverified"
+  },
+  {
+    "event": "todo_created",
+    "emitter": "todoCreated",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 337,
+    "console_received": "unverified"
+  },
+  {
+    "event": "top_destination_selected",
+    "emitter": "topDestinationSelected",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 468,
+    "console_received": "unverified"
+  },
+  {
+    "event": "trial_cta_tapped",
+    "emitter": "trialCTATapped",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 647,
+    "console_received": "unverified"
+  },
+  {
+    "event": "widget_configuration_check_failed",
+    "emitter": "widgetConfigurationCheckFailed",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 537,
+    "console_received": "unverified"
+  },
+  {
+    "event": "widget_configuration_checked",
+    "emitter": "widgetConfigurationsChecked",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 530,
+    "console_received": "iPad DebugView 2026-10-31; common release parameters confirmed"
+  },
+  {
+    "event": "widget_configured_detected",
+    "emitter": "widgetConfigurationsChecked",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 532,
+    "console_received": "unverified"
+  },
+  {
+    "event": "widget_installed_confirmed",
+    "emitter": "widgetInstalledConfirmed",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 541,
+    "console_received": "unverified"
+  },
+  {
+    "event": "widget_setup_guide_viewed",
+    "emitter": "widgetSetupStarted",
+    "file": "LockTodoNote/Core/Analytics/AnalyticsService.swift",
+    "line": 514,
+    "console_received": "unverified"
+  },
+  {
+    "event": "widget_timeline_requested",
+    "emitter": "getTimeline",
+    "file": "Extensions/WidgetExtension/GlanceCardLockScreenWidget.swift",
+    "line": 76,
+    "console_received": "unverified"
+  }
+]

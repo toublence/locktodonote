@@ -27,32 +27,39 @@ final class CardStore: ObservableObject {
         }
     }
 
+    weak var analytics: AnalyticsService?
     private let repository: CardRepository
     private let calendar: Calendar
+    private let nowProvider: () -> Date
 
     /// Called after any change lands, so the Live Activity and widget can be
     /// re-published. Set by the app on launch.
     var canConfigureAdvancedRepeat: (@MainActor () -> Bool) = { false }
 
     var onChange: (@MainActor () -> Void)?
+    var onTodosAdded: (@MainActor ([Card]) -> Void)?
 
-    init(repository: CardRepository = CardRepository(), calendar: Calendar = .current) {
+    init(repository: CardRepository = CardRepository(), calendar: Calendar = .current, nowProvider: @escaping () -> Date = Date.init) {
         self.repository = repository
         self.calendar = calendar
+        self.nowProvider = nowProvider
     }
 
     // MARK: - Loading
 
     @discardableResult
-    func load(now: Date = Date()) -> CardRepository.LoadResult? {
+    func load(now: Date? = nil) -> CardRepository.LoadResult? {
         do {
-            let result = try repository.load(now: now)
+            let result = try repository.load(now: now ?? nowProvider())
             cards = result.cards
             storeError = nil
             return result
         } catch {
             // Keep whatever is already on screen rather than blanking the app.
             storeError = .readFailed(String(describing: error))
+            if !repository.store.pendingCompletedTodos().isEmpty || !repository.store.pendingQuickAdds().isEmpty {
+                analytics?.cardSaveFailed(operation: "merge_external", source: "queue_merge", errorCode: "merge_read_or_write_failed")
+            }
             return nil
         }
     }
@@ -73,7 +80,7 @@ final class CardStore: ObservableObject {
     }
 
     func calendarTodoCards(on date: Date) -> [Card] {
-        CardMutations.calendarTodos(cards, on: date, calendar: calendar)
+        CardMutations.calendarTodos(cards, on: date, calendar: calendar, now: nowProvider())
     }
 
     /// Recompute from current storage rather than trusting a stale view snapshot.
@@ -122,6 +129,12 @@ final class CardStore: ObservableObject {
             guard let old = previous?.checklistItems.first(where: { $0.id == item.id }),
                   old.recurrence != item.recurrence || old.advancedRepeat != item.advancedRepeat else { continue }
             for cardIndex in updated.indices {
+                for index in updated[cardIndex].recurrenceRules.indices
+                where updated[cardIndex].recurrenceRules[index].effectiveRecurrenceId == old.effectiveRecurrenceId {
+                    updated[cardIndex].recurrenceRules[index].recurrence = item.recurrence
+                    updated[cardIndex].recurrenceRules[index].advancedRepeat = item.advancedRepeat
+                    updated[cardIndex].recurrenceRules[index].recurrenceAnchorDate = item.recurrenceAnchorDate
+                }
                 for index in updated[cardIndex].checklistItems.indices
                 where updated[cardIndex].checklistItems[index].effectiveRecurrenceId == old.effectiveRecurrenceId {
                     updated[cardIndex].checklistItems[index].recurrence = item.recurrence
@@ -142,13 +155,31 @@ final class CardStore: ObservableObject {
         } else {
             updated.append(card)
         }
-        return commit(updated)
+        let saved = commit(updated)
+        if saved, previous != nil, previous != card {
+            analytics?.contentMutation(action: "edited", type: card.type == .quickNote ? "memo" : "todo",
+                recurring: card.checklistItems.contains { $0.recurrence != .none || $0.advancedRepeat != nil }, selected: card.showOnLockScreen)
+        }
+        return saved
     }
 
     @discardableResult
     func delete(id: String) -> Bool {
         guard AppleReminderMirror.reminderID(from: id) == nil else { return false }
-        return commit(cards.filter { $0.id != id })
+        let existing = cards.first { $0.id == id }
+        let saved = commit(cards.filter { $0.id != id })
+        if saved, let existing { analytics?.contentMutation(action: "deleted", type: existing.type == .quickNote ? "memo" : "todo") }
+        return saved
+    }
+
+    @discardableResult
+    func deleteTodo(cardID: String, itemID: String, on date: Date, scope: CardMutations.TodoDeletionScope) -> Bool {
+        guard AppleReminderMirror.reminderID(from: cardID) == nil,
+              cards.first(where: { $0.id == cardID })?.checklistItems.contains(where: { $0.id == itemID }) == true else { return false }
+        let repeating = cards.first { $0.id == cardID }?.checklistItems.first { $0.id == itemID }.map { $0.recurrence != .none || $0.advancedRepeat != nil } ?? false
+        let saved = commit(CardMutations.deleteTodo(cards, cardID: cardID, itemID: itemID, on: date, scope: scope, calendar: calendar))
+        if saved { analytics?.contentMutation(action: "deleted", type: "todo", recurring: repeating) }
+        return saved
     }
 
     @discardableResult
@@ -167,7 +198,9 @@ final class CardStore: ObservableObject {
             pinned.updatedAt = Date()
             updated.append(pinned)
         }
-        return commit(updated)
+        let saved = commit(updated)
+        if saved { analytics?.contentMutation(action: "display_selected", type: "memo", selected: card != nil) }
+        return saved
     }
 
     /// Toggles one todo. `itemId` is the item's own id, not the composite.
@@ -192,7 +225,13 @@ final class CardStore: ObservableObject {
             ? item.markingDone(at: Date(), source: source, calendar: calendar)
             : item.clearingCompletion()
         updated[cardIndex].updatedAt = Date()
-        return commit(updated)
+        let saved = commit(updated)
+        if saved, item.isDone != isDone {
+            analytics?.contentMutation(action: isDone ? "completion_context" : "undone", type: "todo",
+                recurring: item.recurrence != .none || item.advancedRepeat != nil,
+                linked: AppleReminderMirror.reminderID(from: cardId) != nil)
+        }
+        return saved
     }
 
     @discardableResult
@@ -216,7 +255,7 @@ final class CardStore: ObservableObject {
             .filter { !$0.isEmpty }
         guard !values.isEmpty else { return false }
 
-        let now = Date()
+        let now = nowProvider()
         var updated = cards
         let todos = SmartQuickAddParser.parse(
             values.joined(separator: "\n"), referenceDate: now, defaultDate: date,
@@ -240,14 +279,20 @@ final class CardStore: ObservableObject {
             }
             updated.append(card)
         }
-        return commit(updated)
+        let oldIDs = Set(cards.map(\.id))
+        let saved = commit(updated)
+        if saved { onTodosAdded?(updated.filter { !oldIDs.contains($0.id) }) }
+        if saved, advancedRepeat != nil || todos.contains(where: { $0.recurrence != .none }) {
+            analytics?.contentMutation(action: "repeat_created", type: "todo", recurring: true)
+        }
+        return saved
     }
 
     @discardableResult
     func addMemo(text: String, to date: Date, pinned: Bool = true) -> Bool {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return false }
-        let now = Date()
+        let now = nowProvider()
         let card = Card(
             id: Self.newIdentifier(),
             title: CardMutations.memoTitle(from: trimmed),

@@ -18,11 +18,14 @@ struct SettingsTabView: View {
     @Environment(\.palette) private var palette
 
     @State private var restoreMessage: String?
+    @AppStorage(SmartRepeatPreferences.enabledKey) private var smartRepeatEnabled = true
+    @AppStorage(SmartRepeatPreferences.ruleKey) private var smartRepeatData = Data()
 
     var body: some View {
         NavigationStack {
             Form {
                 proSection
+                smartRepeatSection
                 settingsDestinations
                 aboutSection
                 migrationSection
@@ -45,6 +48,27 @@ struct SettingsTabView: View {
     }
 
     // MARK: - Sections
+
+    private var smartRepeatSection: some View {
+        Section {
+            Toggle(
+                bilingualString(korean: "문장 자동 인식", english: "Smart Quick Add"),
+                isOn: $smartRepeatEnabled
+            )
+            .accessibilityIdentifier("settings.smartRepeat.enabled")
+            AdvancedRepeatPicker(rule: Binding(
+                get: { SmartRepeatPreferences.rule(from: smartRepeatData) },
+                set: { smartRepeatData = (try? JSONEncoder().encode($0)) ?? Data() }
+            ), startDate: dashboard.today)
+        } header: {
+            Text("Smart Repeat")
+        } footer: {
+            Text(bilingualString(
+                korean: "오늘 화면에서 새로 작성하는 할 일에 적용됩니다. 문장에서 날짜·반복을 자동으로 인식하며, 고급 반복 조건은 Pro에서 설정할 수 있습니다. 기존 할 일은 변경되지 않습니다.",
+                english: "Applies to new todos created on Today. Dates and repeats are recognized from text; advanced repeat rules require Pro. Existing todos stay unchanged."
+            ))
+        }
+    }
 
     private var settingsDestinations: some View {
         Section {
@@ -129,11 +153,10 @@ struct SettingsTabView: View {
             NavigationLink {
                 Form {
                     Section {
-                        Text(
-                            appString(localized: "settings.dataDetail",
-                                defaultValue: "Your cards remain in the existing LockTodoNote App Group so updates keep your data."
-                            )
-                        )
+                        Text(bilingualString(
+                            korean: "할 일과 메모는 이 기기에 보관되며 앱 업데이트 후에도 유지됩니다. 다른 기기와의 자동 동기화나 클라우드 백업 기능은 아닙니다.",
+                            english: "Your todos and notes are stored on this device and preserved across app updates. This is not cross-device sync or a cloud backup."
+                        ))
                         .foregroundStyle(palette.textSecondary)
                     }
                     migrationSection

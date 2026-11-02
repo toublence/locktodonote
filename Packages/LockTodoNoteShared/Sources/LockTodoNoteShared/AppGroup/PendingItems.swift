@@ -50,6 +50,8 @@ public struct PendingQuickAdd: Hashable, Sendable {
     public let dateKey: String
     public let createdAt: Date
     public let smartTodos: [SmartTodo]?
+    public let analyticsEventID: String?
+    public let analyticsSource: String?
 
     public init(
         id: String,
@@ -57,7 +59,9 @@ public struct PendingQuickAdd: Hashable, Sendable {
         target: ShortcutInsertPriority,
         dateKey: String,
         createdAt: Date,
-        smartTodos: [SmartTodo]? = nil
+        smartTodos: [SmartTodo]? = nil,
+        analyticsEventID: String? = nil,
+        analyticsSource: String? = nil
     ) {
         self.id = id
         self.text = text
@@ -65,6 +69,8 @@ public struct PendingQuickAdd: Hashable, Sendable {
         self.dateKey = dateKey
         self.createdAt = createdAt
         self.smartTodos = smartTodos
+        self.analyticsEventID = analyticsEventID
+        self.analyticsSource = analyticsSource
     }
 
     public init?(dictionary: [String: Any]) {
@@ -80,6 +86,8 @@ public struct PendingQuickAdd: Hashable, Sendable {
         let createdAt = FlutterDate.parse(dictionary["createdAt"] as? String) ?? Date()
         self.createdAt = createdAt
         self.dateKey = dictionary["date"] as? String ?? FlutterDate.dateKey(createdAt)
+        self.analyticsEventID = (dictionary["analytics_event_id"] as? String).flatMap { UUID(uuidString: $0)?.uuidString }
+        self.analyticsSource = dictionary["analytics_source"] as? String
         self.smartTodos = (dictionary["smart_todos_v1"] as? Data)
             .flatMap { try? JSONDecoder().decode([SmartTodo].self, from: $0) }
     }
@@ -92,6 +100,8 @@ public struct PendingQuickAdd: Hashable, Sendable {
             "date": dateKey,
             "createdAt": FlutterDate.utcString(from: createdAt),
         ]
+        if let analyticsEventID { result["analytics_event_id"] = analyticsEventID }
+        if let analyticsSource { result["analytics_source"] = analyticsSource }
         if let smartTodos, let data = try? JSONEncoder().encode(smartTodos) {
             result["smart_todos_v1"] = data
         }

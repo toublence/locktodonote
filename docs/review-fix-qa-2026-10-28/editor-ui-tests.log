@@ -1,0 +1,95 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project LockTodoNote.xcodeproj -scheme LockTodoNote -destination "platform=iOS Simulator,id=091CDD1E-C47F-45FE-8EBE-101705FC4F8C" -derivedDataPath /Users/nam/Library/Developer/Xcode/DerivedData/LockTodoNote-atpzgemoirqqmierhepkcfjatasq -disableAutomaticPackageResolution -skipPackageUpdates -parallel-testing-enabled NO "-only-testing:LockTodoNoteUITests/ReviewRegressionUITests/testEditorDeletionDismissesAndPreservesOtherTask" -resultBundlePath /tmp/LockTodoNoteReviewEditor.xcresult test-without-building
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  leveldb: https://github.com/firebase/leveldb.git @ 1.22.5
+  FBAudienceNetwork: https://github.com/facebook/FBAudienceNetwork.git @ 6.22.0
+  Firebase: https://github.com/firebase/firebase-ios-sdk @ 12.18.0
+  GTMSessionFetcher: https://github.com/google/gtm-session-fetcher.git @ 5.3.1
+  GoogleAppMeasurement: https://github.com/google/GoogleAppMeasurement.git @ 12.18.0
+  GoogleUserMessagingPlatform: https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git @ 3.1.0
+  GoogleMobileAds: https://github.com/googleads/swift-package-manager-google-mobile-ads.git @ 13.11.0
+  GoogleAdsOnDeviceConversion: https://github.com/googleads/google-ads-on-device-conversion-ios-sdk @ 3.6.1
+  GoogleUtilities: https://github.com/google/GoogleUtilities.git @ 8.1.2
+  nanopb: https://github.com/firebase/nanopb.git @ 2.30910.1
+  gRPC: https://github.com/google/grpc-binary.git @ 1.69.1
+  InteropForGoogle: https://github.com/google/interop-ios-for-google-sdks.git @ 101.0.0
+  abseil: https://github.com/google/abseil-cpp-binary.git @ 1.2024072200.0
+  GoogleDataTransport: https://github.com/google/GoogleDataTransport.git @ 10.1.1
+  Promises: https://github.com/google/promises.git @ 2.4.1
+  LockTodoNoteShared: /Users/nam/projects/ios/locktodonote/Packages/LockTodoNoteShared
+  AppCheck: https://github.com/google/app-check.git @ 11.3.1
+  MetaAdapter: https://github.com/googleads/googleads-mobile-ios-mediation-meta.git @ 0a3d059
+
+Writing result bundle at path:
+	/tmp/LockTodoNoteReviewEditor.xcresult
+
+2026-10-28 10:49:24.494278+0900 LockTodoNoteUITests-Runner[78467:11803063] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-10-28 10:49:26.846.
+Test Suite 'LockTodoNoteUITests.xctest' started at 2026-10-28 10:49:26.846.
+Test Suite 'ReviewRegressionUITests' started at 2026-10-28 10:49:26.846.
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testEditorDeletionDismissesAndPreservesOtherTask]' started.
+    t =     0.00s Start Test at 2026-10-28 10:49:26.847
+    t =     0.04s Set Up
+    t =     0.05s Open com.namslab.glancecard
+    t =     0.05s     Launch com.namslab.glancecard
+    t =     1.73s         Setting up automation session
+    t =     5.14s         Wait for com.namslab.glancecard to idle
+    t =     8.69s Waiting 30.0s for "navigation.today" Button to exist
+    t =     9.72s     Checking `Expect predicate `existsNoRetry == 1` for object "navigation.today" Button`
+    t =     9.72s         Checking existence of `"navigation.today" Button`
+    t =     9.90s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =     9.99s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =    10.06s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =    10.12s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =    10.19s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =    10.25s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =    10.31s Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =    10.37s Tap "todo.edit.qa-dog:qa-sibling" Button
+    t =    10.37s     Wait for com.namslab.glancecard to idle
+    t =    10.37s     Find the "todo.edit.qa-dog:qa-sibling" Button
+    t =    10.42s     Check for interrupting elements affecting "todo.edit.qa-dog:qa-sibling" Button
+    t =    10.48s     Synthesize event
+    t =    11.01s     Wait for com.namslab.glancecard to idle
+    t =    11.77s Waiting 5.0s for "todo.editor.delete" Button to exist
+    t =    12.81s     Checking `Expect predicate `existsNoRetry == 1` for object "todo.editor.delete" Button`
+    t =    12.82s         Checking existence of `"todo.editor.delete" Button`
+    t =    12.95s Tap "todo.editor.delete" Button
+    t =    12.95s     Wait for com.namslab.glancecard to idle
+    t =    12.95s     Find the "todo.editor.delete" Button
+    t =    13.01s     Check for interrupting elements affecting "todo.editor.delete" Button
+    t =    13.06s     Synthesize event
+    t =    13.35s     Wait for com.namslab.glancecard to idle
+    t =    15.18s Checking `Expect predicate `exists == 0` for object "todo.editor.text" TextField`
+    t =    15.18s     Checking existence of `"todo.editor.text" TextField`
+    t =    15.23s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    16.27s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    16.27s         Checking existence of `"qa.storage" StaticText`
+    t =    16.33s Find the "qa.storage" StaticText
+    t =    16.36s Waiting 10.0s for "qa.storage" StaticText to exist
+    t =    17.39s     Checking `Expect predicate `existsNoRetry == 1` for object "qa.storage" StaticText`
+    t =    17.39s         Checking existence of `"qa.storage" StaticText`
+    t =    17.45s Find the "qa.storage" StaticText
+    t =    17.58s Added attachment named 'review-editor-deletion-dismissed'
+    t =    17.58s Tear Down
+Test Case '-[LockTodoNoteUITests.ReviewRegressionUITests testEditorDeletionDismissesAndPreservesOtherTask]' passed (17.832 seconds).
+Test Suite 'ReviewRegressionUITests' passed at 2026-10-28 10:49:44.680.
+	 Executed 1 test, with 0 failures (0 unexpected) in 17.832 (17.833) seconds
+Test Suite 'LockTodoNoteUITests.xctest' passed at 2026-10-28 10:49:44.681.
+	 Executed 1 test, with 0 failures (0 unexpected) in 17.832 (17.835) seconds
+Test Suite 'Selected tests' passed at 2026-10-28 10:49:44.681.
+	 Executed 1 test, with 0 failures (0 unexpected) in 17.832 (17.836) seconds
+2026-10-28 10:50:07.120 xcodebuild[78252:11801529] [MT] IDETestOperationsObserverDebug: 45.815 elapsed -- Testing started completed.
+2026-10-28 10:50:07.121 xcodebuild[78252:11801529] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-28 10:50:07.121 xcodebuild[78252:11801529] [MT] IDETestOperationsObserverDebug: 45.815 sec, +45.815 sec -- end
+
+Test session results, code coverage, and logs:
+	/tmp/LockTodoNoteReviewEditor.xcresult
+
+** TEST EXECUTE SUCCEEDED **
+
+Testing started

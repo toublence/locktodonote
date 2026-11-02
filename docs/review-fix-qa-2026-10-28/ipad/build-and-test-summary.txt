@@ -1,0 +1,6 @@
+iPad Air 11-inch (M2), iPadOS 26.6.2
+Debug application, widget/share extensions and UI test runner built and signed successfully.
+Final xcodebuild test: TEST SUCCEEDED
+UI tests: 10 passed, 0 failed, 0 skipped
+KST: 2026-10-28 12:28:24 to 12:33:53
+Shared tests: 142 passed; two pre-existing failing test definitions excluded (three assertion failures on baseline).

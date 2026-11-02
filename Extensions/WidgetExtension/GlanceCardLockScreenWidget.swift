@@ -61,6 +61,17 @@ struct GlanceCardTimelineProvider: TimelineProvider {
       to: Calendar.current.startOfDay(for: now)
     ) ?? now.addingTimeInterval(24 * 60 * 60)
     let dashboard = loadDashboard(for: now)
+    #if DEBUG
+    let diagnosticStore = AppGroupStore()
+    if let defaults = diagnosticStore.defaults, defaults.bool(forKey: "qa.widget.diagnostics.enabled") {
+      let key = "qa.widget.timeline.\(context.family.rawValue)"
+      var records = defaults.array(forKey: key) as? [[String: Any]] ?? []
+      records.append(["at": now.timeIntervalSince1970, "family": String(describing: context.family),
+                      "texts": dashboard.todoItems.map(\.text)])
+      defaults.set(Array(records.suffix(8)), forKey: key)
+      defaults.synchronize()
+    }
+    #endif
     AppGroupStore().enqueueAnalyticsEvent(
       name: "widget_timeline_requested",
       parameters: analyticsParameters(from: dashboard, source: "widget", result: "success")
@@ -208,7 +219,17 @@ struct GlanceCardWidgetView: View {
   var body: some View {
     if family == .systemMedium {
       MediumDashboardWidget(dashboard: dashboard)
-    } else if family == .accessoryInline {
+    } else if #available(iOSApplicationExtension 17.0, *) {
+      accessoryBody
+        .containerBackground(for: .widget) { Color.clear }
+    } else {
+      accessoryBody
+    }
+  }
+
+  @ViewBuilder
+  private var accessoryBody: some View {
+    if family == .accessoryInline {
       Text(todoLine)
         .lineLimit(1)
     } else {

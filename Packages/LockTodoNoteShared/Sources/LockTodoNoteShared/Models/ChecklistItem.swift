@@ -16,6 +16,9 @@ public struct ChecklistItem: Codable, Hashable, Identifiable, Sendable {
     public var dueDate: Date?
     public var hasDueTime: Bool
     public var icon: String?
+    /// Durable series policy, copied to every occurrence and retained rule.
+    public var excludedDateKeys: Set<String> = []
+    public var recurrenceEndDateKey: String?
 
     public init(
         id: String,
@@ -55,6 +58,8 @@ public struct ChecklistItem: Codable, Hashable, Identifiable, Sendable {
     public var hasRecurrence: Bool { advancedRepeat != nil || recurrence != .none }
 
     public func isRecurrenceDue(seedDate: Date, on date: Date, calendar: Calendar = .current) -> Bool {
+        let key = FlutterDate.dateKey(date, calendar: calendar)
+        guard !excludedDateKeys.contains(key), recurrenceEndDateKey.map({ key < $0 }) ?? true else { return false }
         if let advancedRepeat {
             return advancedRepeat.isDue(seedDate: seedDate, on: date, calendar: calendar)
         }
@@ -94,6 +99,7 @@ public struct ChecklistItem: Codable, Hashable, Identifiable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case id, text, isDone, recurrence, advancedRepeat, recurrenceId, recurrenceAnchorDate
         case completedAt, completedSource, completedDateKey, dueDate, hasDueTime, icon
+        case excludedDateKeys, recurrenceEndDateKey
     }
 
     public init(from decoder: Decoder) throws {
@@ -111,6 +117,8 @@ public struct ChecklistItem: Codable, Hashable, Identifiable, Sendable {
         dueDate = FlutterDate.parse(container.lenient(String.self, .dueDate))
         hasDueTime = container.lenient(Bool.self, .hasDueTime) ?? false
         icon = container.lenient(String.self, .icon)
+        excludedDateKeys = container.lenient(Set<String>.self, .excludedDateKeys) ?? []
+        recurrenceEndDateKey = container.lenient(String.self, .recurrenceEndDateKey)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -128,5 +136,7 @@ public struct ChecklistItem: Codable, Hashable, Identifiable, Sendable {
         try container.encode(dueDate.map(FlutterDate.localString), forKey: .dueDate)
         try container.encode(hasDueTime, forKey: .hasDueTime)
         try container.encode(icon, forKey: .icon)
+        if !excludedDateKeys.isEmpty { try container.encode(excludedDateKeys.sorted(), forKey: .excludedDateKeys) }
+        try container.encodeIfPresent(recurrenceEndDateKey, forKey: .recurrenceEndDateKey)
     }
 }

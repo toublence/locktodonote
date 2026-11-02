@@ -87,6 +87,13 @@ final class LiveActivityService: ObservableObject {
         }
     }
 
+    private func staleDate(now: Date = Date()) -> Date {
+        let expiry = now.addingTimeInterval(Self.activityDuration)
+        guard store.defaults?.object(forKey: FlutterPreferenceKeys.followToday) as? Bool ?? true else { return expiry }
+        let midnight = Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: now)) ?? expiry
+        return min(expiry, midnight)
+    }
+
     // MARK: - Lifecycle
 
     /// Publishes the snapshot and starts a fresh activity, replacing any
@@ -107,7 +114,7 @@ final class LiveActivityService: ObservableObject {
                 attributes: GlanceDashboardAttributes(),
                 content: ActivityContent(
                     state: .init(snapshot: snapshot),
-                    staleDate: Date().addingTimeInterval(Self.activityDuration)
+                    staleDate: staleDate()
                 ),
                 pushType: nil
             )
@@ -135,7 +142,7 @@ final class LiveActivityService: ObservableObject {
 
         let content = ActivityContent(
             state: GlanceDashboardAttributes.ContentState(snapshot: snapshot),
-            staleDate: Date().addingTimeInterval(Self.activityDuration)
+            staleDate: staleDate()
         )
         for activity in activities {
             await activity.update(content)

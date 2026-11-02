@@ -54,6 +54,28 @@ struct CardRepository {
         if didChange {
             try write(cards)
         }
+        // Diagnose the durable stage separately; never emit todo_completed again.
+        for addition in quickAdds {
+            let itemCount = addition.target == .memo ? 1 : (addition.smartTodos?.count
+                ?? QuickCaptureService.parseTodoLines(from: addition.text).count)
+            let ids = itemCount == 1 ? [addition.id] : (0..<itemCount).map { "\(addition.id)-\($0)" }
+            let exists = !ids.isEmpty && ids.allSatisfy { id in cards.contains { $0.id == id } }
+            store.enqueueAnalyticsEvent(name: "l122_external_commit", parameters: [
+                "source": "queue_merge", "action": "add", "result": exists ? "success" : "unresolved",
+                "storage_stage": "card_file", "action_origin": addition.analyticsSource ?? "unknown",
+                "action_occurred_at_ms": Int64(addition.createdAt.timeIntervalSince1970 * 1000)
+            ], eventId: addition.analyticsEventID ?? UUID().uuidString, createdAt: now)
+        }
+        for completion in completions {
+            let exists = cards.contains { card in
+                card.checklistItems.contains { "\(card.id):\($0.id)" == completion.id && $0.isDone }
+            }
+            store.enqueueAnalyticsEvent(name: "l122_external_commit", parameters: [
+                "source": "queue_merge", "action": "complete", "result": exists ? "success" : "unresolved",
+                "storage_stage": "card_file", "action_origin": completion.source,
+                "action_occurred_at_ms": Int64(completion.completedAt.timeIntervalSince1970 * 1000)
+            ], eventId: completion.eventId, createdAt: now)
+        }
         // New items appended while writing remain because acknowledgement is ID based.
         store.acknowledgePendingCompletedTodos(eventIds: Set(completions.map(\.eventId)))
         store.acknowledgePendingQuickAdds(ids: Set(quickAdds.map(\.id)))

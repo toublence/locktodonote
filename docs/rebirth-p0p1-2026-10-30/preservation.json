@@ -1,0 +1,29 @@
+{
+  "Data/cards.json": {
+    "equal": true,
+    "before_count": 16,
+    "after_count": 16
+  },
+  "layout-profiles-v1.json": {
+    "equal": true,
+    "before_count": 2,
+    "after_count": 2
+  },
+  "smart-lock-screen-v1.json": {
+    "equal": true,
+    "before_count": null,
+    "after_count": null
+  },
+  "preserved_preference_keys": 23,
+  "changed_preference_keys": [
+    "locktodonote_purchase_state_v1"
+  ],
+  "purchase_cache_logically_equal": true,
+  "purchase_cache_is_test_override": true,
+  "after_manual_testing": {
+    "cards": 35,
+    "pending": 29,
+    "completed": 3,
+    "baseline_rule_restored": true
+  }
+}

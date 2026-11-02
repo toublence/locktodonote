@@ -19,15 +19,18 @@ struct LockScreenTabView: View {
     @State private var editingCard: Card?
     @State private var showsWidgetGuide = false
     @State private var editingTodo: TodoEntry?
+    @State private var deletingTodo: TodoEntry?
     @State private var isEditingDday = false
     @State private var photoItem: PhotosPickerItem?
     @State private var photoSelectionTemplate: LockScreenTemplate?
     @State private var errorMessage: String?
     @State private var captureMode: QuickAddMode = .todo
     @State private var captureText = ""
+    @State private var selectsCapturedMemo: Bool?
+    @State private var hasInitializedCaptureMode = false
     @State private var captureRecurrence: TodoRecurrence = .none
-    @State private var captureAdvancedRepeat: AdvancedRepeatRule?
-    @State private var smartCaptureEnabled = true
+    @AppStorage(SmartRepeatPreferences.ruleKey) private var captureRepeatData = Data()
+    @AppStorage(SmartRepeatPreferences.enabledKey) private var smartCaptureEnabled = true
     @State private var hasManualCaptureRecurrence = false
     @State private var captureConfirmation: String?
     @State private var infoTemplate: LockScreenTemplate?
@@ -35,7 +38,7 @@ struct LockScreenTabView: View {
     @State private var isTipDismissed = false
     @FocusState private var isCaptureFocused: Bool
 
-    private var today: Date { Date() }
+    private var today: Date { dashboard.today }
     private var template: LockScreenTemplate { settingsStore.settings.template }
 
     var body: some View {
@@ -72,6 +75,7 @@ struct LockScreenTabView: View {
             guard isCaptureFocused else { return }
             withAnimation { scroll.scrollTo("capture.input", anchor: .bottom) }
         }
+        .onDisappear { analytics.captureEnded(source: "inline", result: "interrupted") }
         .accessibilityIdentifier("home.scroll")
         .scrollDismissesKeyboard(.interactively)
         .background(palette.background)
@@ -90,6 +94,7 @@ struct LockScreenTabView: View {
             MemoEditorSheet(card: card)
                 .environment(\.palette, palette)
         }
+        .modifier(TodoDeletionModifier(entry: $deletingTodo))
         .sheet(item: $editingTodo) { entry in
             TodoEditorSheet(entry: entry)
                 .environment(\.palette, palette)
@@ -113,7 +118,9 @@ struct LockScreenTabView: View {
             Task { await loadPhoto(item) }
         }
         .onAppear {
+            guard !hasInitializedCaptureMode else { return }
             captureMode = settingsStore.settings.selectedContentSection == .memo ? .memo : .todo
+            hasInitializedCaptureMode = true
         }
         .alert(
             errorMessage ?? "",
@@ -300,7 +307,7 @@ struct LockScreenTabView: View {
             .buttonStyle(.plain)
             .simultaneousGesture(TapGesture().onEnded {
                 photoSelectionTemplate = option.resolvedTemplate(
-                    for: settingsStore.settings.selectedContentSection
+                    for: captureMode == .memo ? .memo : .todo
                 )
                 selectTemplate(option)
             })
@@ -338,11 +345,13 @@ struct LockScreenTabView: View {
     private func selectTemplate(_ template: LockScreenTemplate) {
         guard !isTemplateLocked(template) else {
             analytics.proTemplateTapped(template.rawValue)
-            infoTemplate = template
+            infoTemplate = template.resolvedTemplate(for: captureMode == .memo ? .memo : .todo)
             return
         }
 
-        let resolved = template.resolvedTemplate(for: settingsStore.settings.selectedContentSection)
+        let section: ShortcutInsertPriority = captureMode == .memo ? .memo : .todo
+        let resolved = template.resolvedTemplate(for: section)
+        settingsStore.settings.selectedContentSection = section
         settingsStore.settings.template = resolved
         if !resolved.supportsTodoAndMemo {
             setCaptureMode(.memo)
@@ -431,12 +440,22 @@ struct LockScreenTabView: View {
                     .transition(.opacity)
             }
 
+            if captureMode == .memo {
+                Toggle(appString(localized: "memo.showOnLockScreen", defaultValue: "Show on Lock Screen"), isOn: Binding(
+                    get: { selectsCapturedMemo ?? environment.newMemoReplacesDisplayedMemo },
+                    set: { selectsCapturedMemo = $0 }
+                ))
+                .font(.caption)
+                .disabled(environment.newMemoIsExcludedByRule)
+                .accessibilityIdentifier("today.memo.showOnLockScreen")
+                Text(environment.newMemoIsExcludedByRule
+                    ? bilingualString(korean: "현재 구성에는 선택한 메모만 표시돼요. 새 메모는 기록으로 저장됩니다.", english: "This layout shows selected notes only. The new note will be saved without changing that selection.")
+                    : bilingualString(korean: "작성 유형만 바뀝니다. 표시 유형을 바꾸려면 위 템플릿을 선택하세요.", english: "This changes what you write. To change what is displayed, select a template above."))
+                    .font(.caption).foregroundStyle(palette.textSecondary)
+            }
+
             if captureMode == .todo {
-                AdvancedRepeatPicker(rule: $captureAdvancedRepeat, startDate: smartCaptureTodos.first?.scheduledDate ?? today) {
-                    captureRecurrence = .none
-                    hasManualCaptureRecurrence = true
-                }
-                SmartQuickAddPreview(todos: smartCaptureTodos, isEnabled: $smartCaptureEnabled)
+                SmartQuickAddPreview(todos: smartCaptureTodos, isEnabled: $smartCaptureEnabled, showsToggle: false)
                 if captureAdvancedRepeat == nil {
                     HStack(spacing: 10) {
                         Text(
@@ -447,7 +466,7 @@ struct LockScreenTabView: View {
                         Spacer(minLength: 0)
                         Picker("", selection: Binding(
                             get: { smartCaptureTodos.first?.recurrence ?? captureRecurrence },
-                            set: { captureRecurrence = $0; captureAdvancedRepeat = nil; hasManualCaptureRecurrence = true }
+                            set: { captureRecurrence = $0; hasManualCaptureRecurrence = true }
                         )) {
                             ForEach(TodoRecurrence.allCases, id: \.self) { option in
                                 Text(option.displayName).tag(option)
@@ -484,8 +503,7 @@ struct LockScreenTabView: View {
     @ViewBuilder
     private var captureItems: some View {
         if captureMode == .todo {
-            if pendingTodoItems.isEmpty &&
-                (!settingsStore.settings.showCompletedTodos || completedTodoItems.isEmpty) {
+            if pendingTodoItems.isEmpty && completedTodoItems.isEmpty {
                 Text(appString(localized: "home.noTodos", defaultValue: "No todos for today"))
                     .font(.subheadline)
                     .foregroundStyle(palette.textTertiary)
@@ -510,11 +528,11 @@ struct LockScreenTabView: View {
                     } onEdit: {
                         editingTodo = entry
                     } onDelete: {
-                        if !cardStore.delete(id: entry.card.id) { reportSaveFailure(operation: "delete_todo") }
+                        deletingTodo = entry
                     }
                 }
 
-                if settingsStore.settings.showCompletedTodos, !completedTodoItems.isEmpty {
+                if !completedTodoItems.isEmpty {
                     DisclosureGroup(isExpanded: $showsCompletedTodos) {
                         ForEach(completedTodoItems, id: \.compositeId) { entry in
                             TodoRowView(entry: entry) { isDone in
@@ -526,7 +544,7 @@ struct LockScreenTabView: View {
                             } onEdit: {
                                 editingTodo = entry
                             } onDelete: {
-                                if !cardStore.delete(id: entry.card.id) { reportSaveFailure(operation: "delete_todo") }
+                                deletingTodo = entry
                             }
                         }
                     } label: {
@@ -588,6 +606,11 @@ struct LockScreenTabView: View {
 
     // MARK: - Actions
 
+    private var captureAdvancedRepeat: AdvancedRepeatRule? {
+        guard purchases.isPro, !hasManualCaptureRecurrence else { return nil }
+        return SmartRepeatPreferences.rule(from: captureRepeatData)
+    }
+
     private var smartCaptureTodos: [SmartTodo] {
         SmartQuickAddParser.parse(
             captureText, defaultDate: today,
@@ -597,9 +620,12 @@ struct LockScreenTabView: View {
     }
 
     private func setCaptureMode(_ mode: QuickAddMode) {
+        guard mode != captureMode else { return }
+        analytics.captureEnded(source: "inline", result: "type_changed")
+        analytics.quickAddTypeSelected(type: mode.rawValue, source: "inline")
         captureMode = mode
-        settingsStore.settings.selectedContentSection = mode == .todo ? .todo : .memo
-        dashboard.publish()
+        if isCaptureFocused { analytics.captureStarted(type: mode.rawValue, source: "inline") }
+        selectsCapturedMemo = nil
     }
 
     private func saveCapture() {
@@ -631,11 +657,19 @@ struct LockScreenTabView: View {
                 lines.count
             )
         case .memo:
-            guard cardStore.addMemo(text: trimmedCaptureText, to: today) else {
+            let previousSettings = settingsStore.settings
+            let hadSelectedMemo = cardStore.pinnedMemo != nil
+            let selected = !environment.newMemoIsExcludedByRule && (selectsCapturedMemo ?? environment.newMemoReplacesDisplayedMemo)
+            guard cardStore.addMemo(text: trimmedCaptureText, to: today,
+                                    pinned: !environment.newMemoIsExcludedByRule &&
+                                        (selectsCapturedMemo ?? environment.newMemoReplacesDisplayedMemo)) else {
                 reportSaveFailure(operation: "create_memo")
                 return
             }
+            selectsCapturedMemo = nil
             analytics.memoCreated(source: "inline", templateId: template.rawValue)
+            analytics.memoCaptureDisplayed(selected: selected, unchanged: previousSettings == settingsStore.settings,
+                ruleRestricted: environment.newMemoIsExcludedByRule, replaced: selected && hadSelectedMemo)
             captureConfirmation = appString(localized: "capture.memoAdded", defaultValue: "Memo added")
         }
 
@@ -704,15 +738,20 @@ struct LockScreenTabView: View {
         }
         do {
             let imageStore = LockScreenImageStore(store: environment.appGroup)
-            let fileName = try imageStore.save(
-                imageData: data,
-                replacing: settingsStore.settings.activeImageFileName
-            )
+            let previous = settingsStore.settings
+            let fileName = try imageStore.save(imageData: data, replacing: nil)
+            var updated = previous
             switch targetTemplate {
-            case .imageTodo: settingsStore.settings.imageTodoFileName = fileName
-            default: settingsStore.settings.imageMemoFileName = fileName
+            case .imageTodo: updated.imageTodoFileName = fileName
+            default: updated.imageMemoFileName = fileName
             }
-            settingsStore.settings.imageFileName = fileName
+            updated.imageFileName = fileName
+            settingsStore.settings = updated
+            // Memo/todo slots can share the legacy photo. Retire a file only
+            // after the new photo is saved and no other slot references it.
+            let oldFiles = Set([previous.imageFileName, previous.imageMemoFileName, previous.imageTodoFileName].compactMap { $0 })
+            let retained = Set([updated.imageFileName, updated.imageMemoFileName, updated.imageTodoFileName].compactMap { $0 })
+            oldFiles.subtracting(retained).forEach { imageStore.remove(fileName: $0) }
             dashboard.publish()
         } catch {
             errorMessage = error.localizedDescription
@@ -769,6 +808,7 @@ private struct LiveActivityStatusRow: View {
 
     @Environment(\.palette) private var palette
     @State private var isWorking = false
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
@@ -778,6 +818,7 @@ private struct LiveActivityStatusRow: View {
                     .frame(width: 8, height: 8)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title(at: context.date))
+                        .accessibilityIdentifier("liveActivity.status")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(palette.textPrimary)
                     Text(detail(at: context.date))
@@ -788,6 +829,10 @@ private struct LiveActivityStatusRow: View {
                 Spacer(minLength: 8)
 
                 Button {
+                    if needsSettings {
+                        if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                        return
+                    }
                     Task {
                         isWorking = true
                         if state.isRunning {
@@ -801,6 +846,9 @@ private struct LiveActivityStatusRow: View {
                     if isWorking {
                         ProgressView()
                             .frame(minWidth: 56, minHeight: 20)
+                    } else if needsSettings {
+                        Text(appString(localized: "common.settings", defaultValue: "Settings"))
+                            .font(.caption.weight(.semibold))
                     } else if state.isRunning {
                         Label(
                             appString(localized: "liveActivity.update", defaultValue: "Apply Changes"),
@@ -821,9 +869,14 @@ private struct LiveActivityStatusRow: View {
                 .buttonStyle(.borderedProminent)
                 .controlSize(.small)
                 .tint(palette.accent)
-                .disabled(isUnsupported || isWorking)
+                .accessibilityIdentifier("liveActivity.action")
+                .disabled((isUnsupported && !needsSettings) || isWorking)
             }
         }
+    }
+
+    private var needsSettings: Bool {
+        state == .unsupported(reason: "disabled")
     }
 
     private var isUnsupported: Bool {
@@ -859,8 +912,10 @@ private struct LiveActivityStatusRow: View {
                 : appString(localized: "liveActivity.notConfigured", defaultValue: "No Lock Screen card yet")
         case .dismissed:
             appString(localized: "liveActivity.ended", defaultValue: "Live Activity ended")
-        case .unsupported:
-            appString(localized: "liveActivity.unavailable", defaultValue: "Unavailable")
+        case .unsupported(let reason):
+            reason == "disabled"
+                ? appString(localized: "liveActivity.permissionRequired", defaultValue: "Allow Live Activities in Settings")
+                : appString(localized: "liveActivity.unavailable", defaultValue: "Unavailable")
         }
     }
 

@@ -1,0 +1,27 @@
+[0/1] Planning build
+Test Suite 'Selected tests' started at 2026-10-28 10:43:08.930.
+Test Suite 'LockTodoNoteSharedPackageTests.xctest' started at 2026-10-28 10:43:08.934.
+Test Suite 'LockTodoNoteSharedPackageTests.xctest' passed at 2026-10-28 10:43:08.934.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-28 10:43:08.934.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.004) seconds
+◇ Test run started.
+↳ Testing Library Version: 1400
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Review deletion regression" started.
+◇ Test deleteOnlyOccurrenceSurvivesRestartAndNextRepeatReturns() started.
+◇ Test excludedDateAlsoBlocksStaleIncompleteRollover() started.
+◇ Test deleteEntireSeriesRemovesHistoryAndRules() started.
+◇ Test oldCardOnlyDeletionReproducesReview() started.
+◇ Test ordinaryDeletionPreservesSiblingAndNeverReturns() started.
+◇ Test stoppingSeriesSurvivesOldSourcesAndFuturePreview() started.
+◇ Test allSupportedRulesHonorStopAndExclusions() started.
+✔ Test deleteEntireSeriesRemovesHistoryAndRules() passed after 0.009 seconds.
+✔ Test oldCardOnlyDeletionReproducesReview() passed after 0.009 seconds.
+✔ Test deleteOnlyOccurrenceSurvivesRestartAndNextRepeatReturns() passed after 0.010 seconds.
+✔ Test excludedDateAlsoBlocksStaleIncompleteRollover() passed after 0.010 seconds.
+✔ Test ordinaryDeletionPreservesSiblingAndNeverReturns() passed after 0.010 seconds.
+✔ Test stoppingSeriesSurvivesOldSourcesAndFuturePreview() passed after 0.011 seconds.
+✔ Test allSupportedRulesHonorStopAndExclusions() passed after 0.059 seconds.
+✔ Suite "Review deletion regression" passed after 0.060 seconds.
+✔ Test run with 7 tests in 1 suite passed after 0.062 seconds.

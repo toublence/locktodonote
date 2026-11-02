@@ -2,6 +2,7 @@ import LockTodoNoteShared
 import SwiftUI
 
 struct LayoutProfilesView: View {
+    var onSaved: (() -> Void)? = nil
     @EnvironmentObject private var environment: AppEnvironment
     @EnvironmentObject private var profiles: LayoutProfileStore
     @EnvironmentObject private var purchases: PurchaseService
@@ -98,6 +99,7 @@ struct LayoutProfilesView: View {
         do {
             try profiles.save(name: name, settings: settings.settings, colorTheme: theme.colorTheme.rawValue, isPro: purchases.isPro, replacing: replacement?.id)
             analytics.layoutProfileAction("saved", count: profiles.profiles.count)
+            onSaved?()
         } catch {
             message = error.localizedDescription
         }

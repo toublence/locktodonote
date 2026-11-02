@@ -25,16 +25,8 @@ enum AdPolicy {
     /// most of it the SDK's own WebKit start-up.
     static let appOpenMaxWait: TimeInterval = 8
 
-    static var isEnabled: Bool {
-        #if DEBUG
-        let arguments = ProcessInfo.processInfo.arguments
-        // Device QA drives real data; an app open ad would cover every launch,
-        // so it appears there only when a test asks for it.
-        if arguments.contains("-device-qa") { return arguments.contains("-device-qa-ads") }
-        return !arguments.contains("-disable-test-ads")
-            && !arguments.contains(where: { $0.hasPrefix("-uitest-") })
-        #else
-        return true
-        #endif
-    }
+    /// App-open opportunities have no reliable non-core entry classification.
+    /// Fail closed: never put an ad or its loading cover over capture, completion,
+    /// external returns or recovery. Keep SDK/privacy configuration and Pro rights.
+    static var isEnabled: Bool { false }
 }

@@ -25,14 +25,13 @@ final class SmartLockScreenService {
         task = nil
         dashboard.publish()
         Self.scheduleBackground(store: store)
-        guard isActive, let schedule = try? SmartLockScreenSchedule.load(store: store), schedule.isEnabled,
-              Self.entitlement(store).isPro,
-              let boundary = schedule.transitionDates(after: Date(), days: 8).first else { return }
-        let next = min(boundary, Self.entitlement(store).expirationDate ?? boundary)
+        guard isActive else { return }
+        let next = Self.nextRefresh(store: store)
         task = Task { [weak self] in
             do { try await Task.sleep(for: .seconds(max(1, next.timeIntervalSinceNow))) }
             catch { return }
             guard !Task.isCancelled else { return }
+            self?.dashboard.refreshForDateBoundary()
             self?.refresh()
         }
     }
@@ -41,12 +40,20 @@ final class SmartLockScreenService {
         Entitlement(cachedJSON: store.defaults?.string(forKey: FlutterPreferenceKeys.purchaseState))
     }
 
+    /// Midnight refresh also applies to free users without Smart Lock Screen rules.
+    private static func nextRefresh(store: AppGroupStore, now: Date = Date()) -> Date {
+        var next = Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: now))
+            ?? now.addingTimeInterval(24 * 60 * 60)
+        let access = entitlement(store)
+        if access.isPro, let schedule = try? SmartLockScreenSchedule.load(store: store), schedule.isEnabled,
+           let boundary = schedule.transitionDates(after: now, days: 8).first { next = min(next, boundary) }
+        if let expiry = access.expirationDate, expiry > now { next = min(next, expiry) }
+        return next
+    }
+
     private static func scheduleBackground(store: AppGroupStore) {
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: backgroundTaskIdentifier)
-        guard entitlement(store).isPro,
-              let schedule = try? SmartLockScreenSchedule.load(store: store), schedule.isEnabled,
-              let boundary = schedule.transitionDates(after: Date(), days: 8).first else { return }
-        let next = min(boundary, entitlement(store).expirationDate ?? boundary)
+        let next = nextRefresh(store: store)
         let request = BGAppRefreshTaskRequest(identifier: backgroundTaskIdentifier)
         request.earliestBeginDate = next
         try? BGTaskScheduler.shared.submit(request)

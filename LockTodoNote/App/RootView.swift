@@ -10,10 +10,7 @@ struct RootView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.scenePhase) private var scenePhase
 
-    @Environment(\.requestReview) private var requestReview
     @State private var selectedDestination: PrimaryDestination = .today
-    @State private var hasLeftForeground = false
-    @State private var leftForegroundAt: Date?
     @State private var isKeyboardVisible = false
 
     var body: some View {
@@ -98,37 +95,21 @@ struct RootView: View {
             .onChange(of: ads.isAppOpenInProgress) { _ in
                 routePendingDeepLink()
             }
+            .onReceive(NotificationCenter.default.publisher(for: .NSCalendarDayChanged)) { _ in
+                environment.refreshFromBackgroundWork()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.significantTimeChangeNotification)) { _ in
+                environment.refreshFromBackgroundWork()
+            }
             .onChange(of: scenePhase) { phase in
                 guard phase == .active else {
-                    hasLeftForeground = true
-                    leftForegroundAt = Date()
                     return
                 }
                 if !environment.needsOnboarding {
                     Task { await prepareAdvertisingIfPossible() }
                 }
-                guard hasLeftForeground else { return }
-                guard let leftForegroundAt,
-                      Date().timeIntervalSince(leftForegroundAt) >= 5
-                else { return }
-                Task { @MainActor in
-                    try? await Task.sleep(for: .seconds(1.75))
-                    guard scenePhase == .active else { return }
-                    let blocked = environment.needsOnboarding
-                        || ads.isGatheringConsent
-                        || ads.isAppOpenInProgress
-                        || environment.quickAddRequest != nil
-                        || environment.paywallRequest != nil
-                        || environment.isProInfoPresented
-                        || environment.showReminderSuggestion
-                        || environment.showShortcutLimitPrompt
-                        || environment.purchases.isPurchasing
-                        || selectedDestination == .settings
-                        || UIApplication.shared.hasActiveTextInput
-                    if environment.reviewCoordinator.claimForegroundRequest(isBlocked: blocked) {
-                        requestReview()
-                    }
-                }
+                // Returning from an external capture or completion is a core
+                // interaction, not an opportunity for an automatic review prompt.
             }
             .fullScreenCover(isPresented: $environment.needsOnboarding) {
                 OnboardingView {

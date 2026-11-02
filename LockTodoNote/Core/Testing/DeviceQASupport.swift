@@ -8,6 +8,22 @@ import LockTodoNoteShared
 @MainActor
 enum DeviceQASupport {
     static var isEnabled: Bool { ProcessInfo.processInfo.arguments.contains("-device-qa") }
+    static var dayOffset = 0
+    static var now: Date {
+        let arguments = ProcessInfo.processInfo.arguments
+        if isEnabled, let index = arguments.firstIndex(of: "-qa-now"), arguments.indices.contains(index + 1),
+           let date = FlutterDate.parse(arguments[index + 1]) {
+            return Calendar.current.date(byAdding: .day, value: dayOffset, to: date) ?? date
+        }
+        return Date()
+    }
+    static var widgetTimelines: String {
+        guard let defaults = AppGroupStore().defaults else { return "{}" }
+        defaults.synchronize()
+        let entries = defaults.dictionaryRepresentation().filter { $0.key.hasPrefix("qa.widget.timeline.") }
+        return (try? JSONSerialization.data(withJSONObject: entries)).flatMap { String(data: $0, encoding: .utf8) } ?? "{}"
+    }
+
     static var proOverride: Bool? {
         guard isEnabled, let index = ProcessInfo.processInfo.arguments.firstIndex(of: "-qa-entitlement"),
               ProcessInfo.processInfo.arguments.indices.contains(index + 1) else { return nil }
@@ -57,7 +73,8 @@ enum DeviceQASupport {
     static func seedIfRequested(store: AppGroupStore) {
         guard isEnabled else { return }
         guard ProcessInfo.processInfo.arguments.contains("-device-qa-seed"), let root = store.containerURL else { return }
-        let now = Date()
+        store.defaults?.set(true, forKey: "qa.widget.diagnostics.enabled")
+        let now = Self.now
         let personal = Card(id: "qa-personal", title: "QA Personal", type: .checklist,
                             checklistItems: [ChecklistItem(id: "qa-personal-item", text: "QA Personal")],
                             targetDateTime: now, createdAt: now, updatedAt: now)
@@ -67,7 +84,16 @@ enum DeviceQASupport {
         do {
             guard let cardURL = store.cardStoreURL else { return }
             try FileManager.default.createDirectory(at: cardURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-            try JSONEncoder().encode([personal, work]).write(to: cardURL, options: .atomic)
+            var seed = [personal, work]
+            if ProcessInfo.processInfo.arguments.contains("-qa-review-seed") {
+                var dog = personal
+                dog.id = "qa-dog"
+                dog.title = "Walk my dog"
+                dog.checklistItems = [ChecklistItem(id: "qa-dog-item", text: "Walk my dog", recurrence: .daily),
+                                      ChecklistItem(id: "qa-sibling", text: "Keep this task")]
+                seed = [dog]
+            }
+            try JSONEncoder().encode(seed).write(to: cardURL, options: .atomic)
             if ProcessInfo.processInfo.arguments.contains("-device-qa-timed") {
                 let first = LayoutProfile(id: UUID(), name: "QA Morning", settings: LockScreenSettings(), colorTheme: "default")
                 let second = LayoutProfile(id: UUID(), name: "QA Work", settings: LockScreenSettings(template: .dateTodo), colorTheme: "default")
@@ -110,12 +136,28 @@ struct DeviceQADiagnosticsView: View {
         Text("QA Widget: known=\(environment.widgetConfigurationKnown) any=\(environment.isWidgetInstalled) lock=\(environment.isLockScreenWidgetInstalled)")
             .font(.system(size: 9)).accessibilityIdentifier("qa.widget")
             .accessibilityValue(dashboard.snapshot?.todoItems.first(where: { !$0.isDone })?.text ?? "")
+        Text("QA Date: \(dashboard.dateSelectionMode == .followToday ? "auto" : "pinned") \(dashboard.snapshot?.selectedDate.map { FlutterDate.dateKey($0) } ?? "pending")")
+            .font(.system(size: 9)).accessibilityIdentifier("qa.date")
+        Text("QA Widget Timelines")
+            .font(.system(size: 9)).accessibilityIdentifier("qa.timelines")
+            .accessibilityValue(DeviceQASupport.widgetTimelines)
         Text("QA storage: \(cards.cards.count) cards")
             .font(.system(size: 9))
             .accessibilityIdentifier("qa.storage")
             .accessibilityValue((try? JSONEncoder().encode(cards.cards)).flatMap { String(data: $0, encoding: .utf8) } ?? "[]")
+        Button("QA Open System Settings") {
+            if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+        }.accessibilityIdentifier("qa.settings.open")
+        Button("QA Stop Activity") {
+            Task { await dashboard.stopLiveActivity() }
+        }.accessibilityIdentifier("qa.activity.stop")
+        if ProcessInfo.processInfo.arguments.contains("-qa-now") {
+            Button("QA Advance Day") {
+                DeviceQASupport.dayOffset += 1
+                dashboard.refreshForDateBoundary()
+            }.accessibilityIdentifier("qa.advanceDay")
         }
-        .allowsHitTesting(false)
+        }
     }
 }
 #endif

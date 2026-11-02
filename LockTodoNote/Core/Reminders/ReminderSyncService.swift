@@ -22,6 +22,7 @@ final class ReminderSyncService: ObservableObject {
 
     var onSync: (@MainActor () async -> Void)?
     private let cardStore: CardStore
+    weak var analytics: AnalyticsService?
     private let store: AppGroupStore
     private let client = AppleRemindersClient()
     private var changes: AnyCancellable?
@@ -68,6 +69,7 @@ final class ReminderSyncService: ObservableObject {
 
     func connect() async {
         guard isPro, !isSyncing, !isConnecting else { return }
+        analytics?.feature(.reminders, outcome: .attempted)
         isConnecting = true
         defer { isConnecting = false }
         errorMessage = nil
@@ -83,8 +85,10 @@ final class ReminderSyncService: ObservableObject {
             isEnabled = true
             store.defaults?.set(true, forKey: ReminderSyncPreferences.enabledKey)
             revision += 1
-            _ = await synchronize()
+            let succeeded = await synchronize()
+            analytics?.feature(.reminders, outcome: succeeded ? .success : .failed, count: selectedListIDs.count)
         } catch {
+            analytics?.feature(.reminders, outcome: .failed)
             refreshLists()
             errorMessage = error.localizedDescription
         }
@@ -100,6 +104,7 @@ final class ReminderSyncService: ObservableObject {
     }
 
     func disconnect() {
+        analytics?.feature(.reminders, outcome: .disabled)
         revision += 1
         scheduledSync?.cancel()
         // Remove only this app's mirrored copies, never the user's Apple reminders.
@@ -158,6 +163,7 @@ final class ReminderSyncService: ObservableObject {
                     errorMessage = cardStore.storeError?.detail
                     return false
                 }
+                analytics?.reminderImport(count: records.count)
                 lastSync = Date()
                 store.defaults?.set(lastSync, forKey: ReminderSyncPreferences.lastSyncKey)
                 errorMessage = nil

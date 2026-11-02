@@ -10,6 +10,8 @@ public struct Card: Codable, Hashable, Identifiable, Sendable {
     public var type: CardType
     public var privacyMode: PrivacyMode
     public var checklistItems: [ChecklistItem]
+    /// Rules retained after removing an occurrence, separate from visible tasks.
+    public var recurrenceRules: [ChecklistItem] = []
     public var isPinned: Bool
     public var showOnLockScreen: Bool
     public var targetDateTime: Date?
@@ -68,7 +70,7 @@ public struct Card: Codable, Hashable, Identifiable, Sendable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, title, body, type, privacyMode, checklistItems
+        case id, title, body, type, privacyMode, checklistItems, recurrenceRules
         case isPinned, showOnLockScreen, targetDateTime
         case createdAt, updatedAt, lastActivatedAt
     }
@@ -81,6 +83,7 @@ public struct Card: Codable, Hashable, Identifiable, Sendable {
         type = CardType(fromStored: container.lenient(String.self, .type))
         privacyMode = PrivacyMode(fromStored: container.lenient(String.self, .privacyMode))
         checklistItems = container.lenient([ChecklistItem].self, .checklistItems) ?? []
+        recurrenceRules = container.lenient([ChecklistItem].self, .recurrenceRules) ?? []
         isPinned = container.lenient(Bool.self, .isPinned) ?? false
         showOnLockScreen = container.lenient(Bool.self, .showOnLockScreen) ?? false
         targetDateTime = FlutterDate.parse(container.lenient(String.self, .targetDateTime))
@@ -99,6 +102,7 @@ public struct Card: Codable, Hashable, Identifiable, Sendable {
         try container.encode(type.rawValue, forKey: .type)
         try container.encode(privacyMode.rawValue, forKey: .privacyMode)
         try container.encode(checklistItems, forKey: .checklistItems)
+        if !recurrenceRules.isEmpty { try container.encode(recurrenceRules, forKey: .recurrenceRules) }
         try container.encode(isPinned, forKey: .isPinned)
         try container.encode(showOnLockScreen, forKey: .showOnLockScreen)
         try container.encode(targetDateTime.map(FlutterDate.localString), forKey: .targetDateTime)

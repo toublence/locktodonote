@@ -1,0 +1,353 @@
+[0/1] Planning build
+Building for debugging...
+[0/4] Write sources
+[2/4] Write swift-version--58304C5D6DBC2206.txt
+[4/6] Emitting module LockTodoNoteShared
+[5/6] Compiling LockTodoNoteShared CardMutations.swift
+[6/9] Emitting module LockTodoNoteSharedTests
+[7/9] Compiling LockTodoNoteSharedTests CardMutationsTests.swift
+[7/9] Write Objects.LinkFileList
+[8/9] Linking LockTodoNoteSharedPackageTests
+Build complete! (6.44s)
+Test Suite 'Selected tests' started at 2026-10-28 10:44:58.832.
+Test Suite 'LockTodoNoteSharedPackageTests.xctest' started at 2026-10-28 10:44:58.833.
+Test Suite 'LockTodoNoteSharedPackageTests.xctest' passed at 2026-10-28 10:44:58.833.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-28 10:44:58.833.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+◇ Test run started.
+↳ Testing Library Version: 1400
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Apple Reminders mirror" started.
+◇ Suite "Smart Quick Add" started.
+◇ Suite "Flutter date compatibility" started.
+◇ Suite "Shortcut target resolution" started.
+◇ Suite "Review deletion regression" started.
+◇ Suite "Smart Lock Screen schedule" started.
+◇ Suite "Flutter data migration" started.
+◇ Suite "Card decoding from Flutter JSON" started.
+◇ Suite "Advanced repeat" started.
+◇ Suite "Shared queue transactions" started.
+◇ Suite "Saved links" started.
+◇ Suite "Dashboard composition" started.
+◇ Suite "Entitlement rules" started.
+◇ Suite "Card load-time mutations" started.
+◇ Test overdueAndUndatedAppearTodayAndFutureDatesArePreserved() started.
+◇ Test completedHistoryIsNotImportedOnFirstConnection() started.
+◇ Test deletedOrDeselectedCopiesDoNotDeleteNativeData() started.
+◇ Test timeOnlyRollsForwardButExplicitTodayDoesNot() started.
+◇ Test importIsIdempotentAndKeepsNativeCards() started.
+◇ Test explicitDateAndRecurrenceWin() started.
+◇ Test englishInputUsesTheSamePipeline() started.
+◇ Test remoteTitleCompletionAndUndoReplaceTheMirror() started.
+◇ Test weekdaysSkipTheWeekend() started.
+◇ Test legacyQueueIsNotReinterpreted() started.
+◇ Test invalidOrAmbiguousSchedulesAreNotPartiallyApplied() started.
+◇ Test identifiersSurviveCompositeIDs() started.
+◇ Test rolloverDoesNotMoveAWeeklyRuleToTuesday() started.
+◇ Test handlesNil() started.
+◇ Suite "Calendar recurring task projection" started.
+◇ Test koreanAppointmentExtractsDateTimeAndTitle() started.
+◇ Test optOutPreservesTheSentence() started.
+◇ Test multilineDatesAndQueuedRoundTripStayFrozen() started.
+◇ Test mondayIsTheWeeklyAnchor() started.
+◇ Test rejectsMalformedInput(_:) started.
+◇ Test minutesMidnightAndNoon() started.
+◇ Test parsesEveryShapeDartCanEmit(_:) started.
+◇ Test roundTripsThroughLocalString() started.
+◇ Test relativeAndAbsoluteDates() started.
+◇ Test localStringMatchesDartFormat() started.
+◇ Test ordinaryDeletionPreservesSiblingAndNeverReturns() started.
+◇ Test buildsAndReadsDateKeys() started.
+◇ Test oldCardJSONStillDecodesWithoutNewMetadata() started.
+◇ Test unknownLayoutsFallBackToTheDefault(_:) started.
+◇ Test parsesUTCTimestamp() started.
+◇ Test oldCardOnlyDeletionReproducesReview() started.
+◇ Test excludedDateAlsoBlocksStaleIncompleteRollover() started.
+◇ Test parsesLocalTimestampWithMicroseconds() started.
+◇ Test roundTripsWithoutLosingFields() started.
+◇ Test memoOnlyTemplatesAlwaysStoreMemos(_:) started.
+◇ Test preservesCodableAndExistingProfileFormat() started.
+◇ Test stoppingSeriesSurvivesOldSourcesAndFuturePreview() started.
+◇ Test threeSlotsSelectTheRightSavedLayout() started.
+◇ Test decodesChecklistCard() started.
+◇ Test todoOnlyTemplatesAlwaysStoreTodos(_:) started.
+◇ Test decodesFullCardArray() started.
+◇ Test treatsMissingZoneAsLocal() started.
+◇ Test deleteOnlyOccurrenceSurvivesRestartAndNextRepeatReturns() started.
+◇ Test deleteEntireSeriesRemovesHistoryAndRules() started.
+◇ Test intervalsUseCalendarDaysAcrossDST() started.
+◇ Test startInclusiveAndEndExclusive() started.
+◇ Test tomorrowProjectionUsesAdvancedRule() started.
+◇ Test createsOnlyDueOccurrenceAndDoesNotDuplicate() started.
+◇ Test localTimesSurviveDST() started.
+◇ Test biweeklyUsesFirstSelectedWeekdayNotLocaleWeekNumber() started.
+◇ Test computesDayKeyFromTargetDateThenCreatedAt() started.
+◇ Test decodesChecklistItemDetail() started.
+◇ Test overnightCarriesTheStartingWeekday() started.
+◇ Test adjacentSlotsDoNotOverlap() started.
+◇ Test survivesUnexpectedFieldTypes() started.
+◇ Test decodesMemoCard() started.
+◇ Test itemRoundTripAndLegacyDecode() started.
+◇ Test monthlyLastFridayAcrossLeapFebruary() started.
+◇ Test rejectsInvalidRules() started.
+◇ Test filtersMixedCardsAndKeepsRecurringSeries() started.
+◇ Test migratesCardsFromPrefixedKey() started.
+◇ Test overnightOverlapIncludesFollowingDay() started.
+◇ Test freeDisabledAndMissingProfilesFallBack() started.
+◇ Test allSupportedRulesHonorStopAndExclusions() started.
+◇ Test everyThreeDaysCrossesMonthAndYear() started.
+◇ Test rejectsInvalidTimesAndEmptyWeekdays() started.
+◇ Test timelineIncludesBoundariesAndMidnightWithoutPastEntries() started.
+◇ Test selectedWeekdaysAndStartBoundary() started.
+◇ Test overnightSundayWrapsToMonday() started.
+◇ Test concurrentCapturesAndAcknowledgementsKeepNewItems() started.
+◇ Test readsBothTimestampFormatsTheExtensionsProduce() started.
+◇ Test decodesFlutterLinks() started.
+◇ Test fallsBackToTheTextWhenNoTitleWasShared() started.
+◇ Test case passing 1 argument raw → "" to rejectsMalformedInput(_:) started.
+◇ Test case passing 1 argument raw → "2026-08-21T09:42:13.123456" to parsesEveryShapeDartCanEmit(_:) started.
+◇ Test completionDeduplicationSurvivesConcurrentWriters() started.
+◇ Test case passing 1 argument raw → "not-a-date" to rejectsMalformedInput(_:) started.
+◇ Test case passing 1 argument raw → "   " to rejectsMalformedInput(_:) started.
+◇ Test case passing 1 argument raw → "2026-08-21T09:42:13.123" to parsesEveryShapeDartCanEmit(_:) started.
+◇ Test case passing 1 argument raw → "2026/08/21" to rejectsMalformedInput(_:) started.
+◇ Test case passing 1 argument raw → "20260821" to rejectsMalformedInput(_:) started.
+◇ Test case passing 1 argument raw → "2026-08-21T09:42:13" to parsesEveryShapeDartCanEmit(_:) started.
+◇ Test case passing 1 argument raw → "2026-08-21T09:42" to parsesEveryShapeDartCanEmit(_:) started.
+◇ Test case passing 1 argument raw → "2026-08-21 09:42:13.123456" to parsesEveryShapeDartCanEmit(_:) started.
+◇ Test case passing 1 argument raw → "2026-08-21T09:42:13.123456+09:00" to parsesEveryShapeDartCanEmit(_:) started.
+◇ Test case passing 1 argument raw → "2026-08-21T09:42:13.123456-0500" to parsesEveryShapeDartCanEmit(_:) started.
+◇ Test expiredCacheIsNotPro() started.
+◇ Test case passing 1 argument raw → "2026-08-21" to parsesEveryShapeDartCanEmit(_:) started.
+◇ Test sortsNewestFirst() started.
+◇ Test proUnlocksEverything() started.
+◇ Test roundTripsWithoutLoss() started.
+◇ Test buildsFromASharedURL() started.
+◇ Test case passing 1 argument raw → "ddayTodo" to unknownLayoutsFallBackToTheDefault(_:) started.
+◇ Test case passing 1 argument raw → "imageDday" to unknownLayoutsFallBackToTheDefault(_:) started.
+◇ Test lifetimeOutranksSubscriptions() started.
+◇ Test case passing 1 argument raw → "nonsense" to unknownLayoutsFallBackToTheDefault(_:) started.
+◇ Test buildsFromSharedTextWithoutAURL() started.
+◇ Test ignoresCompletionForUnknownOrAlreadyDoneItems() started.
+◇ Test ignoresAShareWithNeitherURLNorText() started.
+◇ Test rejectsUnknownProducts() started.
+◇ Test case passing 1 argument template → .imageMemo to memoOnlyTemplatesAlwaysStoreMemos(_:) started.
+◇ Test case passing 1 argument template → .dateMemo to memoOnlyTemplatesAlwaysStoreMemos(_:) started.
+◇ Test leavesTodayAndNonChecklistCardsAlone() started.
+◇ Test case passing 1 argument template → .ddayMemo to memoOnlyTemplatesAlwaysStoreMemos(_:) started.
+◇ Test stripsWWWFromTheDisplayedDomain() started.
+◇ Test quickAddCreatesTodoCardWithMatchingCompositeId() started.
+◇ Test cachedEntitlementRoundTrips() started.
+◇ Test case passing 1 argument template → .dateTodo to todoOnlyTemplatesAlwaysStoreTodos(_:) started.
+◇ Test case passing 1 argument template → .imageTodo to todoOnlyTemplatesAlwaysStoreTodos(_:) started.
+◇ Test rollsUnfinishedTodosOntoToday() started.
+◇ Test freeUnlocksNothing() started.
+◇ Test createsTodaysOccurrenceForDailyTodo() started.
+◇ Test bothYearlySpellingsCount() started.
+◇ Test memoTitleIsCappedAtTwentyCharacters() started.
+◇ Test splitsCardThatHasBothFinishedAndUnfinishedWork() started.
+◇ Test lifetimeCacheHasNoExpiry() started.
+◇ Test doesNotDuplicateAnOccurrenceThatAlreadyExists() started.
+◇ Test temporaryTrialUnlocksTemplatesOnly() started.
+◇ Test quickAddMemoUnpinsThePreviousMemo() started.
+◇ Test corruptCacheFallsBackToFree() started.
+◇ Test quickAddMultiLineCreatesMultipleCardsWithCompositeIds() started.
+◇ Test weekdayRecurrenceSkipsTheWeekend() started.
+◇ Test weeklyRecurrenceLandsOnMultiplesOfSevenDays() started.
+◇ Test appliesCompletionByCompositeId() started.
+◇ Test quickAddSkipsDuplicateIds() started.
+◇ Test capsTodosAndTruncatesLongText() started.
+◇ Test countsReflectCompletionOnTheSelectedDay() started.
+◇ Test hiddenPrivacyModeRedactsEveryItem() started.
+◇ Test snapshotSurvivesTheAppGroupRoundTrip() started.
+◇ Test buildsWholeWeeksForTheSelectedMonth() started.
+◇ Test calendarGridAlwaysStartsOnSunday() started.
+◇ Test ddayIgnoresTimeOfDay() started.
+◇ Test togglesHideTodosAndMemosIndependently() started.
+◇ Test computesDdayRelativeToToday(target:expected:) started.
+✔ Test completedHistoryIsNotImportedOnFirstConnection() passed after 0.009 seconds.
+✔ Test deletedOrDeselectedCopiesDoNotDeleteNativeData() passed after 0.009 seconds.
+✔ Test overdueAndUndatedAppearTodayAndFutureDatesArePreserved() passed after 0.009 seconds.
+✔ Test importIsIdempotentAndKeepsNativeCards() passed after 0.009 seconds.
+◇ Test showsOnlyTheSelectedDaysItems() started.
+◇ Test projectsUnfinishedWorkOntoTomorrow() started.
+◇ Test ddaySettingsFlowIntoTheSnapshot() started.
+◇ Test deletedSeriesDoesNotReturnInPreparedWidgetDay() started.
+◇ Test hidingCompletedTodosRemovesThemFromTheCard() started.
+◇ Test liveActivityStateDropsTheGridButKeepsMarkedDays() started.
+◇ Test preComposesTomorrowSoTheWidgetCanRollOverAtMidnight() started.
+✔ Test identifiersSurviveCompositeIDs() passed after 0.009 seconds.
+◇ Test marksDaysThatHaveContent() started.
+◇ Test weeklyWeekdaysAndAdvancedRespectTheirRules() started.
+◇ Test neverInventsPastOccurrencesOrAppleReminderCopies() started.
+◇ Test stableIdentityWhenAnotherSeriesIsMaterialized() started.
+◇ Test dailyAppearsEveryFutureDayWithIndependentCompletion() started.
+✔ Test remoteTitleCompletionAndUndoReplaceTheMirror() passed after 0.010 seconds.
+✔ Test handlesNil() passed after 0.009 seconds.
+✔ Test optOutPreservesTheSentence() passed after 0.010 seconds.
+✔ Test legacyQueueIsNotReinterpreted() passed after 0.010 seconds.
+✔ Test rejectsMalformedInput(_:) with 5 test cases passed after 0.010 seconds.
+✔ Test mondayIsTheWeeklyAnchor() passed after 0.010 seconds.
+✔ Test koreanAppointmentExtractsDateTimeAndTitle() passed after 0.010 seconds.
+✔ Test explicitDateAndRecurrenceWin() passed after 0.010 seconds.
+✔ Test parsesEveryShapeDartCanEmit(_:) with 8 test cases passed after 0.010 seconds.
+✔ Test invalidOrAmbiguousSchedulesAreNotPartiallyApplied() passed after 0.010 seconds.
+✔ Test weekdaysSkipTheWeekend() passed after 0.010 seconds.
+✔ Test englishInputUsesTheSamePipeline() passed after 0.010 seconds.
+✔ Test minutesMidnightAndNoon() passed after 0.010 seconds.
+✔ Test roundTripsThroughLocalString() passed after 0.010 seconds.
+✔ Test relativeAndAbsoluteDates() passed after 0.010 seconds.
+✔ Test timeOnlyRollsForwardButExplicitTodayDoesNot() passed after 0.010 seconds.
+✔ Test localStringMatchesDartFormat() passed after 0.010 seconds.
+✔ Test unknownLayoutsFallBackToTheDefault(_:) with 3 test cases passed after 0.010 seconds.
+✔ Test parsesUTCTimestamp() passed after 0.010 seconds.
+✔ Test multilineDatesAndQueuedRoundTripStayFrozen() passed after 0.010 seconds.
+✔ Test parsesLocalTimestampWithMicroseconds() passed after 0.010 seconds.
+✔ Test oldCardJSONStillDecodesWithoutNewMetadata() passed after 0.010 seconds.
+✔ Test memoOnlyTemplatesAlwaysStoreMemos(_:) with 3 test cases passed after 0.010 seconds.
+✔ Test roundTripsWithoutLosingFields() passed after 0.010 seconds.
+✔ Test oldCardOnlyDeletionReproducesReview() passed after 0.010 seconds.
+✔ Test decodesFullCardArray() passed after 0.010 seconds.
+✔ Test todoOnlyTemplatesAlwaysStoreTodos(_:) with 2 test cases passed after 0.010 seconds.
+✔ Test threeSlotsSelectTheRightSavedLayout() passed after 0.010 seconds.
+✔ Test decodesChecklistCard() passed after 0.010 seconds.
+✔ Test treatsMissingZoneAsLocal() passed after 0.010 seconds.
+✔ Test excludedDateAlsoBlocksStaleIncompleteRollover() passed after 0.011 seconds.
+✔ Test startInclusiveAndEndExclusive() passed after 0.010 seconds.
+✔ Test createsOnlyDueOccurrenceAndDoesNotDuplicate() passed after 0.011 seconds.
+✔ Test deleteEntireSeriesRemovesHistoryAndRules() passed after 0.011 seconds.
+✔ Test intervalsUseCalendarDaysAcrossDST() passed after 0.011 seconds.
+✔ Test deleteOnlyOccurrenceSurvivesRestartAndNextRepeatReturns() passed after 0.011 seconds.
+✔ Test biweeklyUsesFirstSelectedWeekdayNotLocaleWeekNumber() passed after 0.011 seconds.
+✔ Test preservesCodableAndExistingProfileFormat() passed after 0.011 seconds.
+✔ Test overnightCarriesTheStartingWeekday() passed after 0.011 seconds.
+✔ Test decodesChecklistItemDetail() passed after 0.011 seconds.
+✔ Test ordinaryDeletionPreservesSiblingAndNeverReturns() passed after 0.011 seconds.
+✔ Test decodesMemoCard() passed after 0.011 seconds.
+✔ Test survivesUnexpectedFieldTypes() passed after 0.011 seconds.
+✔ Test itemRoundTripAndLegacyDecode() passed after 0.011 seconds.
+✔ Test monthlyLastFridayAcrossLeapFebruary() passed after 0.011 seconds.
+✔ Test filtersMixedCardsAndKeepsRecurringSeries() passed after 0.011 seconds.
+✔ Test rejectsInvalidRules() passed after 0.011 seconds.
+✔ Test freeDisabledAndMissingProfilesFallBack() passed after 0.011 seconds.
+✔ Test localTimesSurviveDST() passed after 0.011 seconds.
+✔ Test everyThreeDaysCrossesMonthAndYear() passed after 0.024 seconds.
+✔ Test rejectsInvalidTimesAndEmptyWeekdays() passed after 0.024 seconds.
+✔ Test stoppingSeriesSurvivesOldSourcesAndFuturePreview() passed after 0.024 seconds.
+✔ Test timelineIncludesBoundariesAndMidnightWithoutPastEntries() passed after 0.024 seconds.
+✔ Test selectedWeekdaysAndStartBoundary() passed after 0.024 seconds.
+✔ Test overnightSundayWrapsToMonday() passed after 0.024 seconds.
+◇ Test case passing 2 arguments target → "2026-08-25", expected → "D-4" to computesDdayRelativeToToday(target:expected:) started.
+◇ Test case passing 2 arguments target → "2026-08-22", expected → "D-1" to computesDdayRelativeToToday(target:expected:) started.
+◇ Test case passing 2 arguments target → "2026-08-21", expected → "D-Day" to computesDdayRelativeToToday(target:expected:) started.
+◇ Test case passing 2 arguments target → "2026-08-20", expected → "D+1" to computesDdayRelativeToToday(target:expected:) started.
+◇ Test case passing 2 arguments target → "2026-08-14", expected → "D+7" to computesDdayRelativeToToday(target:expected:) started.
+✔ Test readsBothTimestampFormatsTheExtensionsProduce() passed after 0.034 seconds.
+✔ Test decodesFlutterLinks() passed after 0.034 seconds.
+✔ Test fallsBackToTheTextWhenNoTitleWasShared() passed after 0.033 seconds.
+✔ Test buildsAndReadsDateKeys() passed after 0.036 seconds.
+✔ Test computesDayKeyFromTargetDateThenCreatedAt() passed after 0.035 seconds.
+✔ Test sortsNewestFirst() passed after 0.030 seconds.
+✔ Test rolloverDoesNotMoveAWeeklyRuleToTuesday() passed after 0.036 seconds.
+✔ Test proUnlocksEverything() passed after 0.030 seconds.
+✔ Test expiredCacheIsNotPro() passed after 0.030 seconds.
+✔ Test lifetimeOutranksSubscriptions() passed after 0.030 seconds.
+✔ Test buildsFromASharedURL() passed after 0.030 seconds.
+✔ Test buildsFromSharedTextWithoutAURL() passed after 0.029 seconds.
+✔ Test ignoresAShareWithNeitherURLNorText() passed after 0.029 seconds.
+✔ Test roundTripsWithoutLoss() passed after 0.030 seconds.
+✔ Test rejectsUnknownProducts() passed after 0.029 seconds.
+✔ Test ignoresCompletionForUnknownOrAlreadyDoneItems() passed after 0.030 seconds.
+✔ Test quickAddCreatesTodoCardWithMatchingCompositeId() passed after 0.029 seconds.
+✔ Test leavesTodayAndNonChecklistCardsAlone() passed after 0.029 seconds.
+✔ Test stripsWWWFromTheDisplayedDomain() passed after 0.029 seconds.
+✔ Test cachedEntitlementRoundTrips() passed after 0.029 seconds.
+✔ Test rollsUnfinishedTodosOntoToday() passed after 0.029 seconds.
+✔ Test bothYearlySpellingsCount() passed after 0.029 seconds.
+✔ Test freeUnlocksNothing() passed after 0.029 seconds.
+✔ Test memoTitleIsCappedAtTwentyCharacters() passed after 0.029 seconds.
+✔ Test createsTodaysOccurrenceForDailyTodo() passed after 0.029 seconds.
+✔ Test splitsCardThatHasBothFinishedAndUnfinishedWork() passed after 0.029 seconds.
+✔ Test lifetimeCacheHasNoExpiry() passed after 0.029 seconds.
+✔ Test temporaryTrialUnlocksTemplatesOnly() passed after 0.028 seconds.
+✔ Test doesNotDuplicateAnOccurrenceThatAlreadyExists() passed after 0.028 seconds.
+✔ Test quickAddMemoUnpinsThePreviousMemo() passed after 0.028 seconds.
+✔ Test corruptCacheFallsBackToFree() passed after 0.028 seconds.
+✔ Test quickAddMultiLineCreatesMultipleCardsWithCompositeIds() passed after 0.028 seconds.
+✔ Test weekdayRecurrenceSkipsTheWeekend() passed after 0.028 seconds.
+✔ Test appliesCompletionByCompositeId() passed after 0.027 seconds.
+✔ Test quickAddSkipsDuplicateIds() passed after 0.027 seconds.
+✔ Test weeklyRecurrenceLandsOnMultiplesOfSevenDays() passed after 0.028 seconds.
+✔ Test migratesCardsFromPrefixedKey() passed after 0.036 seconds.
+✔ Test tomorrowProjectionUsesAdvancedRule() passed after 0.036 seconds.
+✔ Test hiddenPrivacyModeRedactsEveryItem() passed after 0.027 seconds.
+✔ Test countsReflectCompletionOnTheSelectedDay() passed after 0.027 seconds.
+✔ Test capsTodosAndTruncatesLongText() passed after 0.027 seconds.
+✔ Test completionDeduplicationSurvivesConcurrentWriters() passed after 0.031 seconds.
+✔ Test ddayIgnoresTimeOfDay() passed after 0.027 seconds.
+✔ Test snapshotSurvivesTheAppGroupRoundTrip() passed after 0.027 seconds.
+✔ Suite "Apple Reminders mirror" passed after 0.037 seconds.
+✔ Test overnightOverlapIncludesFollowingDay() passed after 0.036 seconds.
+✔ Test computesDdayRelativeToToday(target:expected:) with 5 test cases passed after 0.027 seconds.
+✔ Test concurrentCapturesAndAcknowledgementsKeepNewItems() passed after 0.035 seconds.
+✔ Test calendarGridAlwaysStartsOnSunday() passed after 0.027 seconds.
+✔ Test buildsWholeWeeksForTheSelectedMonth() passed after 0.027 seconds.
+✔ Test togglesHideTodosAndMemosIndependently() passed after 0.027 seconds.
+✔ Test ddaySettingsFlowIntoTheSnapshot() passed after 0.027 seconds.
+✔ Test projectsUnfinishedWorkOntoTomorrow() passed after 0.027 seconds.
+✔ Test showsOnlyTheSelectedDaysItems() passed after 0.027 seconds.
+✔ Test neverInventsPastOccurrencesOrAppleReminderCopies() passed after 0.027 seconds.
+✔ Test adjacentSlotsDoNotOverlap() passed after 0.036 seconds.
+✔ Test weeklyWeekdaysAndAdvancedRespectTheirRules() passed after 0.027 seconds.
+✔ Suite "Shortcut target resolution" passed after 0.037 seconds.
+✔ Suite "Card decoding from Flutter JSON" passed after 0.037 seconds.
+✔ Test stableIdentityWhenAnotherSeriesIsMaterialized() passed after 0.027 seconds.
+✔ Suite "Saved links" passed after 0.037 seconds.
+✔ Suite "Smart Quick Add" passed after 0.037 seconds.
+✔ Suite "Flutter date compatibility" passed after 0.037 seconds.
+✔ Suite "Entitlement rules" passed after 0.037 seconds.
+✔ Suite "Advanced repeat" passed after 0.037 seconds.
+✔ Suite "Card load-time mutations" passed after 0.037 seconds.
+✔ Suite "Shared queue transactions" passed after 0.037 seconds.
+✔ Suite "Smart Lock Screen schedule" passed after 0.037 seconds.
+◇ Test ignoresUnprefixedKeys() started.
+✔ Test deletedSeriesDoesNotReturnInPreparedWidgetDay() passed after 0.029 seconds.
+✔ Test liveActivityStateDropsTheGridButKeepsMarkedDays() passed after 0.029 seconds.
+✔ Test preComposesTomorrowSoTheWidgetCanRollOverAtMidnight() passed after 0.030 seconds.
+✔ Test hidingCompletedTodosRemovesThemFromTheCard() passed after 0.030 seconds.
+✔ Test dailyAppearsEveryFutureDayWithIndependentCompletion() passed after 0.030 seconds.
+✔ Suite "Calendar recurring task projection" passed after 0.040 seconds.
+✔ Test marksDaysThatHaveContent() passed after 0.030 seconds.
+✔ Suite "Dashboard composition" passed after 0.040 seconds.
+✔ Test ignoresUnprefixedKeys() passed after 0.003 seconds.
+◇ Test copiesSettingsAndFlags() started.
+✔ Test allSupportedRulesHonorStopAndExclusions() passed after 0.042 seconds.
+✔ Suite "Review deletion regression" passed after 0.043 seconds.
+✔ Test copiesSettingsAndFlags() passed after 0.003 seconds.
+◇ Test preservesOriginalFlutterKeys() started.
+✔ Test preservesOriginalFlutterKeys() passed after 0.003 seconds.
+◇ Test runsOnlyOnce() started.
+✔ Test runsOnlyOnce() passed after 0.002 seconds.
+◇ Test doesNotOverwriteLaterEditsOnSecondLaunch() started.
+✔ Test doesNotOverwriteLaterEditsOnSecondLaunch() passed after 0.003 seconds.
+◇ Test failsWithoutCommittingVersionWhenJSONIsCorrupt() started.
+✔ Test failsWithoutCommittingVersionWhenJSONIsCorrupt() passed after 0.001 seconds.
+◇ Test retrySucceedsAfterTransientFailure() started.
+✔ Test retrySucceedsAfterTransientFailure() passed after 0.003 seconds.
+◇ Test failsWhenACardCannotBeCounted() started.
+✔ Test failsWhenACardCannotBeCounted() passed after 0.001 seconds.
+◇ Test stampsVersionForAFreshInstall() started.
+✔ Test stampsVersionForAFreshInstall() passed after 0.001 seconds.
+◇ Test migratesOnboardingOnlyInstallWithNoCards() started.
+✔ Test migratesOnboardingOnlyInstallWithNoCards() passed after 0.005 seconds.
+◇ Test dropsAbandonedKoreanSeedTemplates() started.
+✔ Test dropsAbandonedKoreanSeedTemplates() passed after 0.002 seconds.
+◇ Test keepsAUserEditedCardThatMerelyLooksLikeASeed() started.
+✔ Test keepsAUserEditedCardThatMerelyLooksLikeASeed() passed after 0.002 seconds.
+◇ Test foldsTheTwoShortcutCountersKeepingTheHigher() started.
+✔ Test foldsTheTwoShortcutCountersKeepingTheHigher() passed after 0.002 seconds.
+◇ Test ignoresAStaleShortcutCounterFromAnEarlierDay() started.
+✔ Test ignoresAStaleShortcutCounterFromAnEarlierDay() passed after 0.003 seconds.
+✔ Suite "Flutter data migration" passed after 0.079 seconds.
+✔ Test run with 138 tests in 15 suites passed after 0.079 seconds.

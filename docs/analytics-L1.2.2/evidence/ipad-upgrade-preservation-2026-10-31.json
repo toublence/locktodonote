@@ -1,0 +1,12 @@
+{
+  "before_cards": 5,
+  "final_cards": 5,
+  "original_ids_preserved": true,
+  "qa_records_remaining": 0,
+  "changed_field_paths": [
+    "card.targetDateTime",
+    "card.updatedAt"
+  ],
+  "saved_layout_bytes_preserved": true,
+  "firebase_debug_mode_disabled_at_end": true
+}

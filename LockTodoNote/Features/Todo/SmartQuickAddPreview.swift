@@ -4,14 +4,17 @@ import SwiftUI
 struct SmartQuickAddPreview: View {
     let todos: [SmartTodo]
     @Binding var isEnabled: Bool
+    var showsToggle = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Toggle(
-                bilingualString(korean: "문장 자동 인식", english: "Smart Quick Add"),
-                isOn: $isEnabled
-            )
-            .font(.caption)
+            if showsToggle {
+                Toggle(
+                    bilingualString(korean: "문장 자동 인식", english: "Smart Quick Add"),
+                    isOn: $isEnabled
+                )
+                .font(.caption)
+            }
             if isEnabled {
                 ForEach(Array(todos.indices.prefix(3)), id: \.self) { index in
                     let todo = todos[index]

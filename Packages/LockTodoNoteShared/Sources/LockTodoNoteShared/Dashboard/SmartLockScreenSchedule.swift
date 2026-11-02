@@ -69,10 +69,18 @@ public struct SmartLockScreenRule: Codable, Identifiable, Equatable, Sendable {
                 guard let todoSeriesIDs else { return card }
                 var copy = card
                 copy.checklistItems = card.checklistItems.filter { todoSeriesIDs.contains($0.effectiveRecurrenceId) }
+                copy.recurrenceRules = card.recurrenceRules.filter { todoSeriesIDs.contains($0.effectiveRecurrenceId) }
                 copy.title = copy.checklistItems.first?.text ?? ""
-                return copy.checklistItems.isEmpty ? nil : copy
+                return copy.checklistItems.isEmpty && copy.recurrenceRules.isEmpty ? nil : copy
             }
-            if card.type == .quickNote, let memoCardIDs { return memoCardIDs.contains(card.id) ? card : nil }
+            if card.type == .quickNote, let memoCardIDs {
+                guard memoCardIDs.contains(card.id) else { return nil }
+                // An explicit rule selection is a display-only projection. Do
+                // not repin or overwrite the user's ordinary memo selection.
+                var copy = card
+                copy.showOnLockScreen = true
+                return copy
+            }
             return card
         }
     }

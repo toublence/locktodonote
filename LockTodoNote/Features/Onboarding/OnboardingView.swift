@@ -158,8 +158,9 @@ struct OnboardingView: View {
                     ? appString(localized: "onboarding.done.message",
                         defaultValue: "Lock your phone to see today's card."
                     )
-                    : appString(localized: "onboarding.activate.message",
-                        defaultValue: "Start the real Live Activity now. You can restart it any time."
+                    : bilingualString(
+                        korean: "실시간 현황을 시작해요. 표시 시간은 iOS 상태에 따라 달라지며 언제든 다시 시작할 수 있어요.",
+                        english: "Start the Live Activity. Display duration depends on iOS; you can restart it any time."
                     )
             ) {
                 DashboardPreviewCard(snapshot: dashboard.currentSnapshot())
@@ -204,9 +205,11 @@ struct OnboardingView: View {
             .opacity(isPrimaryDisabled ? 0.5 : 1)
             .accessibilityIdentifier("onboarding.primary")
 
-            if (step == .activate && !activationSucceeded) || step == .quickAdd {
-                Button(appString(localized: "onboarding.later", defaultValue: "Maybe later")) {
-                    if step == .activate {
+            if step == .activate || step == .quickAdd {
+                Button(step == .activate && activationSucceeded
+                    ? bilingualString(korean: "오늘로 이동", english: "Go to Today")
+                    : appString(localized: "onboarding.later", defaultValue: "Maybe later")) {
+                    if step == .activate && !activationSucceeded {
                         step = .quickAdd
                     } else {
                         analytics.onboardingComplete(skipped: false)
@@ -231,7 +234,7 @@ struct OnboardingView: View {
                 ? appString(localized: "common.next", defaultValue: "Next")
                 : appString(localized: "liveActivity.start", defaultValue: "Show on Lock Screen")
         case .quickAdd:
-            appString(localized: "onboarding.quickAdd.cta", defaultValue: "빠른 추가 설정하기")
+            bilingualString(korean: "단축어 앱 열기", english: "Open Shortcuts")
         }
     }
 

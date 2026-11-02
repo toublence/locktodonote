@@ -72,7 +72,11 @@ final class AppEnvironment: ObservableObject {
         let outcome = FlutterDataMigrator(store: appGroup)?.migrateIfNeeded()
         self.migrationOutcome = outcome
 
-        let cardStore = CardStore()
+        var nowProvider: () -> Date = Date.init
+        #if DEBUG
+        if DeviceQASupport.isEnabled { nowProvider = { DeviceQASupport.now } }
+        #endif
+        let cardStore = CardStore(nowProvider: nowProvider)
         let settingsStore = LockScreenSettingsStore(store: appGroup)
         let liveActivity = LiveActivityService(store: appGroup)
         let purchases = PurchaseService(store: appGroup)
@@ -98,9 +102,12 @@ final class AppEnvironment: ObservableObject {
             settingsStore: settingsStore,
             liveActivity: liveActivity,
             entitlements: purchases,
-            store: appGroup
+            store: appGroup, nowProvider: nowProvider
         )
         self.dashboard = dashboard
+        dashboard.analytics = analytics
+        cardStore.analytics = analytics
+        reminderSync.analytics = analytics
         self.smartLockScreen = SmartLockScreenService(dashboard: dashboard, store: appGroup)
         lockScreenSchedule.onChange = { [weak self] in self?.smartLockScreen.refresh() }
         layoutProfiles.onChange = { [weak self] in self?.smartLockScreen.refresh() }
@@ -118,6 +125,14 @@ final class AppEnvironment: ObservableObject {
         cardStore.load()
         // Any edit anywhere republishes the Lock Screen.
         cardStore.onChange = { [weak self] in self?.dashboard.publish() }
+        cardStore.onTodosAdded = { [weak self] added in
+            guard let self else { return }
+            let rule = self.lockScreenSchedule.schedule.activeRule(at: Date(), isPro: self.purchases.isPro,
+                profiles: self.layoutProfiles.profiles)
+            let visible = rule?.filteredCards(added) ?? added
+            self.analytics.newTodoScope(total: added.flatMap(\.checklistItems).count,
+                included: visible.flatMap(\.checklistItems).count, selected: rule?.todoSeriesIDs != nil)
+        }
         settingsStore.onChange = { [weak self] in self?.dashboard.publish() }
         reminderSync.onSync = { [weak self] in
             guard let self else { return }
@@ -205,10 +220,7 @@ final class AppEnvironment: ObservableObject {
         appGroup.defaults?.set(true, forKey: FlutterPreferenceKeys.hasCompletedOnboarding)
         needsOnboarding = false
         dashboard.publish()
-        if !cardStore.cards.isEmpty {
-            Task { await ensureLiveActivityStarted(reason: "onboarding_complete") }
-        }
-        offerReminderSuggestionIfEligible()
+        Task { await ensureLiveActivityStarted(reason: "onboarding_complete") }
     }
 
     private let triggers = MonetizationTriggers()
@@ -241,34 +253,16 @@ final class AppEnvironment: ObservableObject {
         consumeShortcutLimitSignal()
     }
 
-    /// The first time a card actually reaches the Lock Screen. This is the one
-    /// moment the app has proven its value, so it is where the upgrade ask
-    /// belongs — and where the review prompt is genuinely earned.
+    /// Record success without interrupting it with an automatic promotion,
+    /// reminder permission prompt or review request. Settings remain available.
     func offerPaywallAfterFirstLockScreenSuccess() async {
         analytics.tryCompleteActivation()
-        offerReminderSuggestionIfEligible()
-        guard !purchases.isPro else {
-            requestReviewIfEarned()
-            return
-        }
-        guard triggers.claimFirstLockScreenSuccess() else {
-            requestReviewIfEarned()
-            return
-        }
-        // Let the first successful result remain visible; upgrade is optional.
-        if triggers.allowsAutomaticPrompt() { showProSuggestion = true }
     }
 
-    /// The 24-hour preview lapsed — the user just lost a template they used.
     func checkLapsedTrialPaywall() {
         purchases.refreshTrialState()
         enforceTemplateEntitlement(purchases.entitlement)
-        guard triggers.allowsAutomaticPrompt(), paywallRequest == nil,
-              !needsOnboarding, !showReminderSuggestion, !showShortcutLimitPrompt,
-              !isProInfoPresented, quickAddRequest == nil, memoEditorRequest == nil,
-              !purchases.isPurchasing, !ads.isGatheringConsent else { return }
-        guard !purchases.isPro, triggers.claimTrialExpired() else { return }
-        requestPaywall(source: "trial_expired")
+        // An expired preview must not open a paywall over a foreground return.
     }
 
     func recordPaywallDismissal() {
@@ -290,17 +284,19 @@ final class AppEnvironment: ObservableObject {
         reviewCoordinator.evaluate(trigger: "live_activity_success")
     }
 
+    private var isStartingLiveActivity = false
+
     /// Today should already be on the Lock Screen when the user opens the app.
     /// Failures remain non-blocking; the Today status card still explains how
     /// to enable Live Activities if iOS has disabled them.
     func ensureLiveActivityStarted(reason: String = "cold_launch") async {
+        guard !needsOnboarding, !isStartingLiveActivity else { return }
         liveActivity.refreshState()
         guard !liveActivity.state.isRunning else { return }
-        guard !(appGroup.defaults?.bool(forKey: FlutterPreferenceKeys.explicitlyStoppedLiveActivity) ?? false) else {
-            return
-        }
-        let snapshot = dashboard.currentSnapshot()
-        guard !snapshot.todoItems.isEmpty || !snapshot.memoItems.isEmpty else { return }
+        // Re-entering the app starts the selected card, even after dismissal
+        // or when a calendar/date card currently has no todos or memos.
+        isStartingLiveActivity = true
+        defer { isStartingLiveActivity = false }
         let requestId = UUID().uuidString
         analytics.liveActivityStartAttempt(
             requestId: requestId,
@@ -381,7 +377,6 @@ final class AppEnvironment: ObservableObject {
             analytics.widgetInstalledConfirmed(method: "os_configuration")
         }
         grantWidgetInstallRewardIfNeeded()
-        offerReminderSuggestionIfEligible()
         return true
     }
 
@@ -408,14 +403,11 @@ final class AppEnvironment: ObservableObject {
         )
         latestEntrySource = "app"
         Task {
+            await ensureLiveActivityStarted(reason: "foreground_recovery")
             _ = await verifyWidgetInstallation()
             await purchases.refreshEntitlement()
             reminderSync.updateEntitlement(isPro: purchases.isPro)
             await reminderSync.synchronize()
-            liveActivity.refreshState()
-            if liveActivity.state.recoveryRequired {
-                await ensureLiveActivityStarted(reason: "foreground_recovery")
-            }
         }
         consumeShortcutLimitSignal()
     }
@@ -468,13 +460,24 @@ final class AppEnvironment: ObservableObject {
         analytics.reminderAction("dismissed", kind: "none", source: "activation")
     }
 
-    private func offerReminderSuggestionIfEligible() {
-        guard analytics.hasCompletedActivation,
-              appGroup.defaults?.bool(forKey: FlutterPreferenceKeys.reminderSuggestionShown) != true
-        else { return }
-        appGroup.defaults?.set(true, forKey: FlutterPreferenceKeys.reminderSuggestionShown)
-        analytics.reminderAction("suggested", kind: "morning_or_evening", source: "activation")
-        showReminderSuggestion = true
+    /// A manual capture may replace the currently visible ordinary memo, but
+    /// must not rewrite a scheduled layout's explicit memo selection.
+    var newMemoIsExcludedByRule: Bool {
+        activeCaptureRule?.memoCardIDs != nil
+    }
+
+    var newMemoReplacesDisplayedMemo: Bool {
+        let rule = activeCaptureRule
+        let settings = rule.flatMap { rule in
+            layoutProfiles.profiles.first { $0.id == rule.profileID }?.settings
+        } ?? settingsStore.settings
+        return settings.selectsNewMemoForDisplay(allowedMemoIDs: rule?.memoCardIDs)
+    }
+
+    private var activeCaptureRule: SmartLockScreenRule? {
+        lockScreenSchedule.schedule.activeRule(
+            at: dashboard.today, isPro: purchases.isPro, profiles: layoutProfiles.profiles
+        )
     }
 
     func requestQuickAdd(_ mode: QuickAddMode, date: Date = Date(), source: String = "app") {
@@ -520,6 +523,18 @@ final class AppEnvironment: ObservableObject {
         enforceTemplateEntitlement(entitlement)
         smartLockScreen.refresh()
         guard entitlement.isPro, let context = pendingPurchaseContext else { return }
+        if let transaction {
+            let trialState: AnalyticsService.VerifiedTrialState
+            if #available(iOS 17.2, *) {
+                if transaction.offer == nil { trialState = .notTrial }
+                else if let mode = transaction.offer?.paymentMode { trialState = mode == .freeTrial ? .freeTrial : .notTrial }
+                else { trialState = .unknown }
+            } else {
+                // Do not replace missing signed offer evidence with UI eligibility.
+                trialState = .unknown
+            }
+            analytics.purchaseVerifiedEnvironment(transaction.environment.rawValue, trialState: trialState)
+        }
         analytics.purchaseCompleted(
             productId: transaction?.productID ?? context.productId,
             source: context.source,
@@ -530,6 +545,13 @@ final class AppEnvironment: ObservableObject {
             attemptId: context.attemptId
         )
         let application = await applyPendingProValue()
+        let applicationResult: String
+        switch application {
+        case .nothingToApply: applicationResult = "not_requested"
+        case .applied: applicationResult = application.succeeded ? "success" : "display_recovery_needed"
+        case .failed: applicationResult = "failed"
+        }
+        analytics.purchaseApplication(trigger: context.source, result: applicationResult)
         if application.valueApplied, context.previewTemplate != nil {
             analytics.purchaseValueApplied(
                 productId: context.productId,
@@ -616,7 +638,8 @@ final class AppEnvironment: ObservableObject {
               appGroup.defaults?.bool(forKey: AppGroupKeys.shortcutLimitReached) == true
         else { return }
         appGroup.defaults?.set(false, forKey: AppGroupKeys.shortcutLimitReached)
-        showShortcutLimitPrompt = true
+        // The Shortcut already reports its limit. Do not surprise the user with
+        // an upgrade alert on a later return; manual app capture remains free.
     }
 
     private func hasContent(on date: Date) -> Bool {
@@ -777,7 +800,7 @@ final class LockScreenSettingsStore: ObservableObject {
         settings.showTodos = true
         settings.showMemos = true
         settings.showCompletedTodos = false
-        settings.syncCalendarSelectionToLockScreen = true
+        settings.syncCalendarSelectionToLockScreen = false
         return settings
     }
 }

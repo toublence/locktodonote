@@ -1,0 +1,8 @@
+✔ Suite "Analytics event contract" passed after 0.088 seconds.
+✔ Suite "L1.2.2 analytics" passed after 0.010 seconds.
+✔ Suite "L1.2.2 pending capture metadata" passed after 0.001 seconds.
+✔ Suite "L1.2.2 stream migration cohort" passed after 0.003 seconds.
+✔ Suite "Verified purchase metadata" passed after 0.001 seconds.
+✔ Suite "Local StoreKit entitlement and restore" passed after 1.280 seconds.
+✔ Test run with 31 tests in 7 suites passed after 1.385 seconds.
+** TEST SUCCEEDED **
